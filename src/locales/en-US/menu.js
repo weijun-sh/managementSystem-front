@@ -1,0 +1,16 @@
+export default {
+  'menu.disk': '磁盘监控',
+  'menu.welcome': 'Welcome',
+  'menu.more-blocks': 'More Blocks',
+  'menu.home': 'Home',
+  'menu.admin': 'Admin',
+  'menu.admin.sub-page': 'Sub-Page',
+  'menu.login': 'Login',
+  'menu.register': 'Register',
+  'menu.register-result': 'Register Result',
+  'menu.account': 'Account',
+  'menu.account.center': 'Account Center',
+  'menu.account.settings': 'Account Settings',
+  'menu.account.trigger': 'Trigger Error',
+  'menu.account.logout': 'Logout',
+};
