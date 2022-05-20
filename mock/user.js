@@ -119,7 +119,7 @@ export default {
     const { password, username, type } = req.body;
     await waitTime(2000);
 
-    if (password === 'ant.design' && username === 'admin') {
+    if (password === 'admin' && username === 'admin') {
       res.send({
         status: 'ok',
         type,
@@ -129,7 +129,7 @@ export default {
       return;
     }
 
-    if (password === 'ant.design' && username === 'user') {
+    if (password === 'admin' && username === 'user') {
       res.send({
         status: 'ok',
         type,
