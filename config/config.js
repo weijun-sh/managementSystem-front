@@ -64,13 +64,15 @@ export default defineConfig({
     },
     {
       name: 'trade',
-      icon: 'user',
+      icon: 'link',
       path: '/trade',
+
       routes: [
         {
           name: 'brige',
           path: '/trade/brige',
-          component: './trade/brige'
+          component: './trade/brige',
+          icon: 'earth'
         },
         {
           component: '404',
@@ -81,7 +83,7 @@ export default defineConfig({
       name: 'account',
       icon: 'user',
       path: '/account',
-      hideInMenu: false,
+      hideInMenu: true,
       routes: [
         {
           path: '/account',

@@ -10,6 +10,6 @@ const Settings = {
   title: 'MultiChain 管理系统',
   pwa: false,
   logo: 'https://multichain.org/favicon.ico',
-  iconfontUrl: '',
+  iconfontUrl: '//at.alicdn.com/t/font_3417155_ews4347m9h.js',
 };
 export default Settings;

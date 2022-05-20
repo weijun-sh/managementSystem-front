@@ -1,4 +1,6 @@
 const getNotices = (req, res) => {
+  res.json({data:[]})
+  return;
   res.json({
     data: [
       {

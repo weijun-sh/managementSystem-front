@@ -18,7 +18,7 @@ function getCity(req, res) {
 function getCurrentUse(req, res) {
   return res.json({
     data: {
-      name: 'Serati Ma',
+      name: 'admin',
       avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
       userid: '00000001',
       email: 'antdesign@alipay.com',
@@ -52,7 +52,7 @@ function getCurrentUse(req, res) {
         },
       ],
       notifyCount: 12,
-      unreadCount: 11,
+      unreadCount: 0,
       country: 'China',
       geographic: {
         province: {

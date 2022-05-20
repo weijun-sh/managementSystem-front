@@ -42,7 +42,7 @@ export default {
     res.send({
       success: true,
       data: {
-        name: 'Serati Ma',
+        name: 'admin',
         avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
         userid: '00000001',
         email: 'antdesign@alipay.com',
@@ -75,8 +75,8 @@ export default {
             label: '海纳百川',
           },
         ],
-        notifyCount: 12,
-        unreadCount: 11,
+        notifyCount: 12, 
+        unreadCount: 0,
         country: 'China',
         access: getAccess(),
         geographic: {
