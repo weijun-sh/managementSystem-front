@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
-import request from 'umi-request';
-
+import http  from "@/utils/http";
+const api = 'http://112.74.110.203:20522/check/'
 const columns = [
   {
     dataIndex: 'index',
@@ -9,7 +9,7 @@ const columns = [
     width: 48,
   },
   {
-    title: '交易哈希hash',
+    title: 'hash',
     dataIndex: 'hash',
     copyable: true,
     ellipsis: true,
@@ -18,7 +18,7 @@ const columns = [
       rules: [
         {
           required: true,
-          message: '此项为必填项',
+          message: '输入哈希值',
         },
       ],
     },
@@ -26,13 +26,26 @@ const columns = [
   {
     disable: true,
     title: '选择桥',
-    dataIndex: 'brige',
+    dataIndex: 'bridge',
     filters: true,
     onFilter: true,
     valueType: 'select',
     valueEnum: {
-      all: { text: '全部', status: 'Default' },
+      ETH2BSC: { text: 'ETH2BSC' },
+      MATIC2Fantom: { text: 'MATIC2Fantom', },
     },
+    formItemProps: {
+      rules: [
+        {
+          required: true,
+          message: '请选择桥',
+        },
+      ]
+    }
+  },
+  {
+    title: '等级',
+    dataIndex: 'level',
   },
   {
     title: '操作',
@@ -49,14 +62,32 @@ const columns = [
 
 export default () => {
   const actionRef = useRef();
+  const formRef = useRef();
+
+  useEffect(() => {
+    formRef.current.setFieldsValue({
+      hash: '0x8b97eaa1ceee9d7cb7d67e5f7da15f460233e1b13f3894d28a51e72ab840dbac',
+      bridge: 'ETH2BSC'
+    })
+  })
   return (
     <ProTable
       columns={columns}
       actionRef={actionRef}
       cardBordered
+      formRef={formRef}
       request={async (params = {}, sort, filter) => {
+        console.log("params ==>", params);
+        const {bridge, hash} = params;
+        http.http({
+         url: `${api}/${bridge}/${hash}`
+        }).then((response) => {
+          console.log("res ==>", response)
+        }).catch((error) => {
+          console.log("error ==>", error)
+        })
         return Promise.resolve({
-          data: [{hash: 'hash1', brige: 'brige1'},{hash: 'hash2', brige: 'brige2'},{hash: 'hash3', brige: 'brige3'},],
+          data: [{hash: 'hash1', bridge: 'bridge1'},{hash: 'hash2', bridge: 'bridge2'},{hash: 'hash3', brige: 'brige3'},],
           page: 1,
           success: true,
           total: 3,
@@ -69,7 +100,7 @@ export default () => {
           console.log('value: ', value);
         },
       }}
-      rowKey="id"
+      rowKey="hash"
       search={{
         labelWidth: 'auto',
       }}
