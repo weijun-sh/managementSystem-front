@@ -12,6 +12,7 @@ export default {
   'menu.account.settings': '个人设置',
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
-  'menu.trade': '交易',
-  'menu.trade.brige': '交易查询'
+  'menu.trade': '交易查询',
+  'menu.trade.bridge': '桥查询',
+  'menu.trade.chain': '链查询'
 };

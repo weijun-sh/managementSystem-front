@@ -69,9 +69,15 @@ export default defineConfig({
 
       routes: [
         {
-          name: 'brige',
-          path: '/trade/brige',
-          component: './trade/brige',
+          name: 'bridge',
+          path: '/trade/bridge',
+          component: './trade/bridge',
+          icon: 'earth'
+        },
+        {
+          name: 'chain',
+          path: '/trade/chain',
+          component: './trade/chain',
           icon: 'earth'
         },
         {
@@ -105,7 +111,7 @@ export default defineConfig({
     },
     {
       path: '/',
-      redirect: '/trade/brige',
+      redirect: '/trade/bridge',
     },
     {
       component: '404',
