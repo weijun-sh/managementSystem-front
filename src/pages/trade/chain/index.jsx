@@ -48,7 +48,7 @@ const columns = [
 ];
 
 export default () => {
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(null);
   const [formRef, setFormRef] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -90,7 +90,7 @@ export default () => {
   }
 
   function jsonOutput(obj, tab) {
-
+    if(!obj) return ''
     return JSON.stringify(obj, null, 4)
 /*    let blank =<>&nbsp;&nbsp;&nbsp;&nbsp;</>
     let result = [];

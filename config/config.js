@@ -72,7 +72,8 @@ export default defineConfig({
           name: 'bridge',
           path: '/trade/bridge',
           component: './trade/bridge',
-          icon: 'earth'
+          icon: 'earth',
+          hideInMenu: true,
         },
         {
           name: 'chain',
