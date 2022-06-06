@@ -7,44 +7,31 @@ const api = 'http://112.74.110.203:20522/rpc'
 
 const columns = [
   {
-    title: 'bind',
-    dataIndex: 'bind',
+    title: '交易哈希',
+    dataIndex: 'txhash',
     key: 'bind',
   },
   {
-    title: 'isSwapin',
-    dataIndex: 'isSwapin',
-    key: 'isSwapin',
+    title: '链',
+    dataIndex: 'chainid',
+    key: 'chainid',
   },
   {
-    title: 'level',
-    dataIndex: 'level',
-    key: 'level',
+    title: '异常分类',
+    dataIndex: 'exception',
+    key: 'exception',
   },
   {
-    title: '等级',
-    dataIndex: 'level',
-  },
-  {
-    title: 'msg',
-    dataIndex: 'msg',
-  },
-  {
-    title: 'pairID',
-    dataIndex: 'pairID',
-  },
-  {
-    title: 'status',
+    title: '状态',
     dataIndex: 'status',
+    key: 'exception',
   },
   {
-    title: 'time',
-    dataIndex: 'time',
+    title: '分析',
+    dataIndex: 'analyze',
+    key: 'analyze',
   },
-  {
-    title: 'txid',
-    dataIndex: 'txid',
-  },
+
 ];
 
 export default () => {
@@ -78,7 +65,20 @@ export default () => {
         setList(response.data);
         console.log('response ==>', response)
       }).catch((error) => {
-        setList(error)
+        //setList(error)
+        setList([{
+          txhash: '0x8b97eaa1ceee9d7cb7d67e5f7da15f460233e1b13f3894d28a51e72ab840dbac',
+          chainid: '1(eth)',
+          exception: '失败',
+          status: '失败',
+          analyze: '测试数据',
+        }, {
+          txhash: '0x8b97eaa1ceee9d7cb7d67e5f7da15f460233e1b13f3894d28a51e72ab840dbac',
+          chainid: '56(eth)',
+          exception: '',
+          status: '成功',
+          analyze: '测试数据',
+        }])
         console.log('error ==>', error)
       }).finally(() => {
         setLoading(false)
@@ -92,32 +92,6 @@ export default () => {
   function jsonOutput(obj, tab) {
     if(!obj) return ''
     return JSON.stringify(obj, null, 4)
-/*    let blank =<>&nbsp;&nbsp;&nbsp;&nbsp;</>
-    let result = [];
-    for(let key in obj){
-      let value = obj[key];
-      let item = null;
-      if(Object.prototype.toString.call(value) === '[object Object]'){
-        console.log("out ==>", value)
-        value = (
-          <>{'{'}
-            {tab}{jsonOutput(value, blank)}
-            {tab}{'}'}
-          </>
-        )
-        item = <div>{tab}{key}: {value}</div>;
-      }else {
-        console.log('value ==>', value)
-        item = <div>{blank}{key}: {value},</div>;
-      }
-
-      result.push(item)
-    }
-    return (
-      <div>
-        {result}
-      </div>
-    )*/
   }
 
   return (
@@ -166,6 +140,22 @@ export default () => {
               <Select.Option value={'56'}>(56 bsc)</Select.Option>
             </Select>
           </Form.Item>
+          <Form.Item
+            label="异常交易分类"
+            name="exception"
+          >
+            <Select
+              style={{width: 160, marginTop: 4}}
+              allowClear={true}
+              placeholder="请选择分类"
+            >
+              <Select.Option value={'未验证'}>未验证</Select.Option>
+              <Select.Option value={'没有发送'}>没有发送</Select.Option>
+              <Select.Option value={'未上链'}>未上链</Select.Option>
+              <Select.Option value={'大额'}>大额</Select.Option>
+              <Select.Option value={'交易错误'}>交易错误</Select.Option>
+            </Select>
+          </Form.Item>
           <Button
             onClick={getList}
             type={"primary"}
@@ -177,16 +167,15 @@ export default () => {
         </Form>
       </Card>
       <Card title="查询结果" style={{marginTop: 10}}>
-        {
-          jsonOutput(list)
-        }
-        {/*        <Table
+        <Table
           bordered={true}
           rowKey={"txid"}
           dataSource={list}
           columns={columns}
           loading={loading}
-        />*/}
+          size={"middle"}
+          scroll={{x: 800}}
+        />
 
       </Card>
     </div>
