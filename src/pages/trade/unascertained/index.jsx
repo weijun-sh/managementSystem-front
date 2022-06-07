@@ -2,177 +2,261 @@ import React, {useRef, useEffect, useState} from 'react';
 import http from "@/utils/http";
 import {Card, Col, Form, Input, Row, Select, Button, Table, Tooltip} from "antd";
 import './index.less'
+import CONS from '../constant' 
 const api = 'http://112.74.110.203:20522/rpc'
 // 0x8b97eaa1ceee9d7cb7d67e5f7da15f460233e1b13f3894d28a51e72ab840dbac
 
 const columns = [
   {
-    title: '交易哈希',
-    dataIndex: 'txid',
-    key: 'txid',
-    render: (data) => {
+    title: '币种',
+    dataIndex: 'swapinfo',
+    key: 'swapinfo',
+    render: (data, record) => {
       return (
-        <Tooltip title={data}>
-          <div className='ellipsis'>{data}</div>
-        </Tooltip>
+        <div >{record.swapinfo.routerSwapInfo.tokenID}</div>
       ) 
     }
   },
   {
-    title: 'router地址',
-    dataIndex: 'txto',
-    key: 'txto',
-    render: (data) => {
-      return (
-        <Tooltip title={data}>
-          <div className='ellipsis'>{data}</div>
-        </Tooltip>
-      ) 
-    }
-  },
-  {
-    title: '源链块高',
-    dataIndex: 'txheight',
-    key: 'txheight',
-  },
-  {
-    title: '发送者',
-    dataIndex: 'from',
-    key: 'from',
-    render: (data) => {
-      return (
-        <Tooltip title={data}>
-          <div className='ellipsis'>{data}</div>
-        </Tooltip>
-      ) 
-    }
-  },
-  {
-    title: 'mpc地址',
-    dataIndex: 'to',
-    key: 'to',
-    render: (data) => {
-      return (
-        <Tooltip title={data}>
-          <div className='ellipsis'>{data}</div>
-        </Tooltip>
-      ) 
-    }
-  },
-  {
-    title: "bind",
-    dataIndex: "绑定地址",
-    key: "绑定地址"
-  },
-  {
-    title: "发送数量",
+    title: "数量",
     dataIndex: "value",
     key: "value",
-    render: () => {
-      return <div style={{width: 200}}></div>
-    }
-  },
-  {
-    title: "日志索引",
-    dataIndex: "logIndex",
-    key: "logIndex",
-    render: () => {
-      return <div style={{width: 200}}></div>
-    }
-  },
-  {
-    title: "源链chainid",
-    dataIndex: "fromChainID",
-    key: "fromChainID"
-  },
-  {
-    title: "目标链chainid",
-    dataIndex: "toChainID",
-    key: "toChainID"
-  },
-  {
-    title: "交换信息",
-    dataIndex: "swapinfo",
-    key: "swapinfo",
-    render: (data) => {
+    render: (data, record,) => {
       return (
-        <div>{JSON.stringify(data.routerSwapInfo)}</div>
+        <div style={{width: 290}}>
+          <div>Sent: {toThousands(record.value) }</div>
+          <div>Received: {toThousands(record.swapvalue)}</div>
+        </div>
       )
     }
   },
   {
-    title: "目标链交易",
-    dataIndex: "swaptx",
-    key: "swaptx",
-    render: (data) => {
+    title: "发送",
+    dataIndex: 'txid',
+    key: 'txid',
+    render: (data, record) => {
       return (
-        <Tooltip title={data}>
-          <div className='ellipsis'>{data}</div>
-        </Tooltip>
-      ) 
+        <div style={{width: 90}}>
+          <div style={{color: '#6262ca'}}>{record.fromChainID}</div>
+          <div>{ellipsisCenter(record.from)}</div>
+        </div>
+      )
     }
   },
+  ,
   {
-    title: "目标链高度",
-    dataIndex: "swapheight",
-    key: "swapheight",
-    width: 200
-  },
-  {
-    title: "swap数量",
-    dataIndex: "swapvalue",
-    key: "swapvalue",
-    render: (data) => {
+    title: "接收",
+    dataIndex: 'txid',
+    key: 'txid',
+    render: (data, record) => {
       return (
-        <div>{toThousands(data)}</div>
+        <div style={{width: 90}}>
+          <div style={{color: '#6262ca'}}>{record.toChainID}</div>
+          <div>{ellipsisCenter(record.bind)}</div>
+        </div>
       )
     }
   },
   {
-    title: "swapnonce",
-    dataIndex: "swapnonce",
-    key: "swapnonce"
+    title: "耗时",
+    dataIndex: 'timestamp',
+    key: 'timestamp',
+    render: (data, record) => {
+      let current = new Date().getTime();
+      let pass = record.timestamp * 1000;
+      let gap = ((current - pass) / 1000).toFixed(0);
+      if(pass > current){
+        console.log("current ==========>", current);
+        console.log("pass =============>", pass);
+        console.log("gap ==============>", gap);
+        console.log("current ===>", jsDateFormatter(current));
+        console.log("pass ======>", jsDateFormatter(pass));
+      }
+
+      return (
+        <div>
+          {gap}s ago
+        </div>
+      )
+    }
   },
   {
-    title: "状态值",
+    title: "状态",
     dataIndex: "status",
-    key: "status",
+    key: 'status',
     render: (data) => {
       return (
-        <div style={{width: 80}}>{data}</div>
+        <div style={{width: 80}}>{CONS.renderStatus(data)}</div>
       )
     }
   },
-  {
-    title: "可读状态",
-    dataIndex: "statusmsg",
-    key: "statusmsg"
-  },
-  {
-    title: "交易发出时间",
-    dataIndex: "inittime",
-    key: "inittime",
-    render: (data) => {
-      return (
-        <div style={{width: 160}}>{jsDateFormatter(data)}</div>
-      ) 
-    }
-  },
-  {
-    title: "交易存储时间",
-    dataIndex: "timestamp",
-    key: "timestamp",
-    render: (data) => {
-      return (
-        <div style={{width: 160}}>{jsDateFormatter(data)}</div>
-      ) 
-    }
-  },
-  {
-    title: "swaptx确定数",
-    dataIndex: "confirmations",
-    key: "confirmations"
-  },
+  // {
+  //   title: '交易哈希',
+  //   dataIndex: 'txid',
+  //   key: 'txid',
+  //   render: (data) => {
+  //     return (
+  //       <Tooltip title={data}>
+  //         <div className='ellipsis'>{data}</div>
+  //       </Tooltip>
+  //     ) 
+  //   }
+  // },
+  // {
+  //   title: 'router地址',
+  //   dataIndex: 'txto',
+  //   key: 'txto',
+  //   render: (data) => {
+  //     return (
+  //       <Tooltip title={data}>
+  //         <div className='ellipsis'>{data}</div>
+  //       </Tooltip>
+  //     ) 
+  //   }
+  // },
+  // {
+  //   title: '源链块高',
+  //   dataIndex: 'txheight',
+  //   key: 'txheight',
+  // },
+  // {
+  //   title: '发送者',
+  //   dataIndex: 'from',
+  //   key: 'from',
+  //   render: (data) => {
+  //     return (
+  //       <Tooltip title={data}>
+  //         <div className='ellipsis'>{data}</div>
+  //       </Tooltip>
+  //     ) 
+  //   }
+  // },
+  // {
+  //   title: 'mpc地址',
+  //   dataIndex: 'to',
+  //   key: 'to',
+  //   render: (data) => {
+  //     return (
+  //       <Tooltip title={data}>
+  //         <div className='ellipsis'>{data}</div>
+  //       </Tooltip>
+  //     ) 
+  //   }
+  // },
+  // {
+  //   title: "bind",
+  //   dataIndex: "绑定地址",
+  //   key: "绑定地址"
+  // },
+  // {
+  //   title: "发送数量",
+  //   dataIndex: "value",
+  //   key: "value",
+  //   render: () => {
+  //     return <div style={{width: 200}}></div>
+  //   }
+  // },
+  // {
+  //   title: "日志索引",
+  //   dataIndex: "logIndex",
+  //   key: "logIndex",
+  //   render: () => {
+  //     return <div style={{width: 200}}></div>
+  //   }
+  // },
+  // {
+  //   title: "源链chainid",
+  //   dataIndex: "fromChainID",
+  //   key: "fromChainID"
+  // },
+  // {
+  //   title: "目标链chainid",
+  //   dataIndex: "toChainID",
+  //   key: "toChainID"
+  // },
+  // {
+  //   title: "交换信息",
+  //   dataIndex: "swapinfo",
+  //   key: "swapinfo",
+  //   render: (data) => {
+  //     return (
+  //       <div>{JSON.stringify(data.routerSwapInfo)}</div>
+  //     )
+  //   }
+  // },
+  // {
+  //   title: "目标链交易",
+  //   dataIndex: "swaptx",
+  //   key: "swaptx",
+  //   render: (data) => {
+  //     return (
+  //       <Tooltip title={data}>
+  //         <div className='ellipsis'>{data}</div>
+  //       </Tooltip>
+  //     ) 
+  //   }
+  // },
+  // {
+  //   title: "目标链高度",
+  //   dataIndex: "swapheight",
+  //   key: "swapheight",
+  //   width: 200
+  // },
+  // {
+  //   title: "swap数量",
+  //   dataIndex: "swapvalue",
+  //   key: "swapvalue",
+  //   render: (data) => {
+  //     return (
+  //       <div>{toThousands(data)}</div>
+  //     )
+  //   }
+  // },
+  // {
+  //   title: "swapnonce",
+  //   dataIndex: "swapnonce",
+  //   key: "swapnonce"
+  // },
+  // {
+  //   title: "状态值",
+  //   dataIndex: "status",
+  //   key: "status",
+  //   render: (data) => {
+  //     return (
+  //       <div style={{width: 80}}>{(data)}</div>
+  //     )
+  //   }
+  // },
+  // {
+  //   title: "可读状态",
+  //   dataIndex: "statusmsg",
+  //   key: "statusmsg"
+  // },
+  // {
+  //   title: "交易发出时间",
+  //   dataIndex: "inittime",
+  //   key: "inittime",
+  //   render: (data) => {
+  //     return (
+  //       <div style={{width: 160}}>{jsDateFormatter(data)}</div>
+  //     ) 
+  //   }
+  // },
+  // {
+  //   title: "交易存储时间",
+  //   dataIndex: "timestamp",
+  //   key: "timestamp",
+  //   render: (data) => {
+  //     return (
+  //       <div style={{width: 160}}>{jsDateFormatter(data)}</div>
+  //     ) 
+  //   }
+  // },
+  // {
+  //   title: "swaptx确定数",
+  //   dataIndex: "confirmations",
+  //   key: "confirmations"
+  // },
 
 ];
 
@@ -199,12 +283,19 @@ let jsDateFormatter = function (timestamp) {
 }
 
 // 正则表达式
-const toThousands = (num = 0) => {
+const toThousands = (num) => {
+  if(!num){
+    return num
+  }
   return num.toString().replace(/\d+/, function(n) {
      return n.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
   });
 };
 
+function ellipsisCenter(str){
+  if(!str){return ''}
+  return str.substr(0,5) + "..." + str.substr(str.length - 4)
+}
 
 export default () => {
   const [list, setList] = useState(null);
@@ -218,19 +309,18 @@ export default () => {
     }
     setLoading(true)
     formRef.validateFields().then((values) => {
-      console.log("values ==>", values);
       const {txid, chainid} = values;
       http.http({
-        url: `${api}`,
         method: 'post',
+        url: 'http://112.74.110.203:20522/rpc',
         data: {
-          "jsonrpc": "2.0",
-          "method": "swap.GetSwapNotStable",
-          "id": 1
+          "jsonrpc":"2.0",
+          "method":"swap.GetSwapNotStable",
+          //"params":[],
+          "id":1
         }
       }).then((response) => {
         
-        console.log('response ==>', response.result.data.Router);
         let list = [];
         response.result.data.Router.map((item, index) => {
           for(let key in item){
@@ -238,11 +328,9 @@ export default () => {
           }
           return item;
         })
-        console.log("list ==>", list);
         setList(list);
       }).catch((error) => {
         //setList(error)
-        console.log('error ==>', error)
       }).finally(() => {
         setLoading(false)
       })
@@ -257,7 +345,7 @@ export default () => {
   }, [formRef]);
   return (
     <div>
-      <Card>
+      <Card hidden>
         <Form
           ref={(node) => {
             
@@ -277,7 +365,19 @@ export default () => {
 
         </Form>
       </Card>
-      <Card title="查询结果" style={{marginTop: 10}}>
+      <Card 
+        title="查询结果" 
+        style={{marginTop: 10}}
+        extra={(
+          <Button
+          onClick={getList}
+          type={"primary"}
+          style={{float: 'right', marginLeft: 10, marginTop: 4}}
+          >
+            刷新
+          </Button>
+        )}
+      >
         <Table
           bordered={true}
           rowKey={"txid"}
@@ -285,7 +385,7 @@ export default () => {
           columns={columns}
           loading={loading}
           size={"middle"}
-          scroll={{x: 1200}}
+          scroll={{x: 720}}
         />
 
       </Card>

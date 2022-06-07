@@ -118,7 +118,7 @@ export default defineConfig({
     },
     {
       path: '/',
-      redirect: '/trade/bridge',
+      redirect: '/trade/unascertained',
     },
     {
       component: '404',

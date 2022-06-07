@@ -27,7 +27,7 @@ const GlobalHeaderRight = () => {
       <Avatar 
         // menu 
       />
-      <SelectLang className={styles.action} />
+      {/* <SelectLang className={styles.action} /> */}
     </Space>
   );
 };

@@ -1,35 +1,178 @@
 import React, {useRef, useEffect, useState} from 'react';
 import http from "@/utils/http";
 import {Card, Col, Form, Input, Row, Select, Button, Table} from "antd";
-
+import {renderStatus} from '../constant' 
 const api = 'http://112.74.110.203:20522/rpc'
+
 // 0x8b97eaa1ceee9d7cb7d67e5f7da15f460233e1b13f3894d28a51e72ab840dbac
 
 const columns = [
   {
     title: '交易哈希',
-    dataIndex: 'txhash',
-    key: 'bind',
+    dataIndex: 'txid',
+    key: 'txid',
+    render: (data) => {
+      return (
+        <Tooltip title={data}>
+          <div className='ellipsis'>{data}</div>
+        </Tooltip>
+      ) 
+    }
   },
   {
-    title: '链',
-    dataIndex: 'chainid',
-    key: 'chainid',
+    title: 'router地址',
+    dataIndex: 'txto',
+    key: 'txto',
+    render: (data) => {
+      return (
+        <Tooltip title={data}>
+          <div className='ellipsis'>{data}</div>
+        </Tooltip>
+      ) 
+    }
   },
   {
-    title: '异常分类',
-    dataIndex: 'exception',
-    key: 'exception',
+    title: '源链块高',
+    dataIndex: 'txheight',
+    key: 'txheight',
   },
   {
-    title: '状态',
-    dataIndex: 'status',
-    key: 'exception',
+    title: '发送者',
+    dataIndex: 'from',
+    key: 'from',
+    render: (data) => {
+      return (
+        <Tooltip title={data}>
+          <div className='ellipsis'>{data}</div>
+        </Tooltip>
+      ) 
+    }
   },
   {
-    title: '分析',
-    dataIndex: 'analyze',
-    key: 'analyze',
+    title: 'mpc地址',
+    dataIndex: 'to',
+    key: 'to',
+    render: (data) => {
+      return (
+        <Tooltip title={data}>
+          <div className='ellipsis'>{data}</div>
+        </Tooltip>
+      ) 
+    }
+  },
+  {
+    title: "bind",
+    dataIndex: "绑定地址",
+    key: "绑定地址"
+  },
+  {
+    title: "发送数量",
+    dataIndex: "value",
+    key: "value",
+    render: () => {
+      return <div style={{width: 200}}></div>
+    }
+  },
+  {
+    title: "日志索引",
+    dataIndex: "logIndex",
+    key: "logIndex",
+    render: () => {
+      return <div style={{width: 200}}></div>
+    }
+  },
+  {
+    title: "源链chainid",
+    dataIndex: "fromChainID",
+    key: "fromChainID"
+  },
+  {
+    title: "目标链chainid",
+    dataIndex: "toChainID",
+    key: "toChainID"
+  },
+  {
+    title: "交换信息",
+    dataIndex: "swapinfo",
+    key: "swapinfo",
+    render: (data) => {
+      return (
+        <div>{JSON.stringify(data.routerSwapInfo)}</div>
+      )
+    }
+  },
+  {
+    title: "目标链交易",
+    dataIndex: "swaptx",
+    key: "swaptx",
+    render: (data) => {
+      return (
+        <Tooltip title={data}>
+          <div className='ellipsis'>{data}</div>
+        </Tooltip>
+      ) 
+    }
+  },
+  {
+    title: "目标链高度",
+    dataIndex: "swapheight",
+    key: "swapheight",
+    width: 200
+  },
+  {
+    title: "swap数量",
+    dataIndex: "swapvalue",
+    key: "swapvalue",
+    render: (data) => {
+      return (
+        <div>{toThousands(data)}</div>
+      )
+    }
+  },
+  {
+    title: "swapnonce",
+    dataIndex: "swapnonce",
+    key: "swapnonce"
+  },
+  {
+    title: "状态值",
+    dataIndex: "status",
+    key: "status",
+    render: (data) => {
+      return (
+        <div style={{width: 80}}>{renderStatus(data)}</div>
+      )
+    }
+  },
+  {
+    title: "可读状态",
+    dataIndex: "statusmsg",
+    key: "statusmsg"
+  },
+  {
+    title: "交易发出时间",
+    dataIndex: "inittime",
+    key: "inittime",
+    render: (data) => {
+      return (
+        <div style={{width: 160}}>{jsDateFormatter(data)}</div>
+      ) 
+    }
+  },
+  {
+    title: "交易存储时间",
+    dataIndex: "timestamp",
+    key: "timestamp",
+    render: (data) => {
+      return (
+        <div style={{width: 160}}>{jsDateFormatter(data)}</div>
+      ) 
+    }
+  },
+  {
+    title: "swaptx确定数",
+    dataIndex: "confirmations",
+    key: "confirmations"
   },
 
 ];
@@ -65,20 +208,6 @@ export default () => {
         setList(response.data);
         console.log('response ==>', response)
       }).catch((error) => {
-        //setList(error)
-        setList([{
-          txhash: '0x8b97eaa1ceee9d7cb7d67e5f7da15f460233e1b13f3894d28a51e72ab840dbac',
-          chainid: '1(eth)',
-          exception: '失败',
-          status: '失败',
-          analyze: '测试数据',
-        }, {
-          txhash: '0x8b97eaa1ceee9d7cb7d67e5f7da15f460233e1b13f3894d28a51e72ab840dbac',
-          chainid: '56(eth)',
-          exception: '',
-          status: '成功',
-          analyze: '测试数据',
-        }])
         console.log('error ==>', error)
       }).finally(() => {
         setLoading(false)
@@ -140,7 +269,7 @@ export default () => {
               <Select.Option value={'56'}>(56 bsc)</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             label="异常交易分类"
             name="exception"
           >
@@ -155,7 +284,7 @@ export default () => {
               <Select.Option value={'大额'}>大额</Select.Option>
               <Select.Option value={'交易错误'}>交易错误</Select.Option>
             </Select>
-          </Form.Item>
+          </Form.Item> */}
           <Button
             onClick={getList}
             type={"primary"}
@@ -174,7 +303,7 @@ export default () => {
           columns={columns}
           loading={loading}
           size={"middle"}
-          scroll={{x: 800}}
+          scroll={{x: 1300}}
         />
 
       </Card>
