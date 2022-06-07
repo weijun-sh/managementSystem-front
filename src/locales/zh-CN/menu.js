@@ -14,5 +14,6 @@ export default {
   'menu.account.logout': '退出登录',
   'menu.trade': '交易查询',
   'menu.trade.bridge': '桥查询',
-  'menu.trade.chain': '链查询'
+  'menu.trade.chain': '链查询',
+  'menu.trade.unascertained': '未确定交易',
 };

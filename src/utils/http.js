@@ -10,14 +10,18 @@ function http(options){
       timeout,
       data
     }).then((res) => {
-      if(res.code !== 0){
-        if(toastError){
-          message.error(res.msg, 1, ).then(() => {})
-        }
-        reject(res)
+
+      if(res.code === 0 || res.result.code === 0){
+        resolve(res, res.data)
         return;
       }
-      resolve(res, res.data)
+
+      if(toastError){
+        message.error(res.msg, 1, ).then(() => {})
+      }
+      reject(res)
+
+      
     }).catch((err) => {
       message.error("请求失败",1).then(() => {});
       console.log("请求失败 ==>", url, params)

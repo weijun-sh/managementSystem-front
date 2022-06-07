@@ -82,6 +82,12 @@ export default defineConfig({
           icon: 'earth'
         },
         {
+          name: 'unascertained',
+          path: '/trade/unascertained',
+          component: './trade/unascertained',
+          icon: 'earth'
+        },
+        {
           component: '404',
         },
       ]
