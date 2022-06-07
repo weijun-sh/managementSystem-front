@@ -18,13 +18,38 @@ const SwapStatus = {
   256: 'Reswapping',
 }
 
-function renderStatus(status){
+export function renderStatus(status){
   return SwapStatus[status]
 }
 
-
+export function renderSummaryNum(number, onClick){
+  if(!number){
+    return number
+  }
+  if(number > 10){
+    return (
+      <div 
+        onClick={onClick}
+        style={{background: '#d44f3f', textAlign: 'center', color: '#fff'}}
+      >
+        <strong>{number}</strong>
+      </div>
+    )
+  }
+  if(number > 0){
+    return (
+      <div
+       onClick={onClick} 
+       style={{background: '#d48940', textAlign: 'center', color: '#fff'}}
+      >
+        <strong>{number}</strong>
+      </div>
+    )
+  }
+}
 
 export default {
   renderStatus,
+  renderSummaryNum
 }
 

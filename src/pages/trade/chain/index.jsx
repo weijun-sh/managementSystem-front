@@ -1,7 +1,7 @@
 import React, {useRef, useEffect, useState} from 'react';
 import http from "@/utils/http";
 import {Card, Col, Form, Input, Row, Select, Button, Table, Tooltip} from "antd";
-import CONS from '../constant'
+import TradeUtils from '../tradeUtils'
 import Utils from '@/utils/index'
 const api = 'http://112.74.110.203:20522/rpc'
 
@@ -141,7 +141,7 @@ const columns = [
     key: "status",
     render: (data) => {
       return (
-        <div style={{width: 80}}>{CONS.renderStatus(data)}</div>
+        <div style={{width: 80}}>{TradeUtils.renderStatus(data)}</div>
       )
     }
   },

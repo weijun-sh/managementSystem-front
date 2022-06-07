@@ -88,6 +88,12 @@ export default defineConfig({
           icon: 'earth'
         },
         {
+          name: 'summary',
+          path: '/trade/summary',
+          component: './trade/summary',
+          icon: 'earth'
+        },
+        {
           component: '404',
         },
       ]

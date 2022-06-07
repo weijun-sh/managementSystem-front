@@ -16,4 +16,5 @@ export default {
   'menu.trade.bridge': '桥查询',
   'menu.trade.chain': '交易查询',
   'menu.trade.unascertained': '未确定交易',
+  'menu.trade.summary': '交易总览',
 };
