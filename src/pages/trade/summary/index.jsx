@@ -106,7 +106,11 @@ export default () => {
     }
     setLoading(true)
     formRef.validateFields().then((values) => {
-      const { bridge, status } = values;
+      let { bridge, status } = values;
+      if(!status){
+        status = []
+      }
+
       http.http({
         method: 'post',
         url: 'http://112.74.110.203:20522/rpc',
@@ -135,6 +139,7 @@ export default () => {
         console.log("list ==>", list);
         setList(list);
       }).catch((error) => {
+        console.log("summary error ==>", error)
       }).finally(() => {
         setLoading(false)
       })
