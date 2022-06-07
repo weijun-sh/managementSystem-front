@@ -11,13 +11,14 @@ function http(options){
       data
     }).then((res) => {
 
-      if(res.code === 0 || res.result.code === 0){
+      if(res.code === 0 || (res.result && res.result.code === 0)){
         resolve(res, res.data)
         return;
       }
 
       if(toastError){
-        message.error(res.msg, 1, ).then(() => {})
+        let msg = res.msg || res.error.message
+        message.error(msg, 1, ).then(() => {})
       }
       reject(res)
 

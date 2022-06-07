@@ -1,8 +1,8 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import http from "@/utils/http";
-import {Card, Col, Form, Input, Row, Select, Button, Table, Tooltip} from "antd";
+import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip } from "antd";
 import './index.less'
-import CONS from '../constant' 
+import CONS from '../constant'
 const api = 'http://112.74.110.203:20522/rpc'
 // 0x8b97eaa1ceee9d7cb7d67e5f7da15f460233e1b13f3894d28a51e72ab840dbac
 
@@ -14,7 +14,7 @@ const columns = [
     render: (data, record) => {
       return (
         <div >{record.swapinfo.routerSwapInfo.tokenID}</div>
-      ) 
+      )
     }
   },
   {
@@ -23,8 +23,8 @@ const columns = [
     key: "value",
     render: (data, record,) => {
       return (
-        <div style={{width: 290}}>
-          <div>Sent: {toThousands(record.value) }</div>
+        <div style={{ width: 290 }}>
+          <div>Sent: {toThousands(record.value)}</div>
           <div>Received: {toThousands(record.swapvalue)}</div>
         </div>
       )
@@ -36,8 +36,8 @@ const columns = [
     key: 'txid',
     render: (data, record) => {
       return (
-        <div style={{width: 90}}>
-          <div style={{color: '#6262ca'}}>{record.fromChainID}</div>
+        <div style={{ width: 90 }}>
+          <div style={{ color: '#6262ca' }}>{record.fromChainID}</div>
           <div>{ellipsisCenter(record.from)}</div>
         </div>
       )
@@ -50,8 +50,8 @@ const columns = [
     key: 'txid',
     render: (data, record) => {
       return (
-        <div style={{width: 90}}>
-          <div style={{color: '#6262ca'}}>{record.toChainID}</div>
+        <div style={{ width: 90 }}>
+          <div style={{ color: '#6262ca' }}>{record.toChainID}</div>
           <div>{ellipsisCenter(record.bind)}</div>
         </div>
       )
@@ -65,17 +65,17 @@ const columns = [
       let current = new Date().getTime();
       let pass = record.timestamp * 1000;
       let gap = ((current - pass) / 1000).toFixed(0);
-      if(pass > current){
-        console.log("current ==========>", current);
-        console.log("pass =============>", pass);
-        console.log("gap ==============>", gap);
-        console.log("current ===>", jsDateFormatter(current));
-        console.log("pass ======>", jsDateFormatter(pass));
-      }
+      // if (pass > current) {
+      //   console.log("current ==========>", current);
+      //   console.log("pass =============>", pass);
+      //   console.log("gap ==============>", gap);
+      //   console.log("current ===>", jsDateFormatter(current));
+      //   console.log("pass ======>", jsDateFormatter(pass));
+      // }
 
       return (
-        <div>
-          {gap}s ago
+        <div style={{minWidth: 120}}>
+          {transferSecond(gap)}
         </div>
       )
     }
@@ -86,7 +86,7 @@ const columns = [
     key: 'status',
     render: (data) => {
       return (
-        <div style={{width: 80}}>{CONS.renderStatus(data)}</div>
+        <div style={{ width: 80 }}>{CONS.renderStatus(data)}</div>
       )
     }
   },
@@ -260,41 +260,68 @@ const columns = [
 
 ];
 
+function transferSecond(second_time) {
+
+  if (!second_time) {
+    return second_time
+  }
+  var time = parseInt(second_time) + "s";
+  if (parseInt(second_time) > 60) {
+
+    var second = parseInt(second_time) % 60;
+    var min = parseInt(second_time / 60);
+    time = min + "m " + second + "s";
+
+    if (min > 60) {
+      min = parseInt(second_time / 60) % 60;
+      var hour = parseInt(parseInt(second_time / 60) / 60);
+      time = hour + "h " + min + "m " + second + "s";
+
+      if (hour > 24) {
+        hour = parseInt(parseInt(second_time / 60) / 60) % 24;
+        var day = parseInt(parseInt(parseInt(second_time / 60) / 60) / 24);
+        time = day + "days " + hour + "h " + min + "m " + second + "s";
+      }
+    }
+
+  }
+  return time;
+}
 let jsDateFormatter = function (timestamp) {
-  if(!timestamp){
+  if (!timestamp) {
     return '-'
   }
-  if((timestamp + "").length === 10){
+  if ((timestamp + "").length === 10) {
     timestamp = timestamp * 1000
   }
   let date = new Date(timestamp)
-  var seperator1 = "-";    
-  var seperator2 = ":";    
-  var month = date.getMonth() + 1;    
-  var strDate = date.getDate();    
-  if (month >= 1 && month <= 9) {        
-      month = "0" + month;    
-  }    
-  if (strDate >= 0 && strDate <= 9) {        
-      strDate = "0" + strDate;    
-  }    
-  var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate + " " + date.getHours() + seperator2 + date.getMinutes()+ seperator2 + date.getSeconds();    
+  var seperator1 = "-";
+  var seperator2 = ":";
+  var month = date.getMonth() + 1;
+  var strDate = date.getDate();
+  if (month >= 1 && month <= 9) {
+    month = "0" + month;
+  }
+  if (strDate >= 0 && strDate <= 9) {
+    strDate = "0" + strDate;
+  }
+  var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate + " " + date.getHours() + seperator2 + date.getMinutes() + seperator2 + date.getSeconds();
   return currentdate;
 }
 
 // 正则表达式
 const toThousands = (num) => {
-  if(!num){
+  if (!num) {
     return num
   }
-  return num.toString().replace(/\d+/, function(n) {
-     return n.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+  return num.toString().replace(/\d+/, function (n) {
+    return n.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
   });
 };
 
-function ellipsisCenter(str){
-  if(!str){return ''}
-  return str.substr(0,5) + "..." + str.substr(str.length - 4)
+function ellipsisCenter(str) {
+  if (!str) { return '' }
+  return str.substr(0, 5) + "..." + str.substr(str.length - 4)
 }
 
 export default () => {
@@ -309,21 +336,21 @@ export default () => {
     }
     setLoading(true)
     formRef.validateFields().then((values) => {
-      const {txid, chainid} = values;
+      const { txid, chainid } = values;
       http.http({
         method: 'post',
         url: 'http://112.74.110.203:20522/rpc',
         data: {
-          "jsonrpc":"2.0",
-          "method":"swap.GetSwapNotStable",
+          "jsonrpc": "2.0",
+          "method": "swap.GetSwapNotStable",
           //"params":[],
-          "id":1
+          "id": 1
         }
       }).then((response) => {
-        
+
         let list = [];
         response.result.data.Router.map((item, index) => {
-          for(let key in item){
+          for (let key in item) {
             list = list.concat(item[key])
           }
           return item;
@@ -341,14 +368,14 @@ export default () => {
   }
 
   useEffect(() => {
-      getList();   
+    getList();
   }, [formRef]);
   return (
     <div>
       <Card hidden>
         <Form
           ref={(node) => {
-            
+
 
             setFormRef(node);
 
@@ -358,21 +385,21 @@ export default () => {
           <Button
             onClick={getList}
             type={"primary"}
-            style={{float: 'right', marginLeft: 10, marginTop: 4}}
+            style={{ float: 'right', marginLeft: 10, marginTop: 4 }}
           >
             刷新
           </Button>
 
         </Form>
       </Card>
-      <Card 
-        title="查询结果" 
-        style={{marginTop: 10}}
+      <Card
+        title="查询结果"
+        style={{ marginTop: 10 }}
         extra={(
           <Button
-          onClick={getList}
-          type={"primary"}
-          style={{float: 'right', marginLeft: 10, marginTop: 4}}
+            onClick={getList}
+            type={"primary"}
+            style={{ float: 'right', marginLeft: 10, marginTop: 4 }}
           >
             刷新
           </Button>
@@ -385,7 +412,7 @@ export default () => {
           columns={columns}
           loading={loading}
           size={"middle"}
-          scroll={{x: 720}}
+          scroll={{ x: 740 }}
         />
 
       </Card>
