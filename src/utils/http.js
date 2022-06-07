@@ -2,7 +2,7 @@ import request from 'umi-request';
 import {message} from 'antd'
 
 function http(options){
-  const {method, params, url, toastError = true, timeout = 5000, data} = options;
+  const {method, params, url, toastError = true, timeout = 20000, data} = options;
   return new Promise((resolve, reject) => {
     request(url, {
       method,

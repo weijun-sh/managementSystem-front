@@ -68,13 +68,17 @@ const columns = [
     title: "发送数量",
     dataIndex: "value",
     key: "value",
-    width: 200,
+    render: () => {
+      return <div style={{width: 200}}></div>
+    }
   },
   {
     title: "日志索引",
     dataIndex: "logIndex",
     key: "logIndex",
-    width: 200,
+    render: () => {
+      return <div style={{width: 200}}></div>
+    }
   },
   {
     title: "源链chainid",
@@ -92,7 +96,7 @@ const columns = [
     key: "swapinfo",
     render: (data) => {
       return (
-        <div>{JSON.stringify(data)}</div>
+        <div>{JSON.stringify(data.routerSwapInfo)}</div>
       )
     }
   },
@@ -111,12 +115,18 @@ const columns = [
   {
     title: "目标链高度",
     dataIndex: "swapheight",
-    key: "swapheight"
+    key: "swapheight",
+    width: 200
   },
   {
     title: "swap数量",
     dataIndex: "swapvalue",
-    key: "swapvalue"
+    key: "swapvalue",
+    render: (data) => {
+      return (
+        <div>{toThousands(data)}</div>
+      )
+    }
   },
   {
     title: "swapnonce",
@@ -126,7 +136,12 @@ const columns = [
   {
     title: "状态值",
     dataIndex: "status",
-    key: "status"
+    key: "status",
+    render: (data) => {
+      return (
+        <div style={{width: 80}}>{data}</div>
+      )
+    }
   },
   {
     title: "可读状态",
@@ -139,7 +154,7 @@ const columns = [
     key: "inittime",
     render: (data) => {
       return (
-        <div>{jsDateFormatter(data)}</div>
+        <div style={{width: 160}}>{jsDateFormatter(data)}</div>
       ) 
     }
   },
@@ -149,7 +164,7 @@ const columns = [
     key: "timestamp",
     render: (data) => {
       return (
-        <div>{jsDateFormatter(data)}</div>
+        <div style={{width: 160}}>{jsDateFormatter(data)}</div>
       ) 
     }
   },
@@ -182,6 +197,14 @@ let jsDateFormatter = function (timestamp) {
   var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate + " " + date.getHours() + seperator2 + date.getMinutes()+ seperator2 + date.getSeconds();    
   return currentdate;
 }
+
+// 正则表达式
+const toThousands = (num = 0) => {
+  return num.toString().replace(/\d+/, function(n) {
+     return n.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+  });
+};
+
 
 export default () => {
   const [list, setList] = useState(null);
@@ -228,15 +251,19 @@ export default () => {
     })
 
   }
+
   useEffect(() => {
-    getList();
-  }, [])
+      getList();   
+  }, [formRef]);
   return (
     <div>
       <Card>
         <Form
           ref={(node) => {
-            setFormRef(node)
+            
+
+            setFormRef(node);
+
           }}
           layout="inline"
         >
