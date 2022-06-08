@@ -75,16 +75,16 @@ export default defineConfig({
           icon: 'earth'
         },
         {
-          name: 'unascertained',
-          path: '/trade/unascertained',
-          component: './trade/unascertained',
-          icon: 'earth'
-        },
-
-        {
           name: 'history',
           path: '/trade/history',
           component: './trade/history',
+          icon: 'earth',
+          hideInMenu: true
+        },
+        {
+          name: 'unascertained',
+          path: '/trade/unascertained',
+          component: './trade/unascertained',
           icon: 'earth'
         },
         {
@@ -124,7 +124,7 @@ export default defineConfig({
     },
     {
       path: '/',
-      redirect: '/trade/unascertained',
+      redirect: '/trade/summary',
     },
     {
       component: '404',

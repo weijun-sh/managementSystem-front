@@ -1,24 +1,27 @@
 import React, { useRef, useEffect, useState } from 'react';
 import http from "@/utils/http";
-import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip } from "antd";
+import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip, message } from "antd";
 import './index.less'
 import TradeUtils from '../tradeUtils'
+import { history } from 'umi';
 
-
-export default () => {
+export default (props) => {
   const [list, setList] = useState(null);
   const [formRef, setFormRef] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [bridgeParams, setBridgeParams] = useState(null);
 
 
   function getList() {
-    if (!formRef) {
+    if (!formRef || !bridgeParams) {
       return;
     }
     setLoading(true)
     formRef.validateFields().then((values) => {
       let { status, bridge } = values;
-      status ||= []
+      status ||= [];
+
+      //status '' 为所有， bridge 从路由中获取
       http.http({
         method: 'post',
         url: 'http://112.74.110.203:20522/rpc',
@@ -26,8 +29,8 @@ export default () => {
           "jsonrpc": "2.0",
           "method": "swap.GetSwapHistory",
           "params": [{
-            "bridge": bridge,
-            "status": status.join(",")
+            "bridge": bridgeParams,
+            "status": ""
           }],
           "id": 1
         }
@@ -54,6 +57,19 @@ export default () => {
   useEffect(() => {
     getList();
   }, [formRef]);
+
+  useEffect(() => {
+    let bridge = props.location.query.bridge;
+    if(!bridge){
+      message.error("请选择要查看的桥/路由, 即将跳转到总览", 3, () => {
+        history.push('/trade/summary')
+      })
+      return;
+    }
+    
+    setBridgeParams(bridge);
+  }, [])
+
   return (
     <div>
       <Card hidden={true}>
@@ -92,7 +108,7 @@ export default () => {
         </Form>
       </Card>
       <Card
-        title="查询结果"
+        title={`桥交易信息: ${bridgeParams}`}
         style={{ marginTop: 10 }}
         extra={(
           <Button

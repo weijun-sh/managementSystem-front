@@ -23,8 +23,8 @@ const columns = [
     title: "Confirm(0)",
     dataIndex: "0",
     key: "0",
-    render: (data) => {
-      return TradeUtils.renderSummaryNum(data, () => {
+    render: (data, record) => {
+      return TradeUtils.renderSummaryNum(data, record,() => {
 
       })
     }
@@ -33,8 +33,8 @@ const columns = [
     title: "Sign(8)",
     dataIndex: '8',
     key: '8',
-    render: (data) => {
-      return TradeUtils.renderSummaryNum(data, () => {
+    render: (data, record) => {
+      return TradeUtils.renderSummaryNum(data,record, () => {
 
       })
     }
@@ -44,8 +44,8 @@ const columns = [
     title: "Routing(9)",
     dataIndex: '9',
     key: '9',
-    render: (data) => {
-      return TradeUtils.renderSummaryNum(data, () => {
+    render: (data, record) => {
+      return TradeUtils.renderSummaryNum(data, record, () => {
 
       })
     }
@@ -54,8 +54,8 @@ const columns = [
     title: "Success(10)",
     dataIndex: '10',
     key: '10',
-    render: (data) => {
-      return TradeUtils.renderSummaryNum(data, () => {
+    render: (data, record) => {
+      return TradeUtils.renderSummaryNum(data, record, () => {
 
       })
     }
@@ -64,8 +64,8 @@ const columns = [
     title: "Big Amount(12)",
     dataIndex: "12",
     key: '12',
-    render: (data) => {
-      return TradeUtils.renderSummaryNum(data, () => {
+    render: (data, record) => {
+      return TradeUtils.renderSummaryNum(data, record, () => {
 
       })
     }
@@ -74,8 +74,8 @@ const columns = [
     title: "Error(14)",
     dataIndex: "14",
     key: '14',
-    render: (data) => {
-      return TradeUtils.renderSummaryNum(data, () => {
+    render: (data, record) => {
+      return TradeUtils.renderSummaryNum(data, record, () => {
 
       })
     }
@@ -85,8 +85,8 @@ const columns = [
     title: "ToContract(17)",
     dataIndex: "17",
     key: '17',
-    render: (data) => {
-      return TradeUtils.renderSummaryNum(data, () => {
+    render: (data, record) => {
+      return TradeUtils.renderSummaryNum(data,record, () => {
 
       })
     }

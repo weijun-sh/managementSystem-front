@@ -1,5 +1,6 @@
 import Utils from '@/utils/index'
-
+import { toThousands } from '@/utils/math';
+import { Link } from 'umi';
 const SwapStatus = {
   0: 'TxNotStable',
   1: 'TxVerifyFailed',
@@ -60,35 +61,41 @@ export function renderStatus(status) {
 }
 
 export function renderChainID(id) {
-  if(!id){
+  if (!id) {
     return id;
   }
   return ChainID[id]
 }
 
+function minifySent(num) {
+  if (!num) {
+    return num
+  }
+  let base = Math.pow(10, 18);
+  if (num < base) {
+    return toThousands(num)
+  }
+  return (num / base).toFixed(0);
 
-export function renderSummaryNum(number, onClick) {
+}
+
+
+export function renderSummaryNum(number, record, onClick) {
   if (!number) {
     return number
   }
   if (number > 10) {
     return (
-      <div
-        onClick={onClick}
-        className="summary-number-red"
-      >
+      <Link className="summary-number-red" to={`/trade/history?bridge=${record.bridge}`}>
         <strong>{number}</strong>
-      </div>
+      </Link>
     )
   }
   if (number > 0) {
     return (
-      <div
-        onClick={onClick}
-        className="summary-number-yellow"
-      >
+      <Link className="summary-number-yellow" to={`/trade/history?bridge=${record.bridge}`}>
         <strong>{number}</strong>
-      </div>
+      </Link>
     )
   }
 }
@@ -120,9 +127,9 @@ export const HistoryColumns = [
     key: "value",
     render: (data, record,) => {
       return (
-        <div style={{ width: 290 }}>
-          <div>Sent: {Utils.Math.toThousands(record.value)}</div>
-          <div>Received: {Utils.Math.toThousands(record.swapvalue)}</div>
+        <div>
+          <div>Sent: {minifySent(record.value)}</div>
+          <div>Received: {minifySent(record.swapvalue)}</div>
         </div>
       )
     }
@@ -133,7 +140,7 @@ export const HistoryColumns = [
     key: 'txid',
     render: (data, record) => {
       return (
-        <div style={{ width: 90 }}>
+        <div>
           <div style={{ color: '#6262ca' }}>{renderChainID(record.fromChainID)}</div>
           <div>{Utils.Layout.ellipsisCenter(record.from)}</div>
         </div>
@@ -147,7 +154,7 @@ export const HistoryColumns = [
     key: 'txid',
     render: (data, record) => {
       return (
-        <div style={{ width: 90 }}>
+        <div>
           <div style={{ color: '#6262ca' }}>{renderChainID(record.toChainID)}</div>
           <div>{Utils.Layout.ellipsisCenter(record.bind)}</div>
         </div>
@@ -164,7 +171,7 @@ export const HistoryColumns = [
       let gap = ((current - pass) / 1000).toFixed(0);
 
       return (
-        <div style={{ minWidth: 120 }}>
+        <div>
           {Utils.Time.transferSecond(gap)}
         </div>
       )
@@ -182,10 +189,10 @@ export const HistoryColumns = [
   },
 ];
 
-export function getUnascertainedColumns(){
+export function getUnascertainedColumns() {
   return HistoryColumns;
 }
-export function getHistoryColumns(){
+export function getHistoryColumns() {
   return HistoryColumns;
 }
 
