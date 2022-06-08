@@ -3,8 +3,7 @@ import http from "@/utils/http";
 import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip } from "antd";
 import './index.less'
 import TradeUtils from '../tradeUtils'
-
-const api = 'http://112.74.110.203:20522/rpc'
+import '../index.less';
 
 const columns = [
   {
@@ -26,7 +25,7 @@ const columns = [
     key: "0",
     render: (data) => {
       return TradeUtils.renderSummaryNum(data, () => {
-        
+
       })
     }
   },
@@ -36,7 +35,7 @@ const columns = [
     key: '8',
     render: (data) => {
       return TradeUtils.renderSummaryNum(data, () => {
-        
+
       })
     }
   },
@@ -47,7 +46,7 @@ const columns = [
     key: '9',
     render: (data) => {
       return TradeUtils.renderSummaryNum(data, () => {
-        
+
       })
     }
   },
@@ -57,7 +56,7 @@ const columns = [
     key: '10',
     render: (data) => {
       return TradeUtils.renderSummaryNum(data, () => {
-        
+
       })
     }
   },
@@ -67,7 +66,7 @@ const columns = [
     key: '12',
     render: (data) => {
       return TradeUtils.renderSummaryNum(data, () => {
-        
+
       })
     }
   },
@@ -77,18 +76,18 @@ const columns = [
     key: '14',
     render: (data) => {
       return TradeUtils.renderSummaryNum(data, () => {
-        
+
       })
     }
   },
-  
+
   {
     title: "ToContract(17)",
     dataIndex: "17",
     key: '17',
     render: (data) => {
       return TradeUtils.renderSummaryNum(data, () => {
-        
+
       })
     }
   },
@@ -99,7 +98,6 @@ export default () => {
   const [formRef, setFormRef] = useState(null);
   const [loading, setLoading] = useState(false);
 
-
   function getList() {
     if (!formRef) {
       return;
@@ -107,30 +105,28 @@ export default () => {
     setLoading(true)
     formRef.validateFields().then((values) => {
       let { bridge, status } = values;
-      if(!status){
-        status = []
-      }
+      status ||= []
 
       http.http({
         method: 'post',
         url: 'http://112.74.110.203:20522/rpc',
         data: {
-          "jsonrpc":"2.0",
-          "method":"swap.GetStatusInfo",
-          "params":[{
+          "jsonrpc": "2.0",
+          "method": "swap.GetStatusInfo",
+          "params": [{
             "bridge": bridge,
             "status": status.join(",")
           }],
-          "id":1
+          "id": 1
         }
       }).then((response) => {
         let list = [];
         const data = response.result.data;
         let index = 1;
-        for(let key in data){
+        for (let key in data) {
 
-          let item = {0:0, 8: 0, 9: 0, 10:0, 12:0, 14: 0, 17:0};
-          item = {...item, ...data[key]} ;
+          let item = { 0: 0, 8: 0, 9: 0, 10: 0, 12: 0, 14: 0, 17: 0 };
+          item = { ...item, ...data[key] };
           item.bridge = key;
           item.index = index++
 
@@ -143,7 +139,8 @@ export default () => {
       }).finally(() => {
         setLoading(false)
       })
-    }).catch(() => {
+    }).catch((err) => {
+      console.log("err ==>", err)
       setLoading(false)
     })
 
@@ -154,29 +151,30 @@ export default () => {
   }, [formRef]);
   return (
     <div>
-      <Card>
+      <Card hidden={true}>
         <Form
           ref={(node) => {
             setFormRef(node);
           }}
           layout="inline"
+
         >
           <Form.Item initialValue={"all"} name="bridge" label="桥/路由">
-            <Input allowClear={true}  placeholder='请输入，all 表示所有'/>
+            <Input allowClear={true} placeholder='请输入，all 表示所有' />
           </Form.Item>
           <Form.Item name="status" label="状态">
             <Select
-             mode="multiple" 
-             allowClear={true} 
-             placeholder="请选择状态"
-             style={{minWidth: 160}}
+              mode="multiple"
+              allowClear={true}
+              placeholder="请选择状态"
+              style={{ minWidth: 160 }}
             >
-             <Select.Option value="0">0</Select.Option> 
-             <Select.Option value="8">8</Select.Option> 
-             <Select.Option value="9">9</Select.Option> 
-             <Select.Option value="12">12</Select.Option> 
-             <Select.Option value="14">14</Select.Option> 
-             <Select.Option value="17">17</Select.Option> 
+              <Select.Option value="0">0</Select.Option>
+              <Select.Option value="8">8</Select.Option>
+              <Select.Option value="9">9</Select.Option>
+              <Select.Option value="12">12</Select.Option>
+              <Select.Option value="14">14</Select.Option>
+              <Select.Option value="17">17</Select.Option>
             </Select>
           </Form.Item>
           <Button
@@ -192,6 +190,15 @@ export default () => {
       <Card
         title="查询结果"
         style={{ marginTop: 10 }}
+        extra={(
+          <Button
+            onClick={getList}
+            type={"primary"}
+            style={{ float: 'right', marginLeft: 10, marginTop: 4 }}
+          >
+            刷新
+          </Button>
+        )}
       >
         <Table
           bordered={true}

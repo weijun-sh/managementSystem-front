@@ -69,16 +69,9 @@ export default defineConfig({
 
       routes: [
         {
-          name: 'bridge',
-          path: '/trade/bridge',
-          component: './trade/bridge',
-          icon: 'earth',
-          hideInMenu: true,
-        },
-        {
-          name: 'chain',
-          path: '/trade/chain',
-          component: './trade/chain',
+          name: 'summary',
+          path: '/trade/summary',
+          component: './trade/summary',
           icon: 'earth'
         },
         {
@@ -87,10 +80,17 @@ export default defineConfig({
           component: './trade/unascertained',
           icon: 'earth'
         },
+
         {
-          name: 'summary',
-          path: '/trade/summary',
-          component: './trade/summary',
+          name: 'history',
+          path: '/trade/history',
+          component: './trade/history',
+          icon: 'earth'
+        },
+        {
+          name: 'chain',
+          path: '/trade/chain',
+          component: './trade/chain',
           icon: 'earth'
         },
         {

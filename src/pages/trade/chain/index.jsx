@@ -5,9 +5,8 @@ import TradeUtils from '../tradeUtils'
 import Utils from '@/utils/index'
 const api = 'http://112.74.110.203:20522/rpc'
 
-// 0x8b97eaa1ceee9d7cb7d67e5f7da15f460233e1b13f3894d28a51e72ab840dbac
-
 const columns = [
+  TradeUtils.IndexColumn,
   {
     title: '交易哈希',
     dataIndex: 'txid',
@@ -261,8 +260,12 @@ export default () => {
               allowClear={true}
               placeholder="请选择链"
             >
-              <Select.Option value={'1'}>1 (eth)</Select.Option>
-              <Select.Option value={'56'}>56 (bsc)</Select.Option>
+              <Select.Option value={'1'}>
+                1 ({TradeUtils.renderChainID(1)})
+              </Select.Option>
+              <Select.Option value={'56'}>
+                56 ({TradeUtils.renderChainID(56)})
+              </Select.Option>
             </Select>
           </Form.Item>
           <Button
