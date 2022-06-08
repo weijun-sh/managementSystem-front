@@ -165,6 +165,7 @@ export const HistoryColumns = [
     title: "耗时",
     dataIndex: 'timestamp',
     key: 'timestamp',
+    sorter: (a, b) => b.timestamp - a.timestamp ,
     render: (data, record) => {
       let current = new Date().getTime();
       let pass = record.timestamp * 1000;

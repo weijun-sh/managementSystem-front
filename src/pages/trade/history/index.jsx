@@ -11,7 +11,6 @@ export default (props) => {
   const [loading, setLoading] = useState(false);
   const [bridgeParams, setBridgeParams] = useState(null);
 
-
   function getList() {
     if (!formRef || !bridgeParams) {
       return;
@@ -37,12 +36,14 @@ export default (props) => {
       }).then((response) => {
 
         let list = [];
-        response.result.data.Router.map((item, index) => {
-          for (let key in item) {
-            list = list.concat(item[key])
-          }
-          return item;
-        })
+        for(let outKey in response.result.data){
+          response.result.data[outKey].map((item, index) => {
+            for (let key in item) {
+              list = list.concat(item[key])
+            }
+            return item;
+          })
+        }
         setList(list);
       }).catch((error) => {
       }).finally(() => {
