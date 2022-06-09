@@ -116,7 +116,7 @@ export default (props) => {
       >
         <Table
           bordered={true}
-          rowKey={"txid"}
+          rowKey={"timestamp"}
           dataSource={list}
           columns={TradeUtils.getHistoryColumns()}
           loading={loading}

@@ -94,7 +94,7 @@ export default () => {
       <Card title="查询结果" style={{ marginTop: 10 }}>
         <Table
           bordered={true}
-          rowKey={"txid"}
+          rowKey={"timestamp"}
           dataSource={list}
           columns={TradeUtils.getUnascertainedColumns()}
           loading={loading}

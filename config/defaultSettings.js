@@ -11,5 +11,6 @@ const Settings = {
   pwa: false,
   logo: 'https://multichain.org/favicon.ico',
   iconfontUrl: '//at.alicdn.com/t/font_3417155_ews4347m9h.js',
+  splitMenus: true, 
 };
 export default Settings;
