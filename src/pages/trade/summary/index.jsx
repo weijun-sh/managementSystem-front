@@ -1,9 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import http from "@/utils/http";
 import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip } from "antd";
 import './index.less'
 import TradeUtils from '../tradeUtils'
+import Services from '../services/index'
 import '../index.less';
+
+
+function renderSummaryNum(number, record, onClick) {
+  if (!number) {
+    return number
+  }
+  if (number > 10) {
+    return (
+      <Link className="summary-number-red" to={`/trade/history?bridge=${record.bridge}`}>
+        <strong>{number}</strong>
+      </Link>
+    )
+  }
+  if (number > 0) {
+    return (
+      <Link className="summary-number-yellow" to={`/trade/history?bridge=${record.bridge}`}>
+        <strong>{number}</strong>
+      </Link>
+    )
+  }
+}
+
 
 const columns = [
   {
@@ -24,7 +46,7 @@ const columns = [
     dataIndex: "0",
     key: "0",
     render: (data, record) => {
-      return TradeUtils.renderSummaryNum(data, record,() => {
+      return renderSummaryNum(data, record, () => {
 
       })
     }
@@ -34,7 +56,7 @@ const columns = [
     dataIndex: '8',
     key: '8',
     render: (data, record) => {
-      return TradeUtils.renderSummaryNum(data,record, () => {
+      return renderSummaryNum(data, record, () => {
 
       })
     }
@@ -45,7 +67,7 @@ const columns = [
     dataIndex: '9',
     key: '9',
     render: (data, record) => {
-      return TradeUtils.renderSummaryNum(data, record, () => {
+      return renderSummaryNum(data, record, () => {
 
       })
     }
@@ -55,7 +77,7 @@ const columns = [
     dataIndex: '10',
     key: '10',
     render: (data, record) => {
-      return TradeUtils.renderSummaryNum(data, record, () => {
+      return renderSummaryNum(data, record, () => {
 
       })
     }
@@ -65,7 +87,7 @@ const columns = [
     dataIndex: "12",
     key: '12',
     render: (data, record) => {
-      return TradeUtils.renderSummaryNum(data, record, () => {
+      return renderSummaryNum(data, record, () => {
 
       })
     }
@@ -75,7 +97,7 @@ const columns = [
     dataIndex: "14",
     key: '14',
     render: (data, record) => {
-      return TradeUtils.renderSummaryNum(data, record, () => {
+      return renderSummaryNum(data, record, () => {
 
       })
     }
@@ -86,7 +108,7 @@ const columns = [
     dataIndex: "17",
     key: '17',
     render: (data, record) => {
-      return TradeUtils.renderSummaryNum(data,record, () => {
+      return renderSummaryNum(data, record, () => {
 
       })
     }
@@ -107,18 +129,9 @@ export default () => {
       let { bridge, status } = values;
       status ||= []
 
-      http.http({
-        method: 'post',
-        url: 'http://112.74.110.203:20522/rpc',
-        data: {
-          "jsonrpc": "2.0",
-          "method": "swap.GetStatusInfo",
-          "params": [{
-            "bridge": bridge,
-            "status": status.join(",")
-          }],
-          "id": 1
-        }
+      Services.getStatusInfo({
+        bridge,
+        status,
       }).then((response) => {
         let list = [];
         const data = response.result.data;

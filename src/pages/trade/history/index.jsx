@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
-import http from "@/utils/http";
 import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip, message } from "antd";
 import './index.less'
-import TradeUtils from '../tradeUtils'
+import TradeUtils from '../tradeUtils';
+import Services from '../services/index'
 import { history } from 'umi';
 
 export default (props) => {
@@ -21,22 +21,11 @@ export default (props) => {
       status ||= [];
 
       //status '' 为所有， bridge 从路由中获取
-      http.http({
-        method: 'post',
-        url: 'http://112.74.110.203:20522/rpc',
-        data: {
-          "jsonrpc": "2.0",
-          "method": "swap.GetSwapHistory",
-          "params": [{
-            "bridge": bridgeParams,
-            "status": ""
-          }],
-          "id": 1
-        }
+      Services.getSwapHistory({
+        "bridge": bridgeParams,
       }).then((response) => {
-
         let list = [];
-        for(let outKey in response.result.data){
+        for (let outKey in response.result.data) {
           response.result.data[outKey].map((item, index) => {
             for (let key in item) {
               list = list.concat(item[key])
@@ -46,10 +35,14 @@ export default (props) => {
         }
         setList(list);
       }).catch((error) => {
+        console.log("error ==>", error);
+        debugger
       }).finally(() => {
         setLoading(false)
       })
-    }).catch(() => {
+    }).catch((error) => {
+      debugger
+      console.log("error ==>", error);
       setLoading(false)
     })
 
@@ -61,13 +54,13 @@ export default (props) => {
 
   useEffect(() => {
     let bridge = props.location.query.bridge;
-    if(!bridge){
+    if (!bridge) {
       message.error("请选择要查看的桥/路由, 即将跳转到总览", 3, () => {
         history.push('/trade/summary')
       })
       return;
     }
-    
+
     setBridgeParams(bridge);
   }, [])
 

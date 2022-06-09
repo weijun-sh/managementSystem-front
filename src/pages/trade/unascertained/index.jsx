@@ -1,15 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
-import http from "@/utils/http";
 import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip } from "antd";
 import './index.less'
 import TradeUtils from '../tradeUtils'
-
+import Services from '../services/index'
 
 export default () => {
   const [list, setList] = useState(null);
   const [formRef, setFormRef] = useState(null);
   const [loading, setLoading] = useState(false);
-
 
   function getList() {
     if (!formRef) {
@@ -17,15 +15,7 @@ export default () => {
     }
     setLoading(true)
     formRef.validateFields().then((values) => {
-      const { txid, chainid } = values;
-      http.http({
-        method: 'post',
-        url: 'http://112.74.110.203:20522/rpc',
-        data: {
-          "jsonrpc": "2.0",
-          "method": "swap.GetSwapNotStable",
-          "id": 1
-        }
+      Services.getSwapNotStable({
       }).then((response) => {
 
         let list = [];
@@ -43,12 +33,12 @@ export default () => {
     }).catch(() => {
       setLoading(false)
     })
-
   }
 
   useEffect(() => {
     getList();
   }, [formRef]);
+  
   return (
     <div>
       <Card hidden>
@@ -83,14 +73,13 @@ export default () => {
       >
         <Table
           bordered={true}
-          rowKey={"txid"}
+          rowKey={"timestamp"}
           dataSource={list}
           columns={TradeUtils.getUnascertainedColumns()}
           loading={loading}
           size={"middle"}
           scroll={{ x: 740 }}
         />
-
       </Card>
     </div>
   )
