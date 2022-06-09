@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip } from "antd";
 import './index.less'
-import TradeUtils from '../tradeUtils'
 import Services from '../services/index'
 import '../index.less';
-
+import { Link } from 'umi';
 
 function renderSummaryNum(number, record, onClick) {
   if (!number) {

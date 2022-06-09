@@ -1,6 +1,5 @@
 import Utils from '@/utils/index'
 import { toThousands } from '@/utils/math';
-import { Link } from 'umi';
 import CONST from './constant'
 
 export function renderStatus(status) {
@@ -30,25 +29,6 @@ function minifySent(num) {
 }
 
 
-export function renderSummaryNum(number, record, onClick) {
-  if (!number) {
-    return number
-  }
-  if (number > 10) {
-    return (
-      <Link className="summary-number-red" to={`/trade/history?bridge=${record.bridge}`}>
-        <strong>{number}</strong>
-      </Link>
-    )
-  }
-  if (number > 0) {
-    return (
-      <Link className="summary-number-yellow" to={`/trade/history?bridge=${record.bridge}`}>
-        <strong>{number}</strong>
-      </Link>
-    )
-  }
-}
 
 export const IndexColumn = {
   title: '#',
@@ -151,7 +131,6 @@ export function getHistoryColumns() {
 export default {
   renderChainID,
   renderStatus,
-  renderSummaryNum,
   getUnascertainedColumns,
   getHistoryColumns,
   IndexColumn,
