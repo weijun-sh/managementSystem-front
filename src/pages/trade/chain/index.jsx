@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip } from "antd";
 import TradeUtils from '../tradeUtils'
-import Services from '../services/index'
+import Services from '../services/index';
+import SearchTable from '@/multiComponents/table/SearchTable';
 
 export default () => {
   const [list, setList] = useState(null);
@@ -33,6 +34,82 @@ export default () => {
   }
   return (
     <div>
+      <SearchTable
+        columns={[
+          {
+            title: '币种',
+            dataIndex: 'swapinfo',
+            key: 'swapinfo',
+            render: (data, record) => {
+              return (
+                <div >{record.swapinfo.routerSwapInfo.tokenID}</div>
+              )
+            }
+          },
+          {
+            title: '交易哈希',
+            dataIndex: 'txhash',
+            key: 'txhash',
+            search: {
+              label:"交易哈希",
+              name:"txid",
+              type: 'input',
+              initialValue:'34',
+              rules:[
+                  {
+                      required: true,
+                  }
+              ]
+            },
+            render: (data, record) => {
+              return (
+                <div >{record.swapinfo.routerSwapInfo.tokenID}</div>
+              )
+            }
+          },
+          {
+            title: '链',
+            dataIndex: 'chainid',
+            key: 'chainid',
+            search: {
+              label:"交易哈希",
+              name:"txid",
+              type: 'select',
+              initialValue:'345',
+              rules:[
+                  {
+                      required: true,
+                  }
+              ]
+            },
+            
+            render: (data, record) => {
+              return (
+                <div >{record.swapinfo.routerSwapInfo.tokenID}</div>
+              )
+            }
+          },
+          {
+            title: '是否完成',
+            dataIndex: 'finish',
+            key: 'finish',
+            search: {
+              label:"交易哈希",
+              name:"txid",
+              type: 'checkbox',
+              rules:[
+                  {
+                      required: true,
+                  }
+              ]
+            },
+          }
+        ]}
+        getList={() => {
+
+        }}
+      />
+
       <Card>
         <Form
           ref={(node) => {
