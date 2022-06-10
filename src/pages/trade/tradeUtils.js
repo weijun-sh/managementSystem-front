@@ -1,7 +1,7 @@
 import Utils from '@/utils/index'
 import { toThousands } from '@/utils/math';
 import CONST from './constant'
-
+import _ from 'lodash'
 export function renderStatus(status) {
   if (!status) {
     return status;
@@ -67,7 +67,6 @@ export const HistoryColumns = [
       )
     }
   },
-  ,
   {
     title: "接收",
     dataIndex: 'txid',
@@ -111,10 +110,10 @@ export const HistoryColumns = [
 ];
 
 export function getUnascertainedColumns() {
-  return HistoryColumns;
+  return _.cloneDeep( HistoryColumns);
 }
 export function getHistoryColumns() {
-  return HistoryColumns;
+  return _.cloneDeep(HistoryColumns);
 }
 
 

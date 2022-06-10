@@ -1,7 +1,7 @@
 import { Card, Table, Form, Input, Select, Checkbox, Button } from 'antd';
 import React from 'react';
 import WrapedCheckBox from '../checkbox/WrapedCheckBox';
-
+import _ from 'lodash'
 
 export default class SearchTable extends React.Component {
     constructor(props) {
@@ -9,14 +9,13 @@ export default class SearchTable extends React.Component {
         this.state = {
             list: null,
             loading: false,
-            columnsData: this.filterColumns() || [],
+            columnsData: _.cloneDeep(this.filterColumns() || []),
             formInfo: {
                 searchList: []
             }
         }
         this.formRef = null;
         this.searchList = this.filterSearch(props);
-        console.log("props ==>", props)
     }
 
     filterSearch() {
@@ -32,7 +31,7 @@ export default class SearchTable extends React.Component {
 
     filterColumns = () => {
         const { columns } = this.props;
-
+        console.log("length ==>", columns.length)
         columns.unshift({
             title: '#',
             dataIndex: 'index',
@@ -181,6 +180,7 @@ export default class SearchTable extends React.Component {
                     </Form>
                 </Card>
                 <Card
+                    title={this.searchList.length === 0 && "查询结果"}
                     style={{ marginTop: 10 }}
                     extra={this.searchList.length === 0 && (
                         <Button

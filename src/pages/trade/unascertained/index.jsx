@@ -4,7 +4,7 @@ import TradeUtils from '../tradeUtils'
 import Services from '../services/index'
 import SearchTable from '@/multiComponents/table/SearchTable';
 const columns = TradeUtils.getUnascertainedColumns()
-
+import _ from 'lodash'
 export default () => {
   const [tableRef, setTableRef] = useState(null);
 
@@ -25,7 +25,7 @@ export default () => {
       })
     })
   }
-
+  console.log("uncertained length ==>", columns.length)
   return (
     <div className='uncertained-container'>
       <SearchTable
@@ -36,7 +36,7 @@ export default () => {
           setTableRef(node);
           node.fetchData();
         }}
-        columns={columns}
+        columns={_.cloneDeep(columns)}
         getList={getList}
       />
     </div>

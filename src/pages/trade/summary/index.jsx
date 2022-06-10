@@ -4,7 +4,7 @@ import Services from '../services/index'
 import '../index.less';
 import { Link } from 'umi';
 import SearchTable from '@/multiComponents/table/SearchTable';
-
+import _ from 'lodash'
 function renderSummaryNum(number, record, onClick) {
   if (!number) {
     return number
@@ -137,7 +137,7 @@ export default () => {
           setTableRef(node);
           node.fetchData();
         }}
-        columns={columns}
+        columns={_.cloneDeep(columns)}
         getList={getList}
       />
     </div>

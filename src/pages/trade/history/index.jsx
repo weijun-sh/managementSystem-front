@@ -5,7 +5,7 @@ import TradeUtils from '../tradeUtils';
 import Services from '../services/index'
 import { history } from 'umi';
 import SearchTable from '@/multiComponents/table/SearchTable';
-
+import _ from 'lodash'
 function getColumns() {
   let columns = TradeUtils.getUnascertainedColumns();
   return columns;
@@ -58,7 +58,7 @@ export default (props) => {
           setTableRef(node);
           node.fetchData();
         }}
-        columns={columns}
+        columns={_.cloneDeep(columns)}
         getList={getList}
       />
     </div>
