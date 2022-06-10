@@ -1,28 +1,35 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip, message } from "antd";
+import React, { useEffect, useState } from 'react';
+import { message } from "antd";
 import './index.less'
 import TradeUtils from '../tradeUtils';
 import Services from '../services/index'
 import { history } from 'umi';
+import SearchTable from '@/multiComponents/table/SearchTable';
 
+function getColumns() {
+  let columns = TradeUtils.getUnascertainedColumns();
+  return columns;
+};
+const columns = getColumns();
 export default (props) => {
-  const [list, setList] = useState(null);
-  const [formRef, setFormRef] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [bridgeParams, setBridgeParams] = useState(null);
+  const [tableRef, setTableRef] = useState(null);
 
-  function getList() {
-    if (!formRef || !bridgeParams) {
+  useEffect(() => {
+    let bridge = props.location.query.bridge;
+    if (!bridge) {
+      message.error("请选择要查看的桥/路由, 即将跳转到总览", 2, () => {
+        history.push('/trade/summary')
+      })
       return;
     }
-    setLoading(true)
-    formRef.validateFields().then((values) => {
-      let { status, bridge } = values;
-      status ||= [];
+  }, []);
 
+  function getList(info) {
+    return new Promise((resolve, reject) => {
       //status '' 为所有， bridge 从路由中获取
       Services.getSwapHistory({
-        "bridge": bridgeParams,
+        "bridge": props.location.query.bridge,
+        "status": ""
       }).then((response) => {
         let list = [];
         for (let outKey in response.result.data) {
@@ -33,97 +40,27 @@ export default (props) => {
             return item;
           })
         }
-        setList(list);
+        resolve(list);
       }).catch((error) => {
-        console.log("error ==>", error);
-        debugger
-      }).finally(() => {
-        setLoading(false)
+        reject(error)
       })
-    }).catch((error) => {
-      debugger
-      console.log("error ==>", error);
-      setLoading(false)
     })
-
   }
-
-  useEffect(() => {
-    getList();
-  }, [formRef]);
-
-  useEffect(() => {
-    let bridge = props.location.query.bridge;
-    if (!bridge) {
-      message.error("请选择要查看的桥/路由, 即将跳转到总览", 3, () => {
-        history.push('/trade/summary')
-      })
-      return;
-    }
-
-    setBridgeParams(bridge);
-  }, [])
 
   return (
     <div>
-      <Card hidden={true}>
-        <Form
-          ref={(node) => {
-            setFormRef(node);
-          }}
-          layout="inline"
-        >
-          <Form.Item initialValue={"all"} name="bridge" label="桥/路由">
-            <Input allowClear={true} placeholder='请输入，all 表示所有' />
-          </Form.Item>
-          <Form.Item name="status" label="状态">
-            <Select
-              mode="multiple"
-              allowClear={true}
-              placeholder="请选择状态"
-              style={{ minWidth: 160 }}
-            >
-              <Select.Option value="0">0</Select.Option>
-              <Select.Option value="8">8</Select.Option>
-              <Select.Option value="9">9</Select.Option>
-              <Select.Option value="12">12</Select.Option>
-              <Select.Option value="14">14</Select.Option>
-              <Select.Option value="17">17</Select.Option>
-            </Select>
-          </Form.Item>
-          <Button
-            onClick={getList}
-            type={"primary"}
-            style={{ float: 'right', marginLeft: 10, marginTop: 4 }}
-          >
-            查询
-          </Button>
 
-        </Form>
-      </Card>
-      <Card
-        title={`桥交易信息: ${bridgeParams}`}
-        style={{ marginTop: 10 }}
-        extra={(
-          <Button
-            onClick={getList}
-            type={"primary"}
-            style={{ float: 'right', marginLeft: 10, marginTop: 4 }}
-          >
-            刷新
-          </Button>
-        )}
-      >
-        <Table
-          bordered={true}
-          rowKey={"timestamp"}
-          dataSource={list}
-          columns={TradeUtils.getHistoryColumns()}
-          loading={loading}
-          size={"middle"}
-          scroll={{ x: 740 }}
-        />
-      </Card>
+      <SearchTable
+        getRef={(node) => {
+          if (tableRef) {
+            return
+          }
+          setTableRef(node);
+          node.fetchData();
+        }}
+        columns={columns}
+        getList={getList}
+      />
     </div>
   )
 };

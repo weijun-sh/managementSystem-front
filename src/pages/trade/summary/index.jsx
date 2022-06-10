@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip } from "antd";
+import React, { useState } from 'react';
 import './index.less'
 import Services from '../services/index'
 import '../index.less';
 import { Link } from 'umi';
+import SearchTable from '@/multiComponents/table/SearchTable';
 
 function renderSummaryNum(number, record, onClick) {
   if (!number) {
@@ -115,22 +115,13 @@ const columns = [
 ];
 
 export default () => {
-  const [list, setList] = useState(null);
-  const [formRef, setFormRef] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [tableRef, setTableRef] = useState(null);
 
-  function getList() {
-    if (!formRef) {
-      return;
-    }
-    setLoading(true)
-    formRef.validateFields().then((values) => {
-      let { bridge, status } = values;
-      status ||= []
-
+  function getList(){
+    return new Promise((resolve, reject) => {
       Services.getStatusInfo({
-        bridge,
-        status,
+        bridge: 'all',
+        status: [],
       }).then((response) => {
         let list = [];
         const data = response.result.data;
@@ -144,85 +135,26 @@ export default () => {
 
           list.push(item);
         }
-        console.log("list ==>", list);
-        setList(list);
+        resolve(list);
       }).catch((error) => {
-        console.log("summary error ==>", error)
-      }).finally(() => {
-        setLoading(false)
+        reject(error)
       })
-    }).catch((err) => {
-      console.log("err ==>", err)
-      setLoading(false)
     })
-
   }
 
-  useEffect(() => {
-    getList();
-  }, [formRef]);
   return (
     <div>
-      <Card hidden={true}>
-        <Form
-          ref={(node) => {
-            setFormRef(node);
-          }}
-          layout="inline"
-
-        >
-          <Form.Item initialValue={"all"} name="bridge" label="桥/路由">
-            <Input allowClear={true} placeholder='请输入，all 表示所有' />
-          </Form.Item>
-          <Form.Item name="status" label="状态">
-            <Select
-              mode="multiple"
-              allowClear={true}
-              placeholder="请选择状态"
-              style={{ minWidth: 160 }}
-            >
-              <Select.Option value="0">0</Select.Option>
-              <Select.Option value="8">8</Select.Option>
-              <Select.Option value="9">9</Select.Option>
-              <Select.Option value="12">12</Select.Option>
-              <Select.Option value="14">14</Select.Option>
-              <Select.Option value="17">17</Select.Option>
-            </Select>
-          </Form.Item>
-          <Button
-            onClick={getList}
-            type={"primary"}
-            style={{ float: 'right', marginLeft: 10, marginTop: 4 }}
-          >
-            查询
-          </Button>
-
-        </Form>
-      </Card>
-      <Card
-        title="查询结果"
-        style={{ marginTop: 10 }}
-        extra={(
-          <Button
-            onClick={getList}
-            type={"primary"}
-            style={{ float: 'right', marginLeft: 10, marginTop: 4 }}
-          >
-            刷新
-          </Button>
-        )}
-      >
-        <Table
-          bordered={true}
-          rowKey={"index"}
-          dataSource={list}
-          columns={columns}
-          loading={loading}
-          size={"middle"}
-          scroll={{ x: 720 }}
-        />
-
-      </Card>
+      <SearchTable
+        getRef={(node) => {
+          if (tableRef) {
+            return
+          }
+          setTableRef(node);
+          node.fetchData();
+        }}
+        columns={columns}
+        getList={getList}
+      />
     </div>
   )
 };

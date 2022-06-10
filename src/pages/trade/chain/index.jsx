@@ -35,7 +35,7 @@ function getColumns() {
     search: {
       className: 'xxx',
       style:{minWidth: 200},
-      label: "链",
+      label: "请选择链",
       name: "chainid",
       type: 'select',
       options: [{
@@ -69,31 +69,33 @@ const columns = getColumns();
 export default () => {
   const [tableRef, setTableRef] = useState(null);
 
+  function getList(info){
+    return new Promise((resolve, reject) => {
+      const { chainid, txid } = info.params;
+      Services.getSwap({
+        chainid,
+        txid,
+      }).then((response) => {
+        let list = [response.result.data];
+        resolve(list);
+      }).catch((error) => {
+        reject(error)
+      })
+    })
+  }
+
   return (
     <div>
       <SearchTable
+        scroll={{x: 720}}
         getRef={(node) => {
           if (tableRef) {
             return
           }
           setTableRef(node);
-          node.fetchData();
         }}
         columns={columns}
-        getList={(info) => {
-          return new Promise((resolve, reject) => {
-            const { chainid, txid } = info.params;
-            Services.getSwap({
-              chainid,
-              txid,
-            }).then((response) => {
-              let list = [response.result.data];
-              resolve(list);
-            }).catch((error) => {
-              reject(error)
-            })
-          })
-        }}
+        getList={getList}
       />
     </div>
   )

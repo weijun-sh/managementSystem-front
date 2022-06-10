@@ -57,7 +57,7 @@ export const HistoryColumns = [
     key: "value",
     render: (data, record,) => {
       return (
-        <div>
+        <div style={{width: 200}}>
           <div>Sent: {minifySent(record.value)}</div>
           <div>Received: {minifySent(record.swapvalue)}</div>
         </div>
@@ -102,7 +102,7 @@ export const HistoryColumns = [
       let gap = ((current - pass) / 1000).toFixed(0);
 
       return (
-        <div>
+        <div style={{width: 200}}>
           {Utils.Time.transferSecond(gap)}
         </div>
       )

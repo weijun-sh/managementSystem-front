@@ -1,6 +1,7 @@
 import { Card, Table, Form, Input, Select, Checkbox, Button } from 'antd';
 import React from 'react';
-import WrapedCheckBox from '../checkbox/WrapedCheckBox'
+import WrapedCheckBox from '../checkbox/WrapedCheckBox';
+
 
 export default class SearchTable extends React.Component {
     constructor(props) {
@@ -15,10 +16,6 @@ export default class SearchTable extends React.Component {
         }
         this.formRef = null;
         this.searchList = this.filterSearch(props);
-    }
-
-    componentDidMount() {
-
     }
 
     filterSearch() {
@@ -67,12 +64,12 @@ export default class SearchTable extends React.Component {
         }).catch((err) => {
             console.log("catch ==>", err)
         })
-
     }
 
     render() {
         const { list, loading, columnsData } = this.state;
-        const { getRef } = this.props;
+        let { getRef, scroll } = this.props;
+        scroll = { x: 820, ...scroll };
         return (
             <div style={{ marginBottom: 10 }}>
                 <Card hidden={!this.searchList.length}>
@@ -88,18 +85,18 @@ export default class SearchTable extends React.Component {
                     >
                         {
                             this.searchList.map((item, index) => {
-                                let { 
-                                    type, 
-                                    label, 
-                                    name, 
-                                    rules, 
-                                    initialValue, 
-                                    options, 
-                                    style, 
-                                    className, 
-                                    componentProps 
+                                let {
+                                    type,
+                                    label,
+                                    name,
+                                    rules,
+                                    initialValue,
+                                    options,
+                                    style,
+                                    className,
+                                    componentProps
                                 } = item;
-                                style = {marginBottom: 4,...style}
+                                style = { marginBottom: 4, ...style }
                                 switch (type) {
                                     case 'input':
                                         return (
@@ -156,7 +153,7 @@ export default class SearchTable extends React.Component {
                                                 style={style}
                                                 className={className}
                                             >
-                                                <WrapedCheckBox {...componentProps}/>
+                                                <WrapedCheckBox {...componentProps} />
                                             </Form.Item>
                                         )
                                 }
@@ -173,8 +170,21 @@ export default class SearchTable extends React.Component {
                         </Button>
                     </Form>
                 </Card>
-                <Card style={{ marginTop: 10 }}>
+                <Card
+                    style={{ marginTop: 10 }}
+                    extra={this.searchList.length === 0 && (
+                        <Button
+                            type='primary'
+                            onClick={() => {
+                                this.fetchData()
+                            }}
+                        >
+                            刷新
+                        </Button>
+                    )}
+                >
                     <Table
+                        scroll={scroll}
                         rowKey={'rowKey'}
                         loading={loading}
                         dataSource={list}
