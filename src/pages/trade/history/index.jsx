@@ -48,7 +48,7 @@ export default (props) => {
   }
 
   return (
-    <div>
+    <div className='history-container'>
 
       <SearchTable
         getRef={(node) => {

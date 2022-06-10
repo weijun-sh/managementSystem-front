@@ -22,25 +22,15 @@ function minifySent(num) {
   }
   let base = Math.pow(10, 18);
   if (num < base) {
+    console.log("nunn ==>", num);
+    console.log("base ==>", base);
     return toThousands(num)
   }
   return (num / base).toFixed(0);
 
 }
 
-
-
-export const IndexColumn = {
-  title: '#',
-  dataIndex: 'index',
-  key: 'index',
-  render: (data, record, index) => {
-    return index + 1
-  }
-};
-
 export const HistoryColumns = [
-  IndexColumn,
   {
     title: '币种',
     dataIndex: 'swapinfo',
@@ -133,6 +123,5 @@ export default {
   renderStatus,
   getUnascertainedColumns,
   getHistoryColumns,
-  IndexColumn,
 }
 

@@ -85,7 +85,7 @@ export default () => {
   }
 
   return (
-    <div>
+    <div className='chain-container'>
       <SearchTable
         scroll={{x: 720}}
         getRef={(node) => {

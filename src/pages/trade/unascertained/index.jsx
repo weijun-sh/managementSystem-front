@@ -25,9 +25,9 @@ export default () => {
       })
     })
   }
-  
+
   return (
-    <div>
+    <div className='uncertained-container'>
       <SearchTable
         getRef={(node) => {
           if (tableRef) {

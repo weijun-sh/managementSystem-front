@@ -28,14 +28,6 @@ function renderSummaryNum(number, record, onClick) {
 
 const columns = [
   {
-    title: '#',
-    dataIndex: 'index',
-    key: 'index',
-    render: (data, record, index) => {
-      return data
-    }
-  },
-  {
     title: 'Bridge',
     dataIndex: 'bridge',
     key: 'bridge',
@@ -45,9 +37,7 @@ const columns = [
     dataIndex: "0",
     key: "0",
     render: (data, record) => {
-      return renderSummaryNum(data, record, () => {
-
-      })
+      return renderSummaryNum(data, record)
     }
   },
   {
@@ -55,9 +45,7 @@ const columns = [
     dataIndex: '8',
     key: '8',
     render: (data, record) => {
-      return renderSummaryNum(data, record, () => {
-
-      })
+      return renderSummaryNum(data, record,)
     }
   },
   ,
@@ -66,9 +54,7 @@ const columns = [
     dataIndex: '9',
     key: '9',
     render: (data, record) => {
-      return renderSummaryNum(data, record, () => {
-
-      })
+      return renderSummaryNum(data, record,)
     }
   },
   {
@@ -76,9 +62,7 @@ const columns = [
     dataIndex: '10',
     key: '10',
     render: (data, record) => {
-      return renderSummaryNum(data, record, () => {
-
-      })
+      return renderSummaryNum(data, record,)
     }
   },
   {
@@ -86,9 +70,9 @@ const columns = [
     dataIndex: "12",
     key: '12',
     render: (data, record) => {
-      return renderSummaryNum(data, record, () => {
-
-      })
+      return <div style={{ width: 110 }}>
+        {renderSummaryNum(data, record)}
+      </div>
     }
   },
   {
@@ -117,7 +101,7 @@ const columns = [
 export default () => {
   const [tableRef, setTableRef] = useState(null);
 
-  function getList(){
+  function getList() {
     return new Promise((resolve, reject) => {
       Services.getStatusInfo({
         bridge: 'all',
@@ -143,8 +127,9 @@ export default () => {
   }
 
   return (
-    <div>
+    <div className='summary-container'>
       <SearchTable
+        scroll={{ x: 1100 }}
         getRef={(node) => {
           if (tableRef) {
             return

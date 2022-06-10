@@ -16,6 +16,7 @@ export default class SearchTable extends React.Component {
         }
         this.formRef = null;
         this.searchList = this.filterSearch(props);
+        console.log("props ==>", props)
     }
 
     filterSearch() {
@@ -31,6 +32,15 @@ export default class SearchTable extends React.Component {
 
     filterColumns = () => {
         const { columns } = this.props;
+
+        columns.unshift({
+            title: '#',
+            dataIndex: 'index',
+            key: 'index',
+            render: (data, record, index) => {
+                return index + 1
+            }
+        })
 
         let c = columns.filter((item) => {
             return !item.hidden
@@ -49,7 +59,7 @@ export default class SearchTable extends React.Component {
                 params: values
             }).then((list) => {
                 list = list.map((item, index) => {
-                    item.rowKey = index; return item;
+                    item.rowKey = index + 1; return item;
                 })
                 this.setState({
                     list: list
@@ -183,7 +193,7 @@ export default class SearchTable extends React.Component {
                         </Button>
                     )}
                 >
-                    <Table
+                    <Table                    
                         scroll={scroll}
                         rowKey={'rowKey'}
                         loading={loading}
