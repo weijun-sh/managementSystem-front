@@ -1,6 +1,6 @@
 import { Card, Table, Form, Input, Select, Checkbox, Button } from 'antd';
 import React from 'react';
-
+import WrapedCheckBox from '../checkbox/WrapedCheckBox'
 
 export default class SearchTable extends React.Component {
     constructor(props) {
@@ -8,12 +8,12 @@ export default class SearchTable extends React.Component {
         this.state = {
             list: null,
             loading: false,
-            columnsData: props.columns || [],
+            columnsData: this.filterColumns() || [],
             formInfo: {
                 searchList: []
             }
         }
-        this.ref = null;
+        this.formRef = null;
         this.searchList = this.filterSearch(props);
     }
 
@@ -32,16 +32,28 @@ export default class SearchTable extends React.Component {
         return searchs;
     }
 
+    filterColumns = () => {
+        const { columns } = this.props;
+
+        let c = columns.filter((item) => {
+            return !item.hidden
+        })
+        return c;
+    }
+
     fetchData = () => {
         const { getList } = this.props;
-        this.ref.validateFields().then((err, values) => {
-            if (err) {
-                return;
-            }
-            this.setState({ loading: true })
+        if (!this.formRef) {
+            return;
+        }
+        this.formRef.validateFields().then((values) => {
+            this.setState({ loading: true });
             getList({
                 params: values
             }).then((list) => {
+                list = list.map((item, index) => {
+                    item.rowKey = index; return item;
+                })
                 this.setState({
                     list: list
                 })
@@ -52,26 +64,42 @@ export default class SearchTable extends React.Component {
                     loading: false
                 })
             })
-        }).catch(() => {
-
+        }).catch((err) => {
+            console.log("catch ==>", err)
         })
 
     }
 
     render() {
         const { list, loading, columnsData } = this.state;
-        const { } = this.props;
-        console.log("searchList ==>", this.searchList);
+        const { getRef } = this.props;
         return (
             <div style={{ marginBottom: 10 }}>
-                <Card>
+                <Card hidden={!this.searchList.length}>
                     <Form
-                        ref={(node) => { this.ref = node }}
+                        ref={(node) => {
+                            if (!node) {
+                                return;
+                            }
+                            this.formRef = node
+                            getRef(this);
+                        }}
                         layout='inline'
                     >
                         {
                             this.searchList.map((item, index) => {
-                                const { type, label, name, rules, initialValue } = item;
+                                let { 
+                                    type, 
+                                    label, 
+                                    name, 
+                                    rules, 
+                                    initialValue, 
+                                    options, 
+                                    style, 
+                                    className, 
+                                    componentProps 
+                                } = item;
+                                style = {marginBottom: 4,...style}
                                 switch (type) {
                                     case 'input':
                                         return (
@@ -81,8 +109,10 @@ export default class SearchTable extends React.Component {
                                                 name={name}
                                                 rules={rules}
                                                 initialValue={initialValue}
+                                                style={style}
+                                                className={className}
                                             >
-                                                <Input />
+                                                <Input {...componentProps} />
                                             </Form.Item>
                                         );
                                     case 'select':
@@ -94,11 +124,23 @@ export default class SearchTable extends React.Component {
                                                 name={name}
                                                 rules={rules}
                                                 initialValue={initialValue}
+                                                style={style}
+                                                className={className}
                                             >
-                                                <Select style={{ minWidth: 200 }}>
-                                                    <Select.Option value="123">123</Select.Option>
-                                                    <Select.Option value="345">345</Select.Option>
-                                                    <Select.Option value="567">567</Select.Option>
+
+                                                <Select {...componentProps}>
+                                                    {
+                                                        options.map((item, optionsIndex) => {
+                                                            return (
+                                                                <Select.Option
+                                                                    value={item.value}
+                                                                    key={optionsIndex}
+                                                                >
+                                                                    {item.label}
+                                                                </Select.Option>
+                                                            )
+                                                        })
+                                                    }
                                                 </Select>
                                             </Form.Item>
 
@@ -111,15 +153,13 @@ export default class SearchTable extends React.Component {
                                                 name={name}
                                                 rules={rules}
                                                 initialValue={initialValue}
+                                                style={style}
+                                                className={className}
                                             >
-                                                <Checkbox>
-
-                                                </Checkbox>
+                                                <WrapedCheckBox {...componentProps}/>
                                             </Form.Item>
                                         )
-
                                 }
-
                             })
                         }
 
@@ -135,6 +175,7 @@ export default class SearchTable extends React.Component {
                 </Card>
                 <Card style={{ marginTop: 10 }}>
                     <Table
+                        rowKey={'rowKey'}
                         loading={loading}
                         dataSource={list}
                         columns={columnsData}

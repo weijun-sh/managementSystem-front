@@ -1,184 +1,100 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Card, Col, Form, Input, Row, Select, Button, Table, Tooltip } from "antd";
+import React, { useState } from 'react';
 import TradeUtils from '../tradeUtils'
 import Services from '../services/index';
 import SearchTable from '@/multiComponents/table/SearchTable';
 
-export default () => {
-  const [list, setList] = useState(null);
-  const [formRef, setFormRef] = useState(null);
-  const [loading, setLoading] = useState(false);
+function getColumns() {
+  let columns = TradeUtils.getUnascertainedColumns();
 
-  function getList() {
-    if (!formRef) {
-      return;
+  columns.push({
+    title: '交易哈希',
+    dataIndex: 'txhash',
+    key: 'txhash',
+    hidden: true,
+    search: {
+      label: "交易哈希",
+      name: "txid",
+      type: 'input',
+      className: 'xxx',
+      style:{width: 600},
+      rules: [
+        {
+          required: true,
+        }
+      ],
+      componentProps: {
+        allowClear: true
+      }
     }
-    setLoading(true)
-    formRef.validateFields().then((values) => {
-      const { txid, chainid } = values;
-      Services.getSwap({
-        chainid,
-        txid,
-      }).then((response) => {
-        let list = [response.result.data]
-        setList(list);
-      }).catch((error) => {
-        console.log('error ==>', error)
-      }).finally(() => {
-        setLoading(false)
-      })
-    }).catch(() => {
-      setLoading(false)
-    })
+  });
+  columns.push({
+    title: '链',
+    dataIndex: 'chainid',
+    key: 'chainid',
+    hidden: true,
+    search: {
+      className: 'xxx',
+      style:{minWidth: 200},
+      label: "链",
+      name: "chainid",
+      type: 'select',
+      options: [{
+        value: '1',
+        label: `1 (${TradeUtils.renderChainID(1)})`
+      }, {
+        value: '56',
+        label: `56 (${TradeUtils.renderChainID(56)})`
+      }],
+      rules: [
+        {
+          required: true,
+        }
+      ],
+      componentProps: {
+        allowClear: true
+      }
+    },
 
-  }
+    render: (data, record) => {
+      return (
+        <div >{data}</div>
+      )
+    }
+  });
+
+  return columns;
+};
+const columns = getColumns();
+
+export default () => {
+  const [tableRef, setTableRef] = useState(null);
+
   return (
     <div>
       <SearchTable
-        columns={[
-          {
-            title: '币种',
-            dataIndex: 'swapinfo',
-            key: 'swapinfo',
-            render: (data, record) => {
-              return (
-                <div >{record.swapinfo.routerSwapInfo.tokenID}</div>
-              )
-            }
-          },
-          {
-            title: '交易哈希',
-            dataIndex: 'txhash',
-            key: 'txhash',
-            search: {
-              label:"交易哈希",
-              name:"txid",
-              type: 'input',
-              initialValue:'34',
-              rules:[
-                  {
-                      required: true,
-                  }
-              ]
-            },
-            render: (data, record) => {
-              return (
-                <div >{record.swapinfo.routerSwapInfo.tokenID}</div>
-              )
-            }
-          },
-          {
-            title: '链',
-            dataIndex: 'chainid',
-            key: 'chainid',
-            search: {
-              label:"交易哈希",
-              name:"txid",
-              type: 'select',
-              initialValue:'345',
-              rules:[
-                  {
-                      required: true,
-                  }
-              ]
-            },
-            
-            render: (data, record) => {
-              return (
-                <div >{record.swapinfo.routerSwapInfo.tokenID}</div>
-              )
-            }
-          },
-          {
-            title: '是否完成',
-            dataIndex: 'finish',
-            key: 'finish',
-            search: {
-              label:"交易哈希",
-              name:"txid",
-              type: 'checkbox',
-              rules:[
-                  {
-                      required: true,
-                  }
-              ]
-            },
+        getRef={(node) => {
+          if (tableRef) {
+            return
           }
-        ]}
-        getList={() => {
-
+          setTableRef(node);
+          node.fetchData();
+        }}
+        columns={columns}
+        getList={(info) => {
+          return new Promise((resolve, reject) => {
+            const { chainid, txid } = info.params;
+            Services.getSwap({
+              chainid,
+              txid,
+            }).then((response) => {
+              let list = [response.result.data];
+              resolve(list);
+            }).catch((error) => {
+              reject(error)
+            })
+          })
         }}
       />
-
-      <Card>
-        <Form
-          ref={(node) => {
-            setFormRef(node)
-          }}
-          layout="inline"
-        >
-          <Form.Item
-            rules={[
-              {
-                required: true,
-              },
-              {
-                len: 66,
-                message: '请输入66位的 交易哈希'
-              }
-            ]}
-            label="交易哈希"
-            name="txid"
-          >
-            <Input
-              allowClear={true}
-              placeholder={"请输入hash"}
-              style={{ width: 560, marginTop: 4 }}
-            />
-          </Form.Item>
-          <Form.Item
-            label="请选择链"
-            name="chainid"
-            rules={[
-              {
-                required: true,
-              }
-            ]}
-          >
-            <Select
-              style={{ width: 160, marginTop: 4 }}
-              allowClear={true}
-              placeholder="请选择链"
-            >
-              <Select.Option value={'1'}>
-                1 ({TradeUtils.renderChainID(1)})
-              </Select.Option>
-              <Select.Option value={'56'}>
-                56 ({TradeUtils.renderChainID(56)})
-              </Select.Option>
-            </Select>
-          </Form.Item>
-          <Button
-            onClick={getList}
-            type={"primary"}
-            style={{ float: 'right', marginLeft: 10, marginTop: 4 }}
-          >
-            查询
-          </Button>
-
-        </Form>
-      </Card>
-      <Card title="查询结果" style={{ marginTop: 10 }}>
-        <Table
-          bordered={true}
-          rowKey={"timestamp"}
-          dataSource={list}
-          columns={TradeUtils.getUnascertainedColumns()}
-          loading={loading}
-          size={"middle"}
-          scroll={{ x: 1100 }}
-        />
-      </Card>
     </div>
   )
 };
