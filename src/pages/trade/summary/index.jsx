@@ -48,7 +48,6 @@ const columns = [
       return renderSummaryNum(data, record,)
     }
   },
-  ,
   {
     title: "Routing(9)",
     dataIndex: '9',
@@ -137,7 +136,7 @@ export default () => {
           setTableRef(node);
           node.fetchData();
         }}
-        columns={_.cloneDeep(columns)}
+        columns={columns}
         getList={getList}
       />
     </div>

@@ -3,14 +3,14 @@ import { toThousands } from '@/utils/math';
 import CONST from './constant'
 import _ from 'lodash'
 export function renderStatus(status) {
-  if (!status) {
+  if (status == null ) {
     return status;
   }
   return CONST.SwapStatus[status]
 }
 
 export function renderChainID(id) {
-  if (!id) {
+  if (id == null) {
     return id;
   }
   return CONST.ChainID[id]

@@ -3,13 +3,17 @@ import React from 'react';
 import WrapedCheckBox from '../checkbox/WrapedCheckBox';
 import _ from 'lodash'
 
-export default class SearchTable extends React.Component {
+class SearchTable extends React.Component {
+    
+    static defaultProps = {
+        columnIndex: true
+    }
     constructor(props) {
         super(props);
         this.state = {
             list: null,
             loading: false,
-            columnsData: _.cloneDeep(this.filterColumns() || []),
+            columnsData: this.filterColumns() || [],
             formInfo: {
                 searchList: []
             }
@@ -30,17 +34,24 @@ export default class SearchTable extends React.Component {
     }
 
     filterColumns = () => {
-        const { columns } = this.props;
-        console.log("length ==>", columns.length)
-        columns.unshift({
-            title: '#',
-            dataIndex: 'index',
-            key: 'index',
-            render: (data, record, index) => {
-                return index + 1
-            }
-        })
+        const { columns, columnIndex } = this.props;
 
+
+        //给每一行 加上序号列
+        if (columnIndex) {
+            let indexcolumns = columns.filter((item) => { return item.dataIndex === 'columnIndex' });
+            if (indexcolumns.length === 0) {
+                columns.unshift({
+                    title: '#',
+                    dataIndex: 'columnIndex',
+                    key: 'columnIndex',
+                    render: (data, record, index) => {
+                        return index + 1
+                    }
+                })
+            }
+
+        }
         let c = columns.filter((item) => {
             return !item.hidden
         })
@@ -193,7 +204,7 @@ export default class SearchTable extends React.Component {
                         </Button>
                     )}
                 >
-                    <Table                    
+                    <Table
                         scroll={scroll}
                         rowKey={'rowKey'}
                         loading={loading}
@@ -207,3 +218,5 @@ export default class SearchTable extends React.Component {
 
 
 }
+
+export default SearchTable;

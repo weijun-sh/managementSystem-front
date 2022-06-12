@@ -7,7 +7,7 @@ export default () => {
   const [tableRef, setTableRef] = useState(null);
 
   let columns = useMemo(() => {
-    let columns = TradeUtils.getUnascertainedColumns();
+    let columns = _.cloneDeep(TradeUtils.getUnascertainedColumns());
     columns.push({
       title: '交易哈希',
       dataIndex: 'txhash',
