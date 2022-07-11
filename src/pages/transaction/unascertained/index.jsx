@@ -3,8 +3,8 @@ import SearchTable from 'mc/table/SearchTable';
 import Services from '../../../services/api';
 import TradeUtils, {db0First} from '../tradeUtils'
 import './index.less'
-import {Button, message, Progress} from "antd";
-import {SWAPIN_TYPE, SWAPOUT_TYPE} from "../constants/constant";
+import {Button, message, Progress, Spin} from "antd";
+import {Router_TYPE, SWAPIN_TYPE, SWAPOUT_TYPE} from "../constants/constant";
 
 let tableRef = null;
 let progress = 0;
@@ -12,10 +12,15 @@ let routerCancels = null;
 let inCancels = null;
 let outCancels = null;
 
+
+
 function UnAscertained(props) {
     const [status, setStatus] = useState(0)
     let cols = TradeUtils.getUnascertainedColumns();
     const columns = [...cols];
+    const [inStatus, setInStatus] = useState(null);
+    const [outStatus, setOutStatus] = useState(null);
+    const [routerStatus, setRouterStatus] = useState(null);
 
     useEffect(() => {
         if(tableRef){
@@ -23,7 +28,6 @@ function UnAscertained(props) {
             loadMore();
             progress = 0;
         }
-
         return function () {
             tableRef = null
             routerCancels && routerCancels();
@@ -32,12 +36,28 @@ function UnAscertained(props) {
         }
     }, []);
 
+    function renderLoadingStatus(type){
+        return (
+            <span className={"loading-status"}>
+                <span className="type">{`${type}`}</span>
+                <Spin size={"small"}/>
+            </span>
+        )
+    }
+    function initStatus (){
+        setInStatus(null);
+        setOutStatus(null);
+        setRouterStatus(null);
+    }
+
     function loadMore() {
-        message.success("正在加载中", 0.3)
+        message.success("正在加载中", 0.3);
+        initStatus()
         progress = 0;
         setStatus(0);
         tableRef.setList([]);
         tableRef.setLoading(true)
+
 
         Services.getSwapHistory({
             params: {
@@ -50,10 +70,16 @@ function UnAscertained(props) {
                 }
             }
         }).then((res) => {
-            concatList(res, "Router");
-        }).catch(() => {
+            concatList(res, Router_TYPE, "Router");
+            //throw new Error("this is a error")
+        }).catch((error) => {
             tableRef && tableRef.setLoading(false);
-
+            setRouterStatus(
+                <span className={"error-status"}>
+                    <span className={"type"}>Router</span>
+                    <span className={"msg"}>{error.message || '加载失败'}</span>
+                </span>
+            )
         })
         Services.getSwapinHistory({
             params: {
@@ -67,8 +93,15 @@ function UnAscertained(props) {
             }
         }).then((res) => {
             concatList(res, SWAPIN_TYPE, "IN");
-        }).catch(() => {
+            //throw new Error("this is a error")
+        }).catch((error) => {
             tableRef && tableRef.setLoading(false);
+            setInStatus(
+                <span className={"error-status"}>
+                    <span className={"type"}>swapin</span>
+                    <span className={"msg"}>{error.message || '加载失败'}</span>
+                </span>
+            )
         })
         Services.getSwapoutHistory({
             params: {
@@ -80,11 +113,17 @@ function UnAscertained(props) {
                     outCancels = c
                 }
             }
-
         }).then((res) => {
             concatList(res, SWAPOUT_TYPE, "OUT");
-        }).catch(() => {
-            tableRef && tableRef.setLoading(false)
+            //throw new Error("this is a error")
+        }).catch((error) => {
+            tableRef && tableRef.setLoading(false);
+            setOutStatus(
+                <span className={"error-status"}>
+                    <span className={"type"}>swapout</span>
+                    <span className={"msg"}>{error.message || '加载失败'}</span>
+                </span>
+            )
         })
 
 
@@ -95,6 +134,7 @@ function UnAscertained(props) {
             return;
         }
         tableRef.setLoading(false)
+
         if (progress === 0) {
             progress = 33;
             setStatus(33)
@@ -106,9 +146,30 @@ function UnAscertained(props) {
             setStatus(100)
         }
         let orgList = res.result.data
-        let list = TradeUtils.deepMapList(orgList, type);
+        let list = TradeUtils.deepMapList(orgList);
+
+        if(type === 'Router') {
+            setRouterStatus(
+                <span className={"success-status"}>
+                    <span className={"type"}>Router</span>
+                    <span className={"msg"}>{`加载 ${list.length} 条数据`}</span>
+                </span>)
+        }
+        if(type === 'IN') {
+            setInStatus(
+                <span className={"success-status"}>
+                    <span className={"type"}>swapin</span>
+                    <span className={"msg"}>{`加载 ${list.length} 条数据`}</span>
+                </span>)
+        }
+        if(type === 'OUT') {
+            setOutStatus(<span className={"success-status"}>
+                <span className={"type"}>swapout</span>
+                <span className={"msg"}>{`加载 ${list.length} 条数据`}</span>
+            </span>)
+        }
+
         list = db0First(list);
-        message.success(`加载 ${bridge} ${list.length} 条 记录`, 0.5)
         list = tableRef.state.list.concat(list);
         tableRef.setList(list);
 
@@ -126,14 +187,11 @@ function UnAscertained(props) {
                     percent={progress}
                 />
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <span style={{fontSize: 12, color: '#999'}}>
-                    {
-                        progress !== 100 ?
-                            "loading..." :
-                            "finish"
-                    }
+                <span style={{fontSize: 12, marginLeft: 10, color: 'gray'}}>
+                    {routerStatus || renderLoadingStatus("Router")}
+                    {inStatus || renderLoadingStatus("swapin")}
+                    {outStatus || renderLoadingStatus("swapout")}
                 </span>
-
             </div>
         )
     }
@@ -149,9 +207,9 @@ function UnAscertained(props) {
                         type={"primary"}
                         onClick={loadMore}
                         size={"middle"}
-                        disabled={progress !== 100}
+                        disabled={!(inStatus && outStatus && routerStatus)}
                     >
-                        刷新
+                        查询
                     </Button>
                 )}
                 card2Title={getTitle}

@@ -107,7 +107,7 @@ function getDecimals(obj) {
 
 
 
-export function deepMapList(data, type) {
+export function deepMapList(data) {
     let list = [];
     for (let routerKey in data) {
         data[routerKey].map((item, index) => {
@@ -172,7 +172,7 @@ export const HistoryColumns = function (config = {}) {
             key: "value",
             render: (data, record,) => {
                 const {swaptx} = record;
-                let sent = minifyValue(record.value, record.fromChainID);
+                let sent =  minifyValue(record.value, record.fromChainID);
                 let received = !!swaptx && swaptx !== '' ? minifyValue(record.swapvalue, record.toChainID) : '';
 
                 return (
@@ -326,10 +326,12 @@ export function getUnascertainedColumns(config = {}) {
 }
 
 export function getHistoryColumns(config = {}) {
+    config.hideSwapInOut = false;
     return HistoryColumns(config);
 }
 
 export function getChainColumns(config = {}) {
+    config.hideSwapInOut = false;
     return HistoryColumns(config);
 }
 

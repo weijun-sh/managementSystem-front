@@ -45,19 +45,26 @@ function http(options) {
             if(typeof err.message === 'string'){
                 if (err.message.indexOf('canceled') !== -1) {
                     window.groupWarm("取消请求", "data",  data, 'params', data.params);
-
                 }if (err.message.indexOf('cross') !== -1) {
                     window.groupWarm("跨域失败", "data",  data, 'params', data.params);
                     message.error("跨域失败", 1).then(() => {});
+                    reject(new Error("跨域失败"));
+                    return;
                 }else if (err.message.indexOf('timeout') !== -1) {
-                    window.groupWarm("60秒 请求超时",'err', err, "data",  data, 'params', data.params);
+                    window.groupWarm(" 请求超时",'err', err, "data",  data, 'params', data.params);
                     message.error("请求超时", 1).then(() => {});
+                    reject(new Error("请求超时"));
+                    return;
                 }else if (err.message.indexOf('statusText') !== -1) {
                     window.groupWarm("网络错误",'err', err, "data",  data, 'params', data.params);
                     message.error("网络错误", 1).then(() => {});
+                    reject(new Error("网络错误"));
+                    return;
                 }else {
                     window.groupError('请求失败', 'err', err, "data",  data,'params', data.params)
-                    message.error(err.message).then(() => {})
+                    message.error(err.message).then(() => {});
+                    reject(new Error("请求失败"));
+                    return;
                 }
             }
 

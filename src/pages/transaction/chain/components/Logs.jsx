@@ -15,11 +15,15 @@ function isWarn(status) {
     return status === 'warn' || status === 'warning'
 }
 
+const TYPE_ALL = 'all';
+const TYPE_ERROR = 'error';
+const TYPE_WARN = 'warn';
+
 function ChainLogs(props) {
     const {logs, visible} = props;
     const [currentPage, setCurrentPage] = useState(1);
     const [activeKeys, setActiveKeys] = useState([]);
-    const [showType, setShowType] = useState('all');
+    const [showType, setShowType] = useState(TYPE_ALL);
     const pageSize = 10;
 
     useEffect(() => {
@@ -77,7 +81,16 @@ function ChainLogs(props) {
         const errorList = list.filter(item => isError(item.level))
         const warnList = list.filter(item => isWarn(item.level))
 
-        const pageList = list.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+        let pageList = [];
+
+        if(showType === TYPE_ALL){
+            pageList = list.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+        }else if(showType === TYPE_WARN){
+            pageList = warnList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+        }else if(showType === TYPE_ERROR){
+            pageList = errorList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+        }
+
 
         return {
             total: list.length,
@@ -152,8 +165,6 @@ function ChainLogs(props) {
                             {times.length}
                         </span>
                     </Tips>
-
-
                 </div>
 
 
@@ -344,11 +355,12 @@ function ChainLogs(props) {
 
     function changeType(type) {
         setShowType(type);
+        return;
 
         let list = [];
-        if(type === 'error'){
+        if(type === TYPE_ERROR){
             list = errorList;
-        }else if(type === 'warn'){
+        }else if(type === TYPE_WARN){
             list = warnList;
         }
         Modal.warn({
