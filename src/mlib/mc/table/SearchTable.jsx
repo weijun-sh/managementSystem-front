@@ -33,7 +33,6 @@ function colorList(list, field) {
                         ci = 0;
                     }
                 }
-
             }
         }
     });
@@ -43,13 +42,22 @@ function colorList(list, field) {
 class SearchTable extends React.Component {
     constructor(props) {
         super(props);
+
         let pg = {
             current: 1,
             pageSize: 10,
-            showTotal
-        };
-        if (props.pagination != null) {
-            pg = props.pagination;
+            showTotal,
+            pageSizeOptions: [10, 50, 100, 150],
+            showSizeChanger: true
+        }
+        if(props.pagination === false){
+            pg = false;
+        }
+        if(props.pagination){
+            pg = {
+                ...pg,
+                ...props.pagination
+            }
         }
         this.state = {
             list: [],
@@ -344,6 +352,9 @@ class SearchTable extends React.Component {
         let {scroll, expandable, tableSize} = this.props;
         scroll = {x: 820, ...scroll};
         let columnsData = this.filterColumns() || [];
+        if(window.innerHeight < 500){
+            //scroll.y = undefined
+        }
         return (
             <div style={{marginBottom: 10}}>
                 <Card hidden={!this.filterSearch().length}>
@@ -405,6 +416,7 @@ SearchTable.defaultProps = {
     scroll: null,
     card2Extra: null,
     combineField: null,
+
     //tableSize: 'small'
 }
 

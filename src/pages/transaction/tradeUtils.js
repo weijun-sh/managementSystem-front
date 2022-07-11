@@ -112,7 +112,6 @@ export function deepMapList(data, type) {
     for (let routerKey in data) {
         data[routerKey].map((item, index) => {
             item.bridge = routerKey;
-            item.bridgetype = type;
             list = list.concat(item)
             return item;
         })
@@ -177,9 +176,11 @@ export const HistoryColumns = function (config = {}) {
                 let received = !!swaptx && swaptx !== '' ? minifyValue(record.swapvalue, record.toChainID) : '';
 
                 return (
-                    <div style={{minWidth: 200}}>
-                        <div>Sent: {sent}</div>
-                        <div style={{color: 'gray'}}>Received: {received}</div>
+                    <div style={{minWidth: 100}}>
+                        <div className={"one-line"}>Sent: {sent}</div>
+                        <div className={"one-line"} style={{color: 'gray'}}>
+                            Received: {received}
+                        </div>
                     </div>
                 )
             }
@@ -213,13 +214,19 @@ export const HistoryColumns = function (config = {}) {
         },
         {
             title: '',
-            dataIndex: 'bridgetype',
-            key: 'bridgetype',
+            dataIndex: 'swaptype',
+            key: 'swaptype',
             hidden: hideSwapInOut,
             render: (data, record, index) => {
+                let type = {
+                    1: 'IN',
+                    2: 'OUT',
+                    3: '',
+                }
+                let show = type[data];
                 return (
-                    <div className={`trade-column-${data}-type`}>
-                        {data}
+                    <div className={`trade-column-${show}-type`}>
+                        {show}
                     </div>
                 )
             }
@@ -326,6 +333,15 @@ export function getChainColumns(config = {}) {
     return HistoryColumns(config);
 }
 
+
+export function db0First(list){
+    list = list.sort((a, b) => {
+        let ai =  a.bridge.indexOf('#0') !== -1 ? 1: 0;
+        let bi =  b.bridge.indexOf('#0') !== -1 ? 1: 0;
+        return bi - ai
+    })
+    return list;
+}
 
 const TradeUtils = {
     renderStatus,

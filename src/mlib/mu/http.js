@@ -46,6 +46,9 @@ function http(options) {
                 if (err.message.indexOf('canceled') !== -1) {
                     window.groupWarm("取消请求", "data",  data, 'params', data.params);
 
+                }if (err.message.indexOf('cross') !== -1) {
+                    window.groupWarm("跨域失败", "data",  data, 'params', data.params);
+                    message.error("跨域失败", 1).then(() => {});
                 }else if (err.message.indexOf('timeout') !== -1) {
                     window.groupWarm("60秒 请求超时",'err', err, "data",  data, 'params', data.params);
                     message.error("请求超时", 1).then(() => {});
@@ -54,6 +57,7 @@ function http(options) {
                     message.error("网络错误", 1).then(() => {});
                 }else {
                     window.groupError('请求失败', 'err', err, "data",  data,'params', data.params)
+                    message.error(err.message).then(() => {})
                 }
             }
 

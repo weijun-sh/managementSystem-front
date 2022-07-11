@@ -3,7 +3,13 @@ import {useNavigate, useSearchParams} from 'react-router-dom';
 import SearchTable from 'mc/table/SearchTable';
 import Tabset, {TabsetPane} from 'mc/tabs/Tabset';
 import Services from '../../../services/api';
-import {mapSummaryStatus, mapSummarySuccessStatus, getRouterSummaryList, renderRouterColumn} from '../tradeUtils'
+import {
+    mapSummaryStatus,
+    mapSummarySuccessStatus,
+    getRouterSummaryList,
+    renderRouterColumn,
+    db0First
+} from '../tradeUtils'
 import './index.less'
 
 const RouterKey = 'router';
@@ -153,6 +159,18 @@ export default function Summary() {
         ]
     }
 
+    function formatKey(data){
+        let list = [];
+        for (let key in data) {
+            let value = data[key];
+            list.push({
+                bridge: key,
+                ...value
+            })
+        }
+        return list;
+    }
+
     function getRouterList() {
         return new Promise((resolve, reject) => {
             Services.getRouterStatusInfo({
@@ -163,14 +181,10 @@ export default function Summary() {
             }).then((response) => {
                 const data = response.result.data;
 
-                let list = [];
-                for (let key in data) {
-                    let value = data[key];
-                    list.push({
-                        bridge: key,
-                        ...value
-                    })
-                }
+                let list = formatKey(data);
+
+                list = db0First(list);
+
                 resolve(list);
             }).catch((error) => {
                 reject(error)
@@ -185,18 +199,11 @@ export default function Summary() {
                     bridge: 'all',
                     status: [],
                 }
-
             }).then((response) => {
                 const data = response.result.data;
 
-                let list = [];
-                for (let key in data) {
-                    let value = data[key];
-                    list.push({
-                        bridge: key,
-                        ...value
-                    })
-                }
+                let list = formatKey(data);
+                list = db0First(list);
                 resolve(list);
             }).catch((error) => {
                 reject(error)
@@ -230,11 +237,12 @@ export default function Summary() {
                         }}
                         columns={routerColumns()}
                         getList={getRouterList}
+                        pagination={{pageSize: 150}}
                     />
                 </TabsetPane>
                 <TabsetPane tab={<div className='tab-title'>Bridge</div>} key={BridgeKey}>
                     <SearchTable
-                        scroll={{x: 1220}}
+                        scroll={{x: 1220, y: `calc(100vh - 486px)`}}
                         getRef={(node) => {
                             if (bridgeRef) {
                                 return
@@ -244,6 +252,7 @@ export default function Summary() {
                         }}
                         columns={bridgeColumns()}
                         getList={getBridgeList}
+                        pagination={{pageSize: 150}}
                     />
                 </TabsetPane>
             </Tabset>

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import SearchTable from 'mc/table/SearchTable';
 import Services from '../../../services/api';
-import TradeUtils from '../tradeUtils'
+import TradeUtils, {db0First} from '../tradeUtils'
 import './index.less'
 import {Button, message, Progress} from "antd";
 import {SWAPIN_TYPE, SWAPOUT_TYPE} from "../constants/constant";
@@ -49,11 +49,11 @@ function UnAscertained(props) {
                     routerCancels = c
                 }
             }
-
         }).then((res) => {
             concatList(res, "Router");
         }).catch(() => {
-            tableRef && tableRef.setLoading(false)
+            tableRef && tableRef.setLoading(false);
+
         })
         Services.getSwapinHistory({
             params: {
@@ -68,7 +68,7 @@ function UnAscertained(props) {
         }).then((res) => {
             concatList(res, SWAPIN_TYPE, "IN");
         }).catch(() => {
-            tableRef && tableRef.setLoading(false)
+            tableRef && tableRef.setLoading(false);
         })
         Services.getSwapoutHistory({
             params: {
@@ -107,6 +107,7 @@ function UnAscertained(props) {
         }
         let orgList = res.result.data
         let list = TradeUtils.deepMapList(orgList, type);
+        list = db0First(list);
         message.success(`加载 ${bridge} ${list.length} 条 记录`, 0.5)
         list = tableRef.state.list.concat(list);
         tableRef.setList(list);
@@ -140,8 +141,9 @@ function UnAscertained(props) {
     return (
         <div className='uncertained-container'>
             <SearchTable
-                scroll={{x: 1240}}
+                scroll={{x: 1240, y: `calc(100vh - 400px)`}}
                 combineField={"bridge"}
+                pagination={{pageSize: 150}}
                 card2Extra={(
                     <Button
                         type={"primary"}

@@ -3,7 +3,7 @@ import {useNavigate, useSearchParams} from 'react-router-dom';
 import {message} from "antd";
 import Services from '../../../services/api';
 import SearchTable from 'mc/table/SearchTable';
-import TradeUtils from '../tradeUtils';
+import TradeUtils, {db0First} from '../tradeUtils';
 import './index.less'
 import {LeftOutlined} from "@ant-design/icons";
 
@@ -43,6 +43,7 @@ export default function History(props) {
                 }
             }).then((response) => {
                 let list = TradeUtils.deepMapList(response.result.data);
+                list = db0First(list);
                 resolve(list);
             }).catch((error) => {
                 reject(error)
@@ -77,7 +78,8 @@ export default function History(props) {
     return (
         <div className='history-container'>
             <SearchTable
-                scroll={{x: 1160}}
+                scroll={{x: 1160, y: `calc(100vh - 380px)`}}
+                pagination={{pageSize: 100}}
                 card2Title={getTitle()}
                 columnIndex={false}
                 getRef={(node) => {

@@ -19,6 +19,12 @@ code {
     cursor: pointer;
 }
 
+.one-line{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;

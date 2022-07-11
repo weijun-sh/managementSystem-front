@@ -413,7 +413,8 @@ function ChainLogs(props) {
                     }}
                     current={currentPage}
                     pageSize={pageSize}
-                    showSizeChanger={false}
+                    showSizeChanger={true}
+                    pageSizeOptions={[10, 50, 100, 150]}
                     onChange={(page) => {
                         setActiveKeys([])
                         setCurrentPage(page);
