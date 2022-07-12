@@ -45,7 +45,7 @@ function http(options) {
             if(typeof err.message === 'string'){
                 if (err.message.indexOf('canceled') !== -1) {
                     window.groupWarm("取消请求", "data",  data, 'params', data.params);
-                }if (err.message.indexOf('cross') !== -1) {
+                }else if (err.message.indexOf('cross') !== -1) {
                     window.groupWarm("跨域失败", "data",  data, 'params', data.params);
                     message.error("跨域失败", 1).then(() => {});
                     reject(new Error("跨域失败"));

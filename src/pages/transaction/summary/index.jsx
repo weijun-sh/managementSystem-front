@@ -93,6 +93,7 @@ export default function Summary() {
                 title: <span className='in-title'>Router</span>,
                 dataIndex: 'bridge',
                 key: 'bridge',
+                width: 106,
                 render: renderRouterColumn
 
             },
@@ -140,6 +141,7 @@ export default function Summary() {
                 title: 'bridge',
                 dataIndex: 'bridge',
                 key: 'bridge',
+                width: 96,
                 render: renderRouterColumn
             }, {
                 title: <div className={"cate"}>
@@ -227,7 +229,7 @@ export default function Summary() {
             >
                 <TabsetPane tab={<div className='tab-title'>Router</div>} key={RouterKey}>
                     <SearchTable
-                        scroll={{x: 660}}
+                        scroll={{x: 660, y: `calc(100vh - 350px)`}}
                         getRef={(node) => {
                             if (routerRef) {
                                 return
@@ -242,7 +244,7 @@ export default function Summary() {
                 </TabsetPane>
                 <TabsetPane tab={<div className='tab-title'>Bridge</div>} key={BridgeKey}>
                     <SearchTable
-                        scroll={{x: 1220, y: `calc(100vh - 486px)`}}
+                        scroll={{x: 1260, y: `calc(100vh - 380px)`}}
                         getRef={(node) => {
                             if (bridgeRef) {
                                 return

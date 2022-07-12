@@ -39,7 +39,7 @@ function UnAscertained(props) {
     function renderLoadingStatus(type){
         return (
             <span className={"loading-status"}>
-                <span className="type">{`${type}`}</span>
+                <span className="type">{`${type}`}</span>&nbsp;&nbsp;
                 <Spin size={"small"}/>
             </span>
         )
@@ -169,12 +169,10 @@ function UnAscertained(props) {
             </span>)
         }
 
-        list = db0First(list);
         list = tableRef.state.list.concat(list);
 
-        list = list.sort((a, b) => {
-            return a.swaptype - b.swaptype
-        })
+        list = db0First(list);
+
         tableRef.setList(list);
 
     }
@@ -203,7 +201,7 @@ function UnAscertained(props) {
     return (
         <div className='uncertained-container'>
             <SearchTable
-                scroll={{x: 1240, y: `calc(100vh - 400px)`}}
+                scroll={{x: 1240, y: `calc(100vh - 280px)`}}
                 combineField={"bridge"}
                 pagination={{pageSize: 150}}
                 card2Extra={(

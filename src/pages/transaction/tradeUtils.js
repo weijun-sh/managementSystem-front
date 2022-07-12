@@ -310,7 +310,7 @@ export const HistoryColumns = function (config = {}) {
             sorter: (a, b) => b.status - a.status,
             render: (data) => {
                 return (
-                    <div style={{width: 80, fontSize: 12}}>
+                    <div style={{width: 98, fontSize: 12}}>
                         <div>status: {data}</div>
                         {renderStatus(data)}
                     </div>
