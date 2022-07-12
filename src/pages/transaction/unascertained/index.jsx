@@ -13,7 +13,6 @@ let inCancels = null;
 let outCancels = null;
 
 
-
 function UnAscertained(props) {
     const [status, setStatus] = useState(0)
     let cols = TradeUtils.getUnascertainedColumns();
@@ -23,7 +22,7 @@ function UnAscertained(props) {
     const [routerStatus, setRouterStatus] = useState(null);
 
     useEffect(() => {
-        if(tableRef){
+        if (tableRef) {
             tableRef.setList([])
             loadMore();
             progress = 0;
@@ -36,7 +35,7 @@ function UnAscertained(props) {
         }
     }, []);
 
-    function renderLoadingStatus(type){
+    function renderLoadingStatus(type) {
         return (
             <span className={"loading-status"}>
                 <span className="type">{`${type}`}</span>&nbsp;&nbsp;
@@ -44,7 +43,8 @@ function UnAscertained(props) {
             </span>
         )
     }
-    function initStatus (){
+
+    function initStatus() {
         setInStatus(null);
         setOutStatus(null);
         setRouterStatus(null);
@@ -147,30 +147,32 @@ function UnAscertained(props) {
         let orgList = res.result.data
         let list = TradeUtils.deepMapList(orgList);
 
-        if(type === 'Router') {
+        if (type === 'Router') {
             setRouterStatus(
                 <span className={"success-status"}>
                     <span className={"type"}>Router</span>
-                    <span className={"msg"}>{`加载 ${list.length} 条数据`}</span>
+                    <span className={"msg"}>{`已加载 ${list.length} 条数据`}</span>
                 </span>)
         }
-        if(type === 'IN') {
+        if (type === 'IN') {
             setInStatus(
                 <span className={"success-status"}>
-                    <span className={"type"}>swapin</span>
-                    <span className={"msg"}>{`加载 ${list.length} 条数据`}</span>
+                    <span className={"type"}>bridge(IN)</span>
+                    <span className={"msg"}>{`已加载 ${list.length} 条数据`}</span>
                 </span>)
         }
-        if(type === 'OUT') {
-            setOutStatus(<span className={"success-status"}>
-                <span className={"type"}>swapout</span>
-                <span className={"msg"}>{`加载 ${list.length} 条数据`}</span>
-            </span>)
+        if (type === 'OUT') {
+            setOutStatus(
+                <span className={"success-status"}>
+                    <span className={"type"}>bridge(OUT)</span>
+                    <span className={"msg"}>{`已加载 ${list.length} 条数据`}</span>
+                </span>
+            )
         }
 
         list = tableRef.state.list.concat(list);
 
-        list = db0First(list);
+        //list = db0First(list);
 
         tableRef.setList(list);
 
@@ -215,7 +217,9 @@ function UnAscertained(props) {
                 )}
                 card2Title={getTitle}
                 getRef={(node) => {
-                    if(tableRef){return}
+                    if (tableRef) {
+                        return
+                    }
                     tableRef = node;
                 }}
                 columns={columns}

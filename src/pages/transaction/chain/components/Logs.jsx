@@ -40,7 +40,7 @@ function ChainLogs(props) {
                 <h3 className={"header"}>
                     <strong>交易日志</strong>
                 </h3>
-                <Empty description={"没有日志 (最长保存时间为14天)"}/>
+                <Empty description={"没有日志 (只保存14天内的日志)"}/>
             </div>
         )
     }
@@ -372,7 +372,6 @@ function ChainLogs(props) {
         return (
             <div hidden={hidden} className={"page-wrap"}>
                 <span
-                    hidden={!logs.length}
                     className={"type-all"}
                     onClick={() => {
                         changeType('all')
@@ -382,7 +381,6 @@ function ChainLogs(props) {
                     <strong> {allList.length}</strong> 条
                 </span>
                 <span
-                    hidden={!errorList.length}
                     className={"type-error"}
                     onClick={() => {
                         changeType('error')
@@ -392,7 +390,6 @@ function ChainLogs(props) {
                     <strong> {errorList.length}</strong> 条
                 </span>
                 <span
-                    hidden={!warnList.length}
                     className="type-warn"
                     onClick={() => {
                         changeType('warn')
@@ -406,9 +403,6 @@ function ChainLogs(props) {
                     className={"page"}
                     size={"small"}
                     total={currentList.length}
-                    showTotal={(total, range) => {
-                        return `共 ${total} 条日志记录`
-                    }}
                     current={currentPage}
                     pageSize={pageSize}
                     showSizeChanger={true}
