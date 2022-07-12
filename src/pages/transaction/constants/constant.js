@@ -65,6 +65,7 @@ export const ChainID = {
     "RSK": "RSK Mainnet",
     "TERRA": "TERRA Mainnet",
     "XRP": "XRP Mainnet",
+    "2020": "RONIN Mainnet"
 }
 
 export const SWAPIN_TYPE = 'swapin';

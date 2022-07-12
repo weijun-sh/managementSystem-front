@@ -108,12 +108,32 @@ function getDecimals(obj) {
 
 
 export function deepMapList(data) {
+    window.success("data", data)
     let list = [];
-    for (let routerKey in data) {
-        data[routerKey].map((item, index) => {
-            item.bridge = routerKey;
-            list = list.concat(item)
-            return item;
+    let bridgeAndRouter = {};
+    if(data.bridge){
+        bridgeAndRouter.bridge = data.bridge
+    }
+    if(data.router){
+        bridgeAndRouter.router = data.router
+    }
+    for(let bridgeOrRouterKey in bridgeAndRouter){
+        let bridgeOrRouter = data[bridgeOrRouterKey];
+        bridgeOrRouter.map((bridges) => {
+            for(let bridgeName in bridges){
+                let bridgeList = bridges[bridgeName];
+
+                if(!Array.isArray(bridgeList)){
+                    bridgeList = [bridgeList]
+                }
+                bridgeList.map((item) => {
+                    item.bridgeOrRouter = bridgeOrRouterKey;
+                    item.bridge = bridgeName;
+                    list = list.concat(item)
+                })
+            }
+
+
         })
     }
     return list;
@@ -142,6 +162,29 @@ export function renderRouterColumn(data) {
     )
 }
 
+function renderBridgeType(item){
+    const {swaptype, bridgeOrRouter} = item;
+    if(bridgeOrRouter === 'router'){
+        return (
+            <div className={`trade-column-Router-type`}>
+                Router
+            </div>
+        )
+    }
+    if(bridgeOrRouter === 'bridge'){
+        let type = {
+            1: 'IN',
+            2: 'OUT',
+        }
+        let show = type[swaptype];
+        return (
+            <div className={`trade-column-${show}-type`}>
+                {show}
+            </div>
+        )
+    }
+}
+
 export const HistoryColumns = function (config = {}) {
     const { hideSwapInOut = true } = config;
     return [
@@ -165,7 +208,6 @@ export const HistoryColumns = function (config = {}) {
                 return record.pairid
             }
         },
-
         {
             title: "数量",
             dataIndex: "value",
@@ -218,17 +260,7 @@ export const HistoryColumns = function (config = {}) {
             key: 'swaptype',
             hidden: hideSwapInOut,
             render: (data, record, index) => {
-                let type = {
-                    1: 'IN',
-                    2: 'OUT',
-                    3: '',
-                }
-                let show = type[data];
-                return (
-                    <div className={`trade-column-${show}-type`}>
-                        {show}
-                    </div>
-                )
+                return renderBridgeType(record)
             }
         },
         {
@@ -240,7 +272,7 @@ export const HistoryColumns = function (config = {}) {
                 let show = Utils.Layout.ellipsisCenter(text);
                 let toChainID = renderChainID(record.toChainID);
                 return (
-                    <div>
+                    <div style={{minWidth: 60}}>
                         <div>{toChainID}</div>
                         <CopyButton
                             copyText={text}
@@ -310,7 +342,7 @@ export const HistoryColumns = function (config = {}) {
             sorter: (a, b) => b.status - a.status,
             render: (data) => {
                 return (
-                    <div style={{width: 98, fontSize: 12}}>
+                    <div style={{ fontSize: 12}}>
                         <div>status: {data}</div>
                         {renderStatus(data)}
                     </div>

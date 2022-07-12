@@ -4,7 +4,7 @@ import SearchTable from 'mc/table/SearchTable';
 import PageContainer from "mc/container/PageContainer";
 
 import Services from '../../../services/api';
-import TradeUtils from '../tradeUtils'
+import TradeUtils, {deepMapList} from '../tradeUtils'
 import './index.less'
 import Logs from "./components/Logs";
 import {useSearchParams} from "react-router-dom";
@@ -43,8 +43,8 @@ export default function Chain() {
                         required: true,
                         message: '请选择交易哈希'
                     }, {
-                        len: 66,
-                        message: "交易哈希为66位长度字符"
+                        min: 40,
+                        message: "交易哈希长度不正确"
                     }
                 ],
                 componentProps: {
@@ -101,18 +101,12 @@ export default function Chain() {
                     txid,
                 }
             }).then((response) => {
-
-                let list = [];
                 let data = response.result.data;
-                let bridge = data.bridge;
+
+                let list = deepMapList(data);
                 let logs = data.log || [];
 
                 setLogs(logs);
-                for (let key in bridge) {
-                    let item = bridge[key];
-                    item.bridge = key;
-                    list.push(item);
-                }
                 resolve(list);
             }).catch((error) => {
                 reject(error);

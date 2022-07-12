@@ -40,7 +40,7 @@ function ChainLogs(props) {
                 <h3 className={"header"}>
                     <strong>交易日志</strong>
                 </h3>
-                <Empty description={"没有日志"}/>
+                <Empty description={"没有日志 (最长保存时间为14天)"}/>
             </div>
         )
     }

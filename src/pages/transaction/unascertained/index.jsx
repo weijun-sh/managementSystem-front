@@ -93,7 +93,6 @@ function UnAscertained(props) {
             }
         }).then((res) => {
             concatList(res, SWAPIN_TYPE, "IN");
-            //throw new Error("this is a error")
         }).catch((error) => {
             tableRef && tableRef.setLoading(false);
             setInStatus(

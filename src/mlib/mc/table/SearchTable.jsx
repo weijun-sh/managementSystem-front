@@ -3,6 +3,7 @@ import React from 'react';
 import WrapedCheckBox from '../checkbox/WrapedCheckBox';
 import PropTypes from "prop-types";
 import FetchSelect from "mc/select/FetchSelect";
+import Complete from "../input/Complete";
 
 function showTotal(total) {
     return `总共 ${total} 条数据`
@@ -224,6 +225,13 @@ class SearchTable extends React.Component {
                             style={style}
                             className={className}
                         >
+{/*                            <Complete
+                                defaultOpen={false}
+                                autoFocus={false}
+                                options={null}
+                                completeKey={"13579"}
+                                {...other}
+                            />*/}
                             <AutoComplete
                                 defaultOpen={false}
                                 autoFocus={false}

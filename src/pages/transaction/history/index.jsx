@@ -78,7 +78,7 @@ export default function History(props) {
     return (
         <div className='history-container'>
             <SearchTable
-                scroll={{x: 1160, y: `calc(100vh - 380px)`}}
+                scroll={{x: 1160, y: `calc(100vh - 280px)`}}
                 pagination={{pageSize: 100}}
                 card2Title={getTitle()}
                 columnIndex={false}
