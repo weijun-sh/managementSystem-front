@@ -95,6 +95,7 @@ class SearchTable extends React.Component {
                     title: '#',
                     dataIndex: 'rowKey',
                     key: 'rowKey',
+                    width: 44,
                     render: (data, record, index) => {
                         const {pagination} = this.state;
                         if (!pagination) {

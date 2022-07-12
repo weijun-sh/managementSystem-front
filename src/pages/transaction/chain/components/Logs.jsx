@@ -15,12 +15,16 @@ function isWarn(status) {
     return status === 'warn' || status === 'warning'
 }
 
+const TYPE_ALL = 'all';
+const TYPE_ERROR = 'error';
+const TYPE_WARN = 'warn';
+
 function ChainLogs(props) {
     const {logs, visible} = props;
     const [currentPage, setCurrentPage] = useState(1);
     const [activeKeys, setActiveKeys] = useState([]);
-    const [showType, setShowType] = useState('all');
-    const pageSize = 10;
+    const [showType, setShowType] = useState(TYPE_ALL);
+    const [pageSize, setPageSize] = useState(10);
 
     useEffect(() => {
         setCurrentPage(1)
@@ -72,23 +76,41 @@ function ChainLogs(props) {
         list = list.sort((a, b) => {
             return new Date(b.time).getTime() - new Date(a.time).getTime();
         });
+        //list[0].level = 'warn'
 
-
-        const errorList = list.filter(item => isError(item.level))
-        const warnList = list.filter(item => isWarn(item.level))
-
-        const pageList = list.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
-        return {
-            total: list.length,
-            pageList: pageList,
-            totalList: list,
-            errorList: errorList,
-            warnList: warnList,
-        };
+        return list
     }
 
-    const {pageList, total, errorList, warnList} = formatLogs();
+    function formatCurrentList(logs){
+        let pageList = [];
+        let currentList = [];
+
+        const errorList = logs.filter(item => isError(item.level))
+        const warnList = logs.filter(item => isWarn(item.level))
+
+
+        if(showType === TYPE_ALL){
+            pageList = logs.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+            currentList = logs;
+        }else if(showType === TYPE_WARN){
+            pageList = warnList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+            currentList = warnList
+        }else if(showType === TYPE_ERROR){
+            pageList = errorList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+            currentList = errorList;
+        }
+
+        return {
+            pageList,
+            errorList,
+            currentList,
+            warnList,
+            allList: logs
+        }
+    }
+
+    let formatedLogs = formatLogs();
+    let {pageList, currentList , errorList, warnList, allList} = formatCurrentList(formatedLogs) ;
 
     function renderLevels(level) {
         if (level == null) {
@@ -152,8 +174,6 @@ function ChainLogs(props) {
                             {times.length}
                         </span>
                     </Tips>
-
-
                 </div>
 
 
@@ -344,44 +364,22 @@ function ChainLogs(props) {
 
     function changeType(type) {
         setShowType(type);
-
-        let list = [];
-        if(type === 'error'){
-            list = errorList;
-        }else if(type === 'warn'){
-            list = warnList;
-        }
-        Modal.warn({
-            title: <h3>{`${type} 日志`}</h3>,
-            type: type,
-            className: 'errors-summary-modal',
-            bodyStyle: { padding: 20},
-            content: (
-                <Carousel style={{}}>
-                    {
-                        list.map((item, index) => {
-                            return (
-                                <div key={index}>
-                                    {printJson(item)}
-                                </div>
-                            )
-                        })
-                    }
-                </Carousel>
-
-            )
-        })
+        setActiveKeys([])
     }
 
-    function LogPagination() {
+    function LogPagination(props) {
+        const {hidden} = props;
         return (
-            <div className={"page-wrap"}>
+            <div hidden={hidden} className={"page-wrap"}>
                 <span
                     hidden={!logs.length}
                     className={"type-all"}
+                    onClick={() => {
+                        changeType('all')
+                    }}
                 >
                     所有日志:
-                    <strong> {logs.length}</strong> 条
+                    <strong> {allList.length}</strong> 条
                 </span>
                 <span
                     hidden={!errorList.length}
@@ -407,7 +405,7 @@ function ChainLogs(props) {
                 <Pagination
                     className={"page"}
                     size={"small"}
-                    total={total}
+                    total={currentList.length}
                     showTotal={(total, range) => {
                         return `共 ${total} 条日志记录`
                     }}
@@ -415,16 +413,16 @@ function ChainLogs(props) {
                     pageSize={pageSize}
                     showSizeChanger={true}
                     pageSizeOptions={[10, 50, 100, 150]}
-                    onChange={(page) => {
+                    onChange={(page, pageSize) => {
                         setActiveKeys([])
                         setCurrentPage(page);
+                        setPageSize(pageSize)
                     }}
                 />
             </div>
 
         )
     }
-
     return (
         <PageContainer className="trade-logs-container">
             <h3 style={{textAlign: 'left', paddingLeft: 20}}>
@@ -440,7 +438,7 @@ function ChainLogs(props) {
             >
                 {renderPanel()}
             </Collapse>
-            <LogPagination/>
+            <LogPagination hidden={pageList.length < 10 }/>
 
             <BackTop style={{bottom: 20}}/>
         </PageContainer>

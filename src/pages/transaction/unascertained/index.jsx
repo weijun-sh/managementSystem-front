@@ -171,6 +171,10 @@ function UnAscertained(props) {
 
         list = db0First(list);
         list = tableRef.state.list.concat(list);
+
+        list = list.sort((a, b) => {
+            return a.swaptype - b.swaptype
+        })
         tableRef.setList(list);
 
     }

@@ -164,22 +164,20 @@
     height: 25px;
     margin: 3px;
 
-    .type{
-      display: inline-block;
-      vertical-align: top;
-      font-size: 14px;
-      margin-right: 14px;
-      margin-top: 2px;
-    }
-
     .type-all {
       display: inline-block;
       vertical-align: top;
       font-size: 14px;
       margin-right: 14px;
-      margin-top: 2px;
+      cursor: pointer;
+      background: gray;
+      color: white;
+      padding: 1px 6px;
+      border-radius: 4px;
+      opacity: 0.9;
       &:hover{
-        color: black;
+        opacity: 1;
+        box-shadow: 1px 1px 1px 1px #aaa;
       }
     }
     .type-error {
@@ -189,11 +187,14 @@
       margin-right: 14px;
       margin-top: 2px;
       cursor: pointer;
-      strong{
-        color: #b55353
-      }
+      background: #b55353;
+      color: white;
+      padding: 1px 6px;
+      border-radius: 4px;
+      opacity: 0.9;
       &:hover{
-        color: black;
+        opacity: 1;
+        box-shadow: 1px 1px 1px  #955353;
       }
     }
     .type-warn {
@@ -203,12 +204,16 @@
       margin-right: 14px;
       margin-top: 2px;
       cursor: pointer;
-      strong{
-        color: #cbcb5b
-      }
+      background: #b47d00;
+      color: white;
+      padding: 1px 6px;
+      border-radius: 4px;
+      opacity: 0.9;
       &:hover{
-        color: black;
+        opacity: 1;
+        box-shadow: 1px 1px 1px  #947d00;
       }
+
     }
     .page{
       display: inline-block;
