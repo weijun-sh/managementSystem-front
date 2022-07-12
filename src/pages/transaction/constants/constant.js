@@ -51,6 +51,20 @@ export const ChainID = {
     32659: "FSN Mainnet",
     1313161554: "AURORA Mainnet",
     1666600000: "HARMONY Mainnet",
+    "BLOCK": "BLOCK Mainnet",
+    "BOBA": "BOBA Mainnet",
+    "BTC": "BTC Mainnet",
+    "CMP": "CMP Mainnet",
+    "COLX": "COLX Mainnet",
+    "DOGE": "DOGE Mainnet",
+    "JEWEL": "JEWEL Mainnet",
+    "LTC": "LTC Mainnet",
+    "NEBULAS": "NEBULAS Mainnet",
+    "REI": "REI Mainnet",
+    "RONIN": "RONIN Mainnet",
+    "RSK": "RSK Mainnet",
+    "TERRA": "TERRA Mainnet",
+    "XRP": "XRP Mainnet",
 }
 
 export const SWAPIN_TYPE = 'swapin';
