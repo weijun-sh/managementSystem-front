@@ -9,6 +9,7 @@ import stores from "@/stores";
 import {ThemeProvider} from "mu/theme";
 import './App.less'
 import PageLayout, {PageContent, PageFooter, PageHeader} from "mc/layout/Layout";
+import Sharing from "../mlib/mc/button/Sharing";
 
 const App = function () {
     const [collapsed, setCollapsed] = useState(false);
@@ -90,6 +91,8 @@ const App = function () {
                 }}/>
                 <PageContent>
                     <PageRoutes/>
+
+                    <Sharing/>
                 </PageContent>
             </PageLayout>
         )

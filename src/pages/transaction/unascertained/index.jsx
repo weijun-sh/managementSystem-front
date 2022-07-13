@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import SearchTable from 'mc/table/SearchTable';
 import Services from '../../../services/api';
-import TradeUtils, {db0First} from '../tradeUtils'
+import TradeUtils from '../tradeUtils'
 import './index.less'
 import {Button, message, Progress, Spin} from "antd";
-import {Router_TYPE, SWAPIN_TYPE, SWAPOUT_TYPE} from "../constants/constant";
 
 let tableRef = null;
 let progress = 0;
@@ -12,20 +11,55 @@ let routerCancels = null;
 let inCancels = null;
 let outCancels = null;
 
+const LoadingStatus = "loading";
+const SuccessStatus = "success";
+const ErrorStatus = "error";
+
+let outList = [];
+let inList = [];
+let routerList = [];
+
+function setOutList(list){
+    outList = list
+}
+
+function setRouterList(list){
+    routerList = list
+}
+function setInList(list){
+    inList = list
+}
+
+
 
 function UnAscertained(props) {
     const [status, setStatus] = useState(0)
     let cols = TradeUtils.getUnascertainedColumns();
     const columns = [...cols];
-    const [inStatus, setInStatus] = useState(null);
-    const [outStatus, setOutStatus] = useState(null);
-    const [routerStatus, setRouterStatus] = useState(null);
+    const [inStatus, setInStatus] = useState(LoadingStatus);
+    const [outStatus, setOutStatus] = useState(LoadingStatus);
+    const [routerStatus, setRouterStatus] = useState(LoadingStatus);
+
+    const [showRoute, setShowRouter] = useState(true);
+    const [showIn, setShowIn] = useState(true);
+    const [showOut, setShowOut] = useState(true);
+    const [showList, setShowList] = useState([]);
+
 
     useEffect(() => {
         if (tableRef) {
             tableRef.setList([])
             loadMore();
             progress = 0;
+            setOutList([]);
+            setInList([]);
+            setRouterList([])
+            setShowRouter(true)
+            setShowIn(true)
+            setShowOut(true)
+            setRouterStatus(LoadingStatus);
+            setInStatus(LoadingStatus)
+            setOutStatus(LoadingStatus)
         }
         return function () {
             tableRef = null
@@ -70,16 +104,10 @@ function UnAscertained(props) {
                 }
             }
         }).then((res) => {
-            concatList(res, Router_TYPE, "Router");
-            //throw new Error("this is a error")
+            concatList(res, "Router");
         }).catch((error) => {
             tableRef && tableRef.setLoading(false);
-            setRouterStatus(
-                <span className={"error-status"}>
-                    <span className={"type"}>Router</span>
-                    <span className={"msg"}>{error.message || '加载失败'}</span>
-                </span>
-            )
+            setRouterStatus(ErrorStatus)
         })
         Services.getSwapinHistory({
             params: {
@@ -92,15 +120,10 @@ function UnAscertained(props) {
                 }
             }
         }).then((res) => {
-            concatList(res, SWAPIN_TYPE, "IN");
+            concatList(res, "IN");
         }).catch((error) => {
             tableRef && tableRef.setLoading(false);
-            setInStatus(
-                <span className={"error-status"}>
-                    <span className={"type"}>swapin</span>
-                    <span className={"msg"}>{error.message || '加载失败'}</span>
-                </span>
-            )
+            setInStatus(ErrorStatus)
         })
         Services.getSwapoutHistory({
             params: {
@@ -113,22 +136,14 @@ function UnAscertained(props) {
                 }
             }
         }).then((res) => {
-            concatList(res, SWAPOUT_TYPE, "OUT");
-            //throw new Error("this is a error")
+            concatList(res, "OUT");
         }).catch((error) => {
             tableRef && tableRef.setLoading(false);
-            setOutStatus(
-                <span className={"error-status"}>
-                    <span className={"type"}>swapout</span>
-                    <span className={"msg"}>{error.message || '加载失败'}</span>
-                </span>
-            )
+            setOutStatus(ErrorStatus)
         })
-
-
     }
 
-    function concatList(res, bridge, type) {
+    function concatList(res, type) {
         if (!tableRef) {
             return;
         }
@@ -144,38 +159,139 @@ function UnAscertained(props) {
             progress = 100;
             setStatus(100)
         }
-        let orgList = res.result.data
-        let list = TradeUtils.deepMapList(orgList);
+        let orgList = res.result.data;
 
+        let list = TradeUtils.deepMapList(orgList);
+        window.success("receive list", list)
+        let newList = []
         if (type === 'Router') {
-            setRouterStatus(
-                <span className={"success-status"}>
-                    <span className={"type"}>Router</span>
-                    <span className={"msg"}>{`已加载 ${list.length} 条数据`}</span>
-                </span>)
+
+            setRouterList(list);
+            setRouterStatus(SuccessStatus);
+            setShowRouter(true);
+
+            newList = [...list, ...inList, ...outList];
         }
         if (type === 'IN') {
-            setInStatus(
-                <span className={"success-status"}>
-                    <span className={"type"}>bridge(IN)</span>
-                    <span className={"msg"}>{`已加载 ${list.length} 条数据`}</span>
-                </span>)
+            setInList(list);
+            setInStatus(SuccessStatus);
+            setShowIn(true);
+
+            newList = [...routerList, ...list, ...outList];
         }
         if (type === 'OUT') {
-            setOutStatus(
-                <span className={"success-status"}>
-                    <span className={"type"}>bridge(OUT)</span>
-                    <span className={"msg"}>{`已加载 ${list.length} 条数据`}</span>
+
+            setOutList(list)
+            setOutStatus(SuccessStatus)
+            setShowOut(true);
+
+            newList = [...routerList, ...inList, ...list];
+        }
+        tableRef.setList(newList);
+    }
+
+    function renderList(showRoute, showIn, showOut) {
+
+        window.groupSuccess("visible ==>", 'routerList', routerList, 'inList', inList, 'outList', outList)
+
+        let list = []
+        if (showRoute) {
+            list = list.concat(routerList)
+        }
+        if (showIn) {
+            list = list.concat(inList)
+        }
+        if (showOut) {
+            list = list.concat(outList)
+        }
+        setShowList(list)
+    }
+
+    useEffect(() => {
+        tableRef.setList(showList);
+    }, [showList])
+
+    function renderStatus() {
+        let routerStatusView = renderLoadingStatus("Router");
+        let inStatusView = renderLoadingStatus("bridge(IN)");
+        let outStatusView = renderLoadingStatus("bridge(OUT)");
+
+
+        if (routerStatus === ErrorStatus) {
+            routerStatusView = (
+                <span className={"error-status"}>
+                    <span className={"type"}>Router</span>
+                    <span className={"msg"}>{'加载失败'}</span>
+                </span>
+            )
+        } else if (routerStatus === SuccessStatus) {
+            routerStatusView = (
+                <span
+                    style={{opacity: showRoute ? 1 : 0.6}}
+                    className={"success-status"}
+                    onClick={() => {
+                        setShowRouter(!showRoute);
+                        renderList(!showRoute, showIn, showOut)
+                    }}
+                >
+                    <span className={"type"}>Router</span>
+                    <span className={"msg"}>{`${routerList.length} 条数据`}</span>
+                </span>)
+        }
+
+        if (inStatus === ErrorStatus) {
+            inStatusView = (
+                <span className={"error-status"}>
+                    <span className={"type"}>bridge(IN)</span>
+                    <span className={"msg"}>{'加载失败'}</span>
+                </span>
+            )
+        } else if (inStatus === SuccessStatus) {
+            inStatusView = (
+                <span
+                    style={{opacity: showIn ? 1 : 0.6}}
+                    className={"success-status"}
+                    onClick={() => {
+                        setShowIn(!showIn);
+                        renderList(showRoute, !showIn, showOut)
+                    }}
+                >
+                    <span className={"type"}>bridge(IN)</span>
+                    <span className={"msg"}>{` ${inList.length} 条数据`}</span>
                 </span>
             )
         }
 
-        list = tableRef.state.list.concat(list);
+        if (outStatus === ErrorStatus) {
+            outStatusView = (
+                <span className={"error-status"}>
+                    <span className={"type"}>bridge(OUT)</span>
+                    <span className={"msg"}>{'加载失败'}</span>
+                </span>
+            )
+        } else if (outStatus === SuccessStatus) {
+            outStatusView = (
+                <span
+                    style={{opacity: showOut ? 1 : 0.6}}
+                    className={"success-status"}
+                    onClick={() => {
+                        setShowOut(!showOut);
+                        renderList(showRoute, showIn, !showOut)
+                    }}
+                >
+                    <span className={"type"}>bridge(OUT)</span>
+                    <span className={"msg"}>{` ${outList.length} 条数据`}</span>
+                </span>
+            )
+        }
 
-        //list = db0First(list);
-
-        tableRef.setList(list);
-
+        return (
+            <span style={{fontSize: 12, marginLeft: 10, color: 'gray'}}>
+                {routerStatusView}
+                {inStatusView}
+                {outStatusView}
+            </span>
+        )
     }
 
     function getTitle() {
@@ -189,16 +305,12 @@ function UnAscertained(props) {
                     type="circle"
                     percent={progress}
                 />
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <span style={{fontSize: 12, marginLeft: 10, color: 'gray'}}>
-                    {routerStatus || renderLoadingStatus("Router")}
-                    {inStatus || renderLoadingStatus("swapin")}
-                    {outStatus || renderLoadingStatus("swapout")}
-                </span>
+                {renderStatus()}
             </div>
         )
     }
 
+    let card2Title = getTitle();
     return (
         <div className='uncertained-container'>
             <SearchTable
@@ -215,7 +327,7 @@ function UnAscertained(props) {
                         查询
                     </Button>
                 )}
-                card2Title={getTitle}
+                card2Title={card2Title}
                 getRef={(node) => {
                     if (tableRef) {
                         return

@@ -39,6 +39,7 @@ const infoStyles = [
     'padding:2px',].join(';');
 
 export function log(key, value) {
+
     if(process.env.NODE_ENV === 'production'){
         return;
     }
@@ -94,6 +95,9 @@ export function error(key, value) {
 }
 
 function groupOutput(type){
+    if(process.env.NODE_ENV === 'production'){
+        return;
+    }
     let style = '';
     switch (type){
         case 'error':

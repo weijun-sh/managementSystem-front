@@ -108,7 +108,6 @@ function getDecimals(obj) {
 
 
 export function deepMapList(data) {
-    window.success("data", data)
     let list = [];
     let bridgeAndRouter = {};
     if(data.bridge){

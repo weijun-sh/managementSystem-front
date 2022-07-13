@@ -8,7 +8,6 @@ import TradeUtils, {deepMapList} from '../tradeUtils'
 import './index.less'
 import Logs from "./components/Logs";
 import {useSearchParams} from "react-router-dom";
-import Sharing from "../../../mlib/mc/button/Sharing";
 
 const options = TradeUtils.renderChainIDOptions();
 let completes = [];
@@ -151,7 +150,6 @@ export default function Chain() {
                 getList={getList}
                 pagination={false}
             />
-            <Sharing/>
             <Logs
                 logs={logs}
                 visible={isLogVisible()}
