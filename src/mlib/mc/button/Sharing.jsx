@@ -56,6 +56,7 @@ function Sharing() {
                 <div>
                     链接地址: 
                     <a href="${window.location.href}">${window.location.href}</a>
+                    <br/>
                     预览图:
                     <img src="${imageURL}"/>
                     <br/>
@@ -96,6 +97,9 @@ function Sharing() {
 
                                 <div className={"content"}>
                                     <img src={imageURL}/>
+                                    <div className={"url"}>
+                                        页面地址: {window.location.href}
+                                    </div>
                                 </div>
                                 <Form
                                     ref={formRef}
