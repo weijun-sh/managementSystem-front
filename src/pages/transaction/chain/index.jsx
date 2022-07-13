@@ -151,7 +151,7 @@ export default function Chain() {
                 getList={getList}
                 pagination={false}
             />
-            {/*<Sharing/>*/}
+            <Sharing/>
             <Logs
                 logs={logs}
                 visible={isLogVisible()}

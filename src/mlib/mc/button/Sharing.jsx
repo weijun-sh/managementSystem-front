@@ -1,30 +1,30 @@
-import {Button, Modal, Input, Checkbox, Select} from 'antd';
+import {Button, Modal, Input, Checkbox, Select, Form, message} from 'antd';
 
-import React, {forwardRef, useRef, useState} from 'react';
+import React, {forwardRef, useEffect, useRef, useState} from 'react';
 import html2canvas from 'html2canvas'
 import {ShareAltOutlined} from '@ant-design/icons'
 import './sharing.less'
+import {EmailReceiverList} from "../../../config/staticConfig";
+import Services from '../../../services/api';
 
 const {TextArea} = Input;
 
 function Sharing() {
 
-    return null
-    let list = [{name: '张工'}, {name: '张国泽'}];
-    const emailRef = useRef(0);
-    const copyRef = useRef(0);
-    const titleRef = useRef(0);
-    const contentRef = useRef(0);
 
-
-
-    const EmailOptions = forwardRef(function (props, ref){
+    const formRef = useRef(0);
+    const EmailOptions = forwardRef(function (props, ref) {
         return (
-            <Select ref={ref} mode={props.mode} className={"select"}>
+            <Select
+                ref={ref}
+                mode={props.mode}
+                className={"select"}
+                onChange={props.onChange}
+            >
                 {
-                    list.map((item, index) => {
+                    EmailReceiverList.map((item, index) => {
                         return (
-                            <Select.Option value={item.name} key={index}>
+                            <Select.Option value={item.email} key={index}>
                                 {item.name}
                             </Select.Option>
                         )
@@ -34,13 +34,47 @@ function Sharing() {
         )
     })
 
-    function confirm(close){
-        let email = emailRef.current;
-        let copy = copyRef.current;
-        let title = titleRef.current;
-        window.groupSuccess("confirm", "email", email, "copy", copy, 'title', title)
-        window.groupError("content", 'title', title.input.value)
-        debugger
+
+    function confirm(imageURL, close) {
+        if (!formRef || !formRef.current) {
+            close();
+            return;
+        }
+        formRef.current.validateFields().then((params) => {
+
+            if(Array.isArray(params.cc) && params.cc.length){
+                params.cc = params.cc.join(',')
+            }else {
+                params.cc = null
+            }
+
+            if(!params.content){
+                params.content = '';
+            }
+
+            params.html = `
+                <div>
+                    链接地址: 
+                    <a href="${window.location.href}">${window.location.href}</a>
+                    预览图:
+                    <img src="${imageURL}"/>
+                    <br/>
+                    ${params.content}
+                </div>
+              `
+            Services.sendEmail({
+                params: params
+            }).then((res) => {
+                message.success("发送成功", 1).then(() => {
+                    close()
+                })
+            }).catch((err) => {
+                window.error("send err", err);
+            })
+        }).catch(() => {
+
+        })
+
     }
 
     return (
@@ -55,64 +89,55 @@ function Sharing() {
                         okText: '确定',
                         cancelText: '取消',
                         onOk: (close) => {
-                            confirm(close)
+                            confirm(imageURL, close)
                         },
                         content: (
                             <div className={"sharing-container"}>
 
                                 <div className={"content"}>
                                     <img src={imageURL}/>
-                                    <div>
-                                        <span>链接地址</span>
-                                        <span>{window.location.href}</span>
-                                    </div>
-
                                 </div>
-                                <div className={"email"}>
-                                    <div className={"line"}>
-                                        <span
-
-                                            className={"label"}
-                                        >
-                                            收件人:
-                                        </span>
-                                        <EmailOptions
-                                            ref={emailRef}
-                                        />
-                                    </div>
-                                    <div className={"line"}>
-                                        <span
-                                            className={"label"}
-
-                                        >
-                                            抄送:
-                                        </span>
-                                        <EmailOptions
-                                            ref={copyRef}
-                                            mode={"tags"}
-                                        />
-                                    </div>
-                                    <div className={"line"}>
-                                        <span
-                                            className={"label"}
-
-                                        >
-                                            标题:
-                                        </span>
+                                <Form
+                                    ref={formRef}
+                                    className={"email"}
+                                    labelCol={{
+                                        span: 6,
+                                    }}
+                                    wrapperCol={{
+                                        span: 18,
+                                    }}
+                                >
+                                    <Form.Item
+                                        label={"收件人"}
+                                        className={"line"}
+                                        rules={[{required: true, message: '请选择收件人'}]}
+                                        name={"to"}
+                                    >
+                                        <EmailOptions/>
+                                    </Form.Item>
+                                    <Form.Item name={"cc"} label={"抄送"} className={"line"}>
+                                        <EmailOptions mode={"tags"}/>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label={"标题"}
+                                        className={"line"}
+                                        name={"subject"}
+                                        initialValue={"跨链交易报告"}
+                                    >
                                         <Input
-                                            ref={titleRef}
-                                            value={"跨链交易报告"}
                                             className={"select"}
                                         />
-                                    </div>
-                                    <div className={"line"}>
-                                        <span className={"label"}>内容</span>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label={"内容"}
+                                        className={"line"}
+                                        name={"content"}
+                                    >
                                         <TextArea
-                                            className={"select"}
-                                            ref={contentRef}
+                                            className={"select text-area"}
                                         />
-                                    </div>
-                                </div>
+                                    </Form.Item>
+                                </Form>
                             </div>
                         )
                     })
