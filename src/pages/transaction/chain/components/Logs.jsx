@@ -19,6 +19,13 @@ const TYPE_ALL = 'all';
 const TYPE_ERROR = 'error';
 const TYPE_WARN = 'warn';
 
+const TypeText = {
+    all: '所有',
+    error: '错误',
+    warn: '警告',
+
+}
+
 function ChainLogs(props) {
     const {logs, visible} = props;
     const [currentPage, setCurrentPage] = useState(1);
@@ -36,11 +43,20 @@ function ChainLogs(props) {
 
     if (logs.length === 0) {
         return (
+            <EmptyLog
+                title={"交易日志"}
+                msg={"没有日志 (只保存14天内的日志)"}
+            />
+        )
+    }
+
+    function EmptyLog(props){
+        return (
             <div className={"empty"}>
                 <h3 className={"header"}>
-                    <strong>交易日志</strong>
+                    <strong>{props.title}</strong>
                 </h3>
-                <Empty description={"没有日志 (只保存14天内的日志)"}/>
+                <Empty description={props.msg}/>
             </div>
         )
     }
@@ -313,6 +329,11 @@ function ChainLogs(props) {
     }
 
     function renderPanel() {
+
+        if(!currentList.length){
+            return <EmptyLog msg={`没有${TypeText[showType]}日志`}/>
+        }
+
         return pageList.map((item, index) => {
             let {bind, level, msg, pairID, time, status, txid, isSwapin, times,} = item;
             let {err, txHash} = item;

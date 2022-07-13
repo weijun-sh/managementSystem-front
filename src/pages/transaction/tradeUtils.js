@@ -231,12 +231,13 @@ export const HistoryColumns = function (config = {}) {
             title: "发送",
             dataIndex: 'txid',
             key: 'txid',
+            width: 108,
             render: (data, record) => {
                 let text = record.txid;
                 let show = Utils.Layout.ellipsisCenter(text);
 
                 return (
-                    <div style={{width: 128}}>
+                    <div style={{minWidth: 128}}>
                         <div>{renderChainID(record.fromChainID)}</div>
                         <CopyButton
                             text={show}
@@ -258,6 +259,7 @@ export const HistoryColumns = function (config = {}) {
             title: '',
             dataIndex: 'swaptype',
             key: 'swaptype',
+            width: 60,
             hidden: hideSwapInOut,
             render: (data, record, index) => {
                 return renderBridgeType(record)
@@ -267,12 +269,13 @@ export const HistoryColumns = function (config = {}) {
             title: "接收",
             dataIndex: 'txid',
             key: 'txid',
+            width: 164,
             render: (data, record) => {
                 let text = record.swaptx;
                 let show = Utils.Layout.ellipsisCenter(text);
                 let toChainID = renderChainID(record.toChainID);
                 return (
-                    <div style={{minWidth: 60}}>
+                    <div style={{minWidth: 128}}>
                         <div>{toChainID}</div>
                         <CopyButton
                             copyText={text}
