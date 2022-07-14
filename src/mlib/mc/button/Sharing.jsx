@@ -4,15 +4,32 @@ import React, {forwardRef, useEffect, useRef, useState} from 'react';
 import html2canvas from 'html2canvas'
 import {ShareAltOutlined} from '@ant-design/icons'
 import './sharing.less'
-import {EmailReceiverList} from "../../../config/staticConfig";
 import Services from '../../../services/api';
 
 const {TextArea} = Input;
+
+let loading = false;
+function setLoading(b){
+    loading = b;
+}
 
 function Sharing() {
 
 
     const formRef = useRef(0);
+    const [receivers, setReceivers] = useState([])
+
+    useEffect(() => {
+        loading = false
+        Services.emailReceivers({
+
+        }).then((res) => {
+            setReceivers(res.data)
+        }).catch((err) => {
+
+        })
+    }, [])
+
     const EmailOptions = forwardRef(function (props, ref) {
         return (
             <Select
@@ -22,7 +39,7 @@ function Sharing() {
                 onChange={props.onChange}
             >
                 {
-                    EmailReceiverList.map((item, index) => {
+                    receivers.map((item, index) => {
                         return (
                             <Select.Option value={item.email} key={index}>
                                 {item.name}
@@ -40,6 +57,11 @@ function Sharing() {
             close();
             return;
         }
+        if(loading){
+            message.warn("正在发送中")
+            return
+        }
+        setLoading(true)
         formRef.current.validateFields().then((params) => {
 
             if(Array.isArray(params.cc) && params.cc.length){
@@ -54,10 +76,10 @@ function Sharing() {
 
             params.html = `
                 <div>
-                    链接地址: 
+                    <div style="font-size: 12px; color: gray">链接地址:</div> 
                     <a href="${window.location.href}">${window.location.href}</a>
                     <br/>
-                    预览图:
+                    <div style="font-size: 12px; color: gray">预览图:</div> 
                     <img src="${imageURL}"/>
                     <br/>
                     ${params.content}
@@ -71,9 +93,11 @@ function Sharing() {
                 })
             }).catch((err) => {
                 window.error("send err", err);
+            }).finally(() => {
+                setLoading(false)
             })
         }).catch(() => {
-
+            setLoading(false)
         })
 
     }

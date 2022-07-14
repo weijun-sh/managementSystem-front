@@ -15,6 +15,8 @@ const LoadingStatus = "loading";
 const SuccessStatus = "success";
 const ErrorStatus = "error";
 
+
+//update list not at time, change to global var
 let outList = [];
 let inList = [];
 let routerList = [];

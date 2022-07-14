@@ -26,9 +26,11 @@ export default function History(props) {
         }
     }, []);
 
+    /*
+    * router list, or swap in/out list
+    * */
     function getList(info) {
         return new Promise((resolve, reject) => {
-            //status '' 为所有， bridge 从路由中获取
             let service = Services.getSwapHistory
             if (type === 'in') {
                 service = Services.getSwapinHistory

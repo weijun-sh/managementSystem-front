@@ -6,7 +6,6 @@ import Services from '../../../services/api';
 import {
     mapSummaryStatus,
     mapSummarySuccessStatus,
-    getRouterSummaryList,
     renderRouterColumn,
     db0First
 } from '../tradeUtils'
@@ -213,6 +212,9 @@ export default function Summary() {
         })
     }
 
+    /**
+     * change tab and fetch data using tableRef
+     * */
     function changeTab(key) {
         if (key === RouterKey) {
             routerRef && routerRef.fetchData();

@@ -9,23 +9,21 @@ import CopyButton from "../../mlib/mc/button/CopyButton";
 import {transferSecond} from "../../mlib/mu/time";
 import React from "react";
 
+/**
+ * table column , deal time gap between timestamp and inittime
+ * */
 export function timeStampGap( timestamp, inittime){
-
-
     let diff = timestamp - inittime;
-
     if(diff   < 0){
         return '-'
     }
-
     diff = transferSecond(diff)
     return diff;
 }
 
-export function getRouterSummaryList() {
-    return CONST.SummaryRouterList;
-}
-
+/**
+ * process status
+ * */
 export function renderStatus(status) {
     if (status == null) {
         return status;
@@ -33,6 +31,9 @@ export function renderStatus(status) {
     return CONST.SwapStatus[status]
 }
 
+/**
+ * map chainid to chain
+ * */
 export function renderChainID(id) {
     if (id == null) {
         return id;
@@ -40,6 +41,9 @@ export function renderChainID(id) {
     return CONST.ChainID[id]
 }
 
+/**
+ * change number status such as 1, 10, 14 ... to text error confirm ...
+ * */
 export function renderSummaryStatus(status) {
     if (status == null) {
         return status;
@@ -89,10 +93,17 @@ export function renderChainIDOptions() {
     return list;
 }
 
+/**
+ *
+ * format send or receive value to smaller
+ * */
 export function minifyValue(num, id) {
     return fromWei(num, getDecimals(id))
 }
 
+/**
+ * click search icon to search page
+ * */
 function toBrowser(record) {
     detail(record)
 }
@@ -106,7 +117,9 @@ function getDecimals(obj) {
 }
 
 
-
+/**
+ * format backend data to table data
+ * */
 export function deepMapList(data) {
     let list = [];
     let bridgeAndRouter = {};
@@ -131,8 +144,6 @@ export function deepMapList(data) {
                     list = list.concat(item)
                 })
             }
-
-
         })
     }
     return list;
@@ -143,6 +154,9 @@ export function fromWei(amount, baseDecimals) {
     return toThousands(amount)
 }
 
+/**
+ * router column , _0# show as corner
+ * */
 export function renderRouterColumn(data) {
     let reg = /_#0/.exec(data);
     let cor = null;
@@ -184,6 +198,9 @@ function renderBridgeType(item){
     }
 }
 
+/**
+ * table columns
+ * */
 export const HistoryColumns = function (config = {}) {
     const { hideSwapInOut = true } = config;
     return [
@@ -370,7 +387,9 @@ export function getChainColumns(config = {}) {
     return HistoryColumns(config);
 }
 
-
+/**
+ * show _0# in first
+ * */
 export function db0First(list){
     list = list.sort((a, b) => {
         let ai =  a.bridge.indexOf('#0') !== -1 ? 1: 0;

@@ -61,6 +61,8 @@ function ChainLogs(props) {
         )
     }
 
+    /*from backend data change to useful
+    * */
     function formatLogs() {
         let result = {};
         logs.map((item) => {
@@ -92,18 +94,19 @@ function ChainLogs(props) {
         list = list.sort((a, b) => {
             return new Date(b.time).getTime() - new Date(a.time).getTime();
         });
-        //list[0].level = 'warn'
 
         return list
     }
 
+    /*
+    * current page to show
+    * */
     function formatCurrentList(logs){
         let pageList = [];
         let currentList = [];
 
         const errorList = logs.filter(item => isError(item.level))
         const warnList = logs.filter(item => isWarn(item.level))
-
 
         if(showType === TYPE_ALL){
             pageList = logs.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -246,12 +249,11 @@ function ChainLogs(props) {
                     info
                 </div>
             )
-
         }
-
         return level
     }
 
+    //print out origin data, json
     function printJson(obj) {
         let list = [];
         for (let key in obj) {

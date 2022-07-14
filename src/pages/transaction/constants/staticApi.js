@@ -1,3 +1,5 @@
+//save in local
+
 export const allBridgeChainInfo = {
     "1": {
         "name": "Ethereum",
