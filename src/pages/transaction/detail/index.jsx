@@ -7,6 +7,7 @@ import './index.less'
 import {allBridgeChainInfo} from '../constants/staticApi';
 import Utils from "mu";
 import ToChainLink from "../components/toChainLink";
+import {sourceHash} from "../openOuter";
 
 function detail(record) {
     let {status, value, swapvalue, bind, txid, fromChainID, toChainID, from, timestamp, swaptx} = record;
@@ -27,16 +28,6 @@ function detail(record) {
     swapvalue = !!swaptx && swaptx !== '' ? minifyValue(swapvalue, record.toChainID) : '';
     let fromChainIDName = renderChainID(fromChainID);
     let toChainIDName = renderChainID(toChainID);
-
-    function sourceHash(id) {
-
-        let chainInfo = allBridgeChainInfo[fromChainID];
-        if(!chainInfo) { message.error("链为空"); return;}
-        let explorer = chainInfo.explorer;
-        let addr = explorer.tx;
-        let href = `${addr}${id}`;
-        window.open(href, '_blank')
-    }
 
     function targetHash(id) {
         let chainInfo = allBridgeChainInfo[toChainID];
@@ -75,7 +66,7 @@ function detail(record) {
                         <label>
                             <CopyButton
                                 onTextClick={() => {
-                                    sourceHash(txid, 'outer')
+                                    sourceHash(txid, fromChainID)
                                 }}
                                 className="pointer"
                             >

@@ -4,6 +4,7 @@ import {Collapse} from 'antd';
 import './process.less'
 import {renderChainID} from "../../tradeUtils";
 import CopyButton from "../../../../mlib/mc/button/CopyButton";
+import OuterLink from "../../components/outerLink";
 const {Panel} = Collapse;
 
 function Process(props) {
@@ -49,7 +50,10 @@ function Process(props) {
                             <span className={"key"}>txid</span>
                             <span className={"value"}>
 
-                                <CopyButton>{txid}</CopyButton>
+                                <OuterLink
+                                    hash={txid}
+                                    chainid={fromChainID}
+                                />
                             </span>
                         </div>
                     </div>
