@@ -177,12 +177,11 @@ function ChainLogs(props) {
                 </div>
 
 
-
                 <div className='header-item'>
                     <label>消息</label>
                     <label>{msg}</label>
 
-                    <div hidden={!isError(level)} >
+                    <div hidden={!isError(level)}>
                         <label>err</label>
                         <label style={{color: '#b55353'}}>{err}</label>
                     </div>
@@ -421,7 +420,29 @@ function ChainLogs(props) {
                 key={1}
                 header={(
                     <div className={"title-panel"}>
-                        <span>swap 处理过程</span>
+                        <strong>swap 处理过程</strong>
+                        {
+                            logs && logs.length && (
+                                <span className={"header-summary"}>
+                                    <div className={"line"}>
+                                        <span className={"key"}>
+                                            消息
+                                        </span>
+                                        <span className={"value"}>
+                                            {logs[0].msg}
+                                        </span>
+                                    </div>
+                                    <div className={"line"}>
+                                        <span className={"key"}>
+                                            时间
+                                        </span>
+                                        <span className={"value"}>
+                                            {formatTime(logs[0].time)}
+                                        </span>
+                                    </div>
+                                </span>
+                            )
+                        }
                     </div>
                 )}
             >
@@ -434,7 +455,7 @@ function ChainLogs(props) {
                 >
                     {renderPanel()}
 
-                <LogPagination />
+                    <LogPagination/>
                 </Collapse>
 
             </Panel>

@@ -35,11 +35,13 @@ function Process(props) {
             <Panel key={"1"}
                 header={(
                     <div className={"header"}>
-                        <div className={"line"}>swap交易信息</div>
+                        <div className={"line"}>
+                            <strong>swap 交易信息</strong>
+                        </div>
                         <div className={"line"}>
                             <span className={"key"}>来源链</span>
                             <span className={"value"}>
-                                <strong>{renderChainID(fromChainID)}</strong>
+                                <span>{renderChainID(fromChainID)}</span>
                             </span>
                         </div>
                         <div className={"line"}>
@@ -51,6 +53,7 @@ function Process(props) {
                             <span className={"value"}>
 
                                 <OuterLink
+                                    ellipsis={true}
                                     hash={txid}
                                     chainid={fromChainID}
                                 />
