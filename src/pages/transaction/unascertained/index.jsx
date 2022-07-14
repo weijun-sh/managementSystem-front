@@ -232,6 +232,7 @@ function UnAscertained(props) {
                     style={{opacity: showRoute ? 1 : 0.6}}
                     className={"success-status"}
                     onClick={() => {
+                        return;
                         setShowRouter(!showRoute);
                         renderList(!showRoute, showIn, showOut)
                     }}
@@ -254,6 +255,7 @@ function UnAscertained(props) {
                     style={{opacity: showIn ? 1 : 0.6}}
                     className={"success-status"}
                     onClick={() => {
+                        return;
                         setShowIn(!showIn);
                         renderList(showRoute, !showIn, showOut)
                     }}
@@ -277,6 +279,7 @@ function UnAscertained(props) {
                     style={{opacity: showOut ? 1 : 0.6}}
                     className={"success-status"}
                     onClick={() => {
+                        return;
                         setShowOut(!showOut);
                         renderList(showRoute, showIn, !showOut)
                     }}
