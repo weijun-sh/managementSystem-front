@@ -50,7 +50,7 @@ function ChainLogs(props) {
         )
     }
 
-    function EmptyLog(props){
+    function EmptyLog(props) {
         return (
             <div className={"empty"}>
                 <h3 className={"header"}>
@@ -101,20 +101,20 @@ function ChainLogs(props) {
     /*
     * current page to show
     * */
-    function formatCurrentList(logs){
+    function formatCurrentList(logs) {
         let pageList = [];
         let currentList = [];
 
         const errorList = logs.filter(item => isError(item.level))
         const warnList = logs.filter(item => isWarn(item.level))
 
-        if(showType === TYPE_ALL){
+        if (showType === TYPE_ALL) {
             pageList = logs.slice((currentPage - 1) * pageSize, currentPage * pageSize);
             currentList = logs;
-        }else if(showType === TYPE_WARN){
+        } else if (showType === TYPE_WARN) {
             pageList = warnList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
             currentList = warnList
-        }else if(showType === TYPE_ERROR){
+        } else if (showType === TYPE_ERROR) {
             pageList = errorList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
             currentList = errorList;
         }
@@ -129,7 +129,7 @@ function ChainLogs(props) {
     }
 
     let formatedLogs = formatLogs();
-    let {pageList, currentList , errorList, warnList, allList} = formatCurrentList(formatedLogs) ;
+    let {pageList, currentList, errorList, warnList, allList} = formatCurrentList(formatedLogs);
 
     function renderLevels(level) {
         if (level == null) {
@@ -176,19 +176,17 @@ function ChainLogs(props) {
                     <label>{TradeUtils.renderStatus(status)}</label>
                 </div>
 
-                {
-                    isError(level) ? (
-                        <div className='header-item'>
-                            <label>err</label>
-                            <label style={{color: '#b55353'}}>{err}</label>
-                        </div>
-                    ): (
-                        <div className='header-item'>
-                            <label>消息</label>
-                            <label>{msg}</label>
-                        </div>
-                    )
-                }
+
+
+                <div className='header-item'>
+                    <label>消息</label>
+                    <label>{msg}</label>
+
+                    <div hidden={!isError(level)} >
+                        <label>err</label>
+                        <label style={{color: '#b55353'}}>{err}</label>
+                    </div>
+                </div>
 
                 <div className='header-item'>
                     <label>时间</label>
@@ -310,7 +308,7 @@ function ChainLogs(props) {
         let dom = document.getElementsByClassName("ant-collapse-item");
 
         let width = 0;
-        if(dom && dom.length){
+        if (dom && dom.length) {
             width = document.getElementsByClassName("ant-collapse-item")[0].clientWidth;
         }
         return (
@@ -341,7 +339,7 @@ function ChainLogs(props) {
 
     function renderPanel() {
 
-        if(!currentList.length){
+        if (!currentList.length) {
             return <EmptyLog msg={`没有${TypeText[showType]}日志`}/>
         }
 
@@ -449,6 +447,7 @@ function ChainLogs(props) {
             </div>
         )
     }
+
     return (
         <PageContainer className="trade-logs-container">
             <h3 style={{textAlign: 'left', paddingLeft: 20}}>
@@ -464,7 +463,7 @@ function ChainLogs(props) {
             >
                 {renderPanel()}
             </Collapse>
-            <LogPagination hidden={pageList.length < 10 }/>
+            <LogPagination hidden={pageList.length < 10}/>
 
             <BackTop style={{bottom: 20}}/>
         </PageContainer>

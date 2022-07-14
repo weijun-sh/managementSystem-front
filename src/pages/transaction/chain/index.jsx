@@ -7,6 +7,7 @@ import Services from '../../../services/api';
 import TradeUtils, {deepMapList} from '../tradeUtils'
 import './index.less'
 import Logs from "./components/Logs";
+import Process from "./components/Process";
 import {useSearchParams} from "react-router-dom";
 
 const options = TradeUtils.renderChainIDOptions();
@@ -16,6 +17,7 @@ let completes = [];
 export default function Chain() {
     const [tableRef, setTableRef] = useState(null);
     const [logs, setLogs] = useState(null);
+    const [swaptx, setSwaptx] = useState(null);
     const [logsVisible, setLogsVisible] = useState(false);
     let [params] = useSearchParams();
     let chainId = params.get('chainid');
@@ -94,6 +96,7 @@ export default function Chain() {
 
             completes = ([...new Set([...completes, txid])])
 
+            setSwaptx(null)
             setLogs(null)
             Services.getSwap({
                 params: {
@@ -105,7 +108,10 @@ export default function Chain() {
 
                 let list = deepMapList(data);
                 let logs = data.log || [];
+                let swaptx = data.swaptx || [];
 
+
+                setSwaptx(swaptx);
                 setLogs(logs);
                 resolve(list);
             }).catch((error) => {
@@ -157,7 +163,10 @@ export default function Chain() {
                 visible={isLogVisible()}
             />
 
-
+            <Process
+                swaptx={swaptx}
+                visible={true}
+            />
         </PageContainer>
     )
 };
