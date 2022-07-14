@@ -7,6 +7,18 @@ function JsonOut(props) {
     const {obj, className} = props;
     const [inner, setInner] = useState("")
 
+    useEffect(() => {
+        if(obj){
+            let res = syntaxHighlight(obj);
+            setInner(res)
+        }
+
+    }, [])
+
+    if(obj == null){
+        return ''
+    }
+
 /*        let obj = {
             data: {
                 name: 'dannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydanny'
@@ -39,10 +51,7 @@ function JsonOut(props) {
         });
     }
 
-    useEffect(() => {
-        let res = syntaxHighlight(obj);
-        setInner(res)
-    }, [])
+
 
 
     return (
@@ -60,7 +69,7 @@ JsonOut.propTypes = {
 }
 
 JsonOut.defaultProps = {
-    obj: {},
+    obj: null,
     className: PropTypes.any,
 }
 

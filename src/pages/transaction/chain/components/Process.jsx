@@ -12,12 +12,12 @@ function Process(props) {
     if (!visible) {
         return null;
     }
-    if (!swaptx || !swaptx.length) {
+    if (!swaptx) {
         return null;
     }
 
     function renderStatus(status){
-        if(status !== '0'){
+        if(status === '0'){
             return <span className={"fail"}>失败</span>
         }
         if(status === '1'){
@@ -25,8 +25,7 @@ function Process(props) {
         }
         return '-'
     }
-    let data = swaptx[0];
-    const {fromChainID, status, transaction, txid} = data;
+    const {fromChainID, status, transaction, txid} = swaptx;
     return (
         <Collapse
             className={"process-container"}
