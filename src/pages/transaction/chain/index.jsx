@@ -138,6 +138,8 @@ export default function Chain() {
     return (
         <PageContainer className='chain-container'>
             <SearchTable
+                rowKey={"txid"}
+                columnIndex={false}
                 scroll={{x: 1060}}
                 getRef={(node) => {
                     if(tableRef){return}

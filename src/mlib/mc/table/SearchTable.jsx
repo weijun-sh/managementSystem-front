@@ -358,7 +358,7 @@ class SearchTable extends React.Component {
 
     render() {
         const {list, loading, pagination} = this.state;
-        let {scroll, expandable, tableSize} = this.props;
+        let {scroll, expandable, tableSize, rowKey} = this.props;
         scroll = {x: 820, ...scroll};
         let columnsData = this.filterColumns() || [];
         if(window.innerHeight < 500){
@@ -396,7 +396,7 @@ class SearchTable extends React.Component {
                         size={"small"}
                         expandable={expandable}
                         scroll={scroll}
-                        rowKey={'rowKey'}
+                        rowKey={rowKey || 'rowKey'}
                         loading={loading}
                         dataSource={list}
                         columns={columnsData}
@@ -425,6 +425,7 @@ SearchTable.defaultProps = {
     scroll: null,
     card2Extra: null,
     combineField: null,
+    rowKey: 'id',
 
     //tableSize: 'small'
 }
@@ -438,6 +439,7 @@ SearchTable.propTypes = {
     scroll: PropTypes.object,
     card2Extra: PropTypes.any,
     combineField: PropTypes.any,
+    rowKey: PropTypes.any,
     //tableSize: 'small' | 'middle' | 'large'
 
 }

@@ -176,10 +176,19 @@ function ChainLogs(props) {
                     <label>{TradeUtils.renderStatus(status)}</label>
                 </div>
 
-                <div className='header-item'>
-                    <label>消息</label>
-                    <label>{msg}</label>
-                </div>
+                {
+                    isError(level) ? (
+                        <div className='header-item'>
+                            <label>err</label>
+                            <label style={{color: '#b55353'}}>{err}</label>
+                        </div>
+                    ): (
+                        <div className='header-item'>
+                            <label>消息</label>
+                            <label>{msg}</label>
+                        </div>
+                    )
+                }
 
                 <div className='header-item'>
                     <label>时间</label>
@@ -261,7 +270,7 @@ function ChainLogs(props) {
                 continue
             }
             list.push(
-                <div className={"item"}>
+                <div key={key} className={"item"}>
                     <span
                         className={"key"}
                     >
@@ -388,6 +397,7 @@ function ChainLogs(props) {
     function changeType(type) {
         setShowType(type);
         setActiveKeys([])
+        setCurrentPage(1)
     }
 
     function LogPagination(props) {
@@ -400,8 +410,8 @@ function ChainLogs(props) {
                         changeType('all')
                     }}
                 >
-                    所有日志:
-                    <strong> {allList.length}</strong> 条
+                    全部:
+                    <strong> {allList.length}</strong>
                 </span>
                 <span
                     className={"type-error"}
@@ -409,8 +419,8 @@ function ChainLogs(props) {
                         changeType('error')
                     }}
                 >
-                    错误日志:
-                    <strong> {errorList.length}</strong> 条
+                    错误:
+                    <strong> {errorList.length}</strong>
                 </span>
                 <span
                     className="type-warn"
@@ -418,8 +428,8 @@ function ChainLogs(props) {
                         changeType('warn')
                     }}
                 >
-                    警告日志:
-                    <strong> {warnList.length}</strong> 条
+                    警告:
+                    <strong> {warnList.length}</strong>
                 </span>
                 &emsp;&emsp;
                 <Pagination
@@ -437,7 +447,6 @@ function ChainLogs(props) {
                     }}
                 />
             </div>
-
         )
     }
     return (
