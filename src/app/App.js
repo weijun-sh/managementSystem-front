@@ -93,6 +93,7 @@ const App = function () {
                     <PageRoutes/>
 
                     <Sharing/>
+                    <BackTop style={{bottom: 20}}/>
                 </PageContent>
             </PageLayout>
         )

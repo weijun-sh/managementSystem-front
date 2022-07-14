@@ -34,6 +34,7 @@ function Process(props) {
             <Panel key={"1"}
                 header={(
                     <div className={"header"}>
+                        <div className={"line"}>swap交易信息</div>
                         <div className={"line"}>
                             <span className={"key"}>来源链</span>
                             <span className={"value"}>
@@ -47,6 +48,7 @@ function Process(props) {
                         <div className={"line"}>
                             <span className={"key"}>txid</span>
                             <span className={"value"}>
+
                                 <CopyButton>{txid}</CopyButton>
                             </span>
                         </div>

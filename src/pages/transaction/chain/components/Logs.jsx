@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {BackTop, Collapse, Empty, Modal, Pagination, Tooltip, Carousel} from "antd";
+import {Collapse, Empty, Pagination, Tooltip, Carousel} from "antd";
 import TradeUtils from "../../tradeUtils";
 import './logs.less'
-import PageContainer from "mc/container/PageContainer";
 import CopyButton from "mc/button/CopyButton";
+import JsonOut from "../../../../mlib/mc/text/JsonOut";
 
 const {Panel} = Collapse;
 
@@ -344,49 +344,14 @@ function ChainLogs(props) {
         }
 
         return pageList.map((item, index) => {
-            let {bind, level, msg, pairID, time, status, txid, isSwapin, times,} = item;
-            let {err, txHash} = item;
 
+            let {times, ...obj} = item;
             return (
                 <Panel
                     key={`${index}`}
-                    header={renderToolPanelHeader(item)}>
-                    <div className="log-warp" key={index}>
-                        <div className={"line"}>
-                            <div className='item item-short'>
-                                <label>日志级别</label>
-                                <label>{renderLevels(level)}</label>
-                            </div>
-                            <div className='item'>
-                                <label>类型</label>
-                                <label>{renderSwapInOut(isSwapin)}</label>
-                            </div>
-                            <div className='item'>
-                                <label>pairID</label>
-                                <label>{pairID}</label>
-                            </div>
-                        </div>
-                        <div hidden={!err} className={"line"}>
-                            <div className={"item"}>
-                                <label>err</label>
-                                <label>{err}</label>
-                            </div>
-                        </div>
-
-                        <div hidden={!bind} className={"line"}>
-                            <div className='item'>
-                                <label>绑定</label>
-                                <label><CopyButton>{bind}</CopyButton></label>
-                            </div>
-                        </div>
-
-                        <div hidden={!txHash} className={"line"}>
-                            <div className='item'>
-                                <label>txHash</label>
-                                <label><CopyButton>{txHash}</CopyButton></label>
-                            </div>
-                        </div>
-                    </div>
+                    header={renderToolPanelHeader(item)}
+                >
+                    <JsonOut obj={obj}/>
                 </Panel>
             )
         })
@@ -449,24 +414,32 @@ function ChainLogs(props) {
     }
 
     return (
-        <PageContainer className="trade-logs-container">
-            <h3 style={{textAlign: 'left', paddingLeft: 20}}>
-                <strong>交易日志</strong>
-                <LogPagination/>
-            </h3>
-            <Collapse
-                activeKey={activeKeys}
-                onChange={(keys) => {
-                    setActiveKeys(keys)
-                }}
-                defaultActiveKey={[]}
+        <Collapse
+            className="trade-logs-container"
+        >
+            <Panel
+                key={1}
+                header={(
+                    <div className={"title-panel"}>
+                        <span>swap 处理过程</span>
+                    </div>
+                )}
             >
-                {renderPanel()}
-            </Collapse>
-            <LogPagination hidden={pageList.length < 10}/>
+                <Collapse
+                    activeKey={activeKeys}
+                    onChange={(keys) => {
+                        setActiveKeys(keys)
+                    }}
+                    defaultActiveKey={[]}
+                >
+                    {renderPanel()}
 
-            <BackTop style={{bottom: 20}}/>
-        </PageContainer>
+                <LogPagination />
+                </Collapse>
+
+            </Panel>
+
+        </Collapse>
     )
 }
 

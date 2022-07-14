@@ -163,10 +163,10 @@ export default function Chain() {
                 visible={isLogVisible()}
             />
 
-{/*            <Process
+            <Process
                 swaptx={swaptx}
                 visible={true}
-            />*/}
+            />
         </PageContainer>
     )
 };

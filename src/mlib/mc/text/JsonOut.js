@@ -19,14 +19,6 @@ function JsonOut(props) {
         return ''
     }
 
-/*        let obj = {
-            data: {
-                name: 'dannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydannydanny'
-            },
-            list: [{age: 20}, {age: 30}],
-            value: "xxx"
-        }*/
-
     function syntaxHighlight(json) {
         if (typeof json != 'string') {
             json = JSON.stringify(json, undefined, 2);
@@ -50,9 +42,6 @@ function JsonOut(props) {
             return `<span class="${cls}">${match}</span>`
         });
     }
-
-
-
 
     return (
         <div  className={`json-out-container`}>

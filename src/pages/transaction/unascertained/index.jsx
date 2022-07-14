@@ -214,7 +214,7 @@ function UnAscertained(props) {
     }, [showList])
 
     function renderStatus() {
-        let routerStatusView = renderLoadingStatus("Router");
+        let routerStatusView = renderLoadingStatus("router");
         let inStatusView = renderLoadingStatus("bridge(IN)");
         let outStatusView = renderLoadingStatus("bridge(OUT)");
 
@@ -222,7 +222,7 @@ function UnAscertained(props) {
         if (routerStatus === ErrorStatus) {
             routerStatusView = (
                 <span className={"error-status"}>
-                    <span className={"type"}>Router</span>
+                    <span className={"type"}>router</span>
                     <span className={"msg"}>{'加载失败'}</span>
                 </span>
             )
@@ -237,7 +237,7 @@ function UnAscertained(props) {
                         renderList(!showRoute, showIn, showOut)
                     }}
                 >
-                    <span className={"type"}>Router</span>
+                    <span className={"type"}>router</span>
                     <span className={"msg"}>{`${routerList.length} 条数据`}</span>
                 </span>)
         }
