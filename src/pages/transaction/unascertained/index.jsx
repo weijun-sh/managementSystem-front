@@ -198,13 +198,13 @@ function UnAscertained(props) {
 
         let list = []
         if (showRoute) {
-            list = list.concat(routerList)
+            list = [...list, ...routerList];
         }
         if (showIn) {
-            list = list.concat(inList)
+            list = [...list, ...inList];
         }
         if (showOut) {
-            list = list.concat(outList)
+            list = [...list, ...outList];
         }
         setShowList(list)
     }
@@ -232,7 +232,6 @@ function UnAscertained(props) {
                     style={{opacity: showRoute ? 1 : 0.6}}
                     className={"success-status"}
                     onClick={() => {
-                        return;
                         setShowRouter(!showRoute);
                         renderList(!showRoute, showIn, showOut)
                     }}
@@ -255,7 +254,6 @@ function UnAscertained(props) {
                     style={{opacity: showIn ? 1 : 0.6}}
                     className={"success-status"}
                     onClick={() => {
-                        return;
                         setShowIn(!showIn);
                         renderList(showRoute, !showIn, showOut)
                     }}
@@ -279,7 +277,6 @@ function UnAscertained(props) {
                     style={{opacity: showOut ? 1 : 0.6}}
                     className={"success-status"}
                     onClick={() => {
-                        return;
                         setShowOut(!showOut);
                         renderList(showRoute, showIn, !showOut)
                     }}

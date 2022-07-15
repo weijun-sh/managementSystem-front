@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useState} from 'react';
 
 import SearchTable from 'mc/table/SearchTable';
 import PageContainer from "mc/container/PageContainer";
@@ -18,7 +18,6 @@ export default function Chain() {
     const [tableRef, setTableRef] = useState(null);
     const [logs, setLogs] = useState(null);
     const [swaptx, setSwaptx] = useState(null);
-    const [logsVisible, setLogsVisible] = useState(false);
     let [params] = useSearchParams();
     let chainId = params.get('chainid');
     let hash = params.get('hash');
@@ -108,7 +107,7 @@ export default function Chain() {
 
                 let list = deepMapList(data);
                 let logs = data.log || [];
-                let swaptx = data.swaptx || [];
+                let swaptx = data.swaptx;
 
 
                 setSwaptx(swaptx);
@@ -118,9 +117,7 @@ export default function Chain() {
                 reject(error);
                 setLogs(null)
             }).finally(() => {
-                setTimeout(() => {
-                    setLogsVisible(!logsVisible)
-                }, 200);
+
             })
         })
     }
@@ -158,6 +155,7 @@ export default function Chain() {
                 getList={getList}
                 pagination={false}
             />
+
             <Logs
                 logs={logs}
                 visible={isLogVisible()}
@@ -165,7 +163,7 @@ export default function Chain() {
 
             <Process
                 swaptx={swaptx}
-                visible={true}
+                visible={isLogVisible()}
             />
         </PageContainer>
     )

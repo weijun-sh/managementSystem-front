@@ -128,13 +128,22 @@ function groupOutput(type){
 }
 
 export function groupError() {
+    if(process.env.NODE_ENV === 'production'){
+        return;
+    }
     groupOutput("error")(...arguments)
 }
 
 export function groupSuccess() {
+    if(process.env.NODE_ENV === 'production'){
+        return;
+    }
     groupOutput("success")(...arguments)
 }
 export function groupWarm( ) {
+    if(process.env.NODE_ENV === 'production'){
+        return;
+    }
     groupOutput("warm")(...arguments)
 }
 

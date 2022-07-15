@@ -16,7 +16,7 @@ function JsonOut(props) {
     }, [])
 
     if(obj == null){
-        return ''
+        return null
     }
 
     function syntaxHighlight(json) {

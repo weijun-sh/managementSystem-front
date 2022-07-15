@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Collapse, Empty, Pagination, Tooltip, Carousel} from "antd";
 import TradeUtils from "../../tradeUtils";
 import './logs.less'
-import CopyButton from "mc/button/CopyButton";
 import JsonOut from "../../../../mlib/mc/text/JsonOut";
 
 const {Panel} = Collapse;
@@ -23,7 +22,6 @@ const TypeText = {
     all: '所有',
     error: '错误',
     warn: '警告',
-
 }
 
 function ChainLogs(props) {
@@ -41,12 +39,27 @@ function ChainLogs(props) {
         return null;
     }
 
-    if (logs.length === 0) {
+    if (!logs || logs.length === 0) {
+
         return (
-            <EmptyLog
-                title={"交易日志"}
-                msg={"没有日志 (只保存14天内的日志)"}
-            />
+            <Collapse
+                className="trade-logs-container"
+            >
+                <Panel
+                    key={1}
+                    header={(
+                        <div className={"title-panel"}>
+                            <strong>swap 处理过程</strong>
+                        </div>
+                    )}
+                >
+                    <EmptyLog
+                        msg={"没有日志 (只保存14天内的日志)"}
+                    />
+
+                </Panel>
+
+            </Collapse>
         )
     }
 
@@ -412,39 +425,57 @@ function ChainLogs(props) {
         )
     }
 
+    function renderHeader() {
+
+        if (!currentList || !currentList.length) {
+            return (
+                <div className={"title-panel"}>
+                    <strong>swap 处理过程</strong>
+                </div>
+            )
+        }
+        let first = currentList[0];
+        const {err, level, msg} = first;
+        return (
+            <div className={"title-panel"}>
+                <strong>swap 处理过程</strong>
+                    <span className={"header-summary"}>
+                        <div hidden={!isError(level)} className={"line"}>
+                            <span className={"key"}>
+                                错误
+                            </span>
+                            <span style={{color: '#b55353'}} className={"value"}>
+                                {err}
+                            </span>
+                        </div>
+                        <div className={"line"}>
+                            <span className={"key"}>
+                                消息
+                            </span>
+                            <span className={"value"}>
+                                {msg}
+                            </span>
+                        </div>
+                        <div className={"line"}>
+                            <span className={"key"}>
+                                时间
+                            </span>
+                            <span className={"value"}>
+                                {formatTime(first.time)}
+                            </span>
+                        </div>
+                    </span>
+            </div>
+        )
+    }
+
     return (
         <Collapse
             className="trade-logs-container"
         >
             <Panel
                 key={1}
-                header={(
-                    <div className={"title-panel"}>
-                        <strong>swap 处理过程</strong>
-                        {
-                            logs && logs.length && (
-                                <span className={"header-summary"}>
-                                    <div className={"line"}>
-                                        <span className={"key"}>
-                                            消息
-                                        </span>
-                                        <span className={"value"}>
-                                            {logs[0].msg}
-                                        </span>
-                                    </div>
-                                    <div className={"line"}>
-                                        <span className={"key"}>
-                                            时间
-                                        </span>
-                                        <span className={"value"}>
-                                            {formatTime(logs[0].time)}
-                                        </span>
-                                    </div>
-                                </span>
-                            )
-                        }
-                    </div>
-                )}
+                header={renderHeader()}
             >
                 <Collapse
                     activeKey={activeKeys}
