@@ -10,10 +10,12 @@ import {ThemeProvider} from "mu/theme";
 import './App.less'
 import PageLayout, {PageContent, PageFooter, PageHeader} from "mc/layout/Layout";
 import Sharing from "../mlib/mc/button/Sharing";
+import ToDoList from "./ToDoList";
 
 const App = function () {
     const [collapsed, setCollapsed] = useState(false);
     const [theme, setTheme] = useState('blue');
+    const [visibleToDo, setVisibleToDo] = useState(false);
 
     const change = (theme) => {
         setTheme(theme)
@@ -59,15 +61,20 @@ const App = function () {
             <PageHeader
                 getRight={() => {
                     return (
-                        <span style={{marginRight: 30, cursor: "pointer", fontSize: 16}}>
-                            admin
-                        </span>
-                    )
-                    return (
                         <Dropdown
-                            overlay={menu}
-                        >
 
+                            onVisibleChange={(visible) => {
+                                setVisibleToDo(visible)
+                            }}
+                            overlay={(
+                                <Menu>
+                                    <Menu.Item>
+                                        <ToDoList visible={visibleToDo}/>
+                                    </Menu.Item>
+                                </Menu>
+
+                            )}
+                        >
                             <span style={{marginRight: 30, cursor: "pointer", fontSize: 16}}>admin</span>
                         </Dropdown>
                     )
