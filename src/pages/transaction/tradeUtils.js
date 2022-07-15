@@ -399,6 +399,15 @@ export function db0First(list){
     return list;
 }
 
+export function formatTimes(time) {
+    if (time) {
+        time = time.replace('T', ' ');
+        time = time.replace(/\.\d+$/, '');
+        return time
+    }
+    return ''
+}
+
 const TradeUtils = {
     renderStatus,
     getUnascertainedColumns,

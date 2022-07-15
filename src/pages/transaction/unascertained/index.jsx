@@ -4,6 +4,7 @@ import Services from '../../../services/api';
 import TradeUtils from '../tradeUtils'
 import './index.less'
 import {Button, message, Progress, Spin} from "antd";
+import {LoadingOutlined, CheckOutlined} from "@ant-design/icons";
 
 let tableRef = null;
 let progress = 0;
@@ -75,7 +76,8 @@ function UnAscertained(props) {
         return (
             <span className={"loading-status"}>
                 <span className="type">{`${type}`}</span>&nbsp;&nbsp;
-                <Spin size={"small"}/>
+                {/*<Spin size={"small"}/>*/}
+                <LoadingOutlined />
             </span>
         )
     }
@@ -213,6 +215,18 @@ function UnAscertained(props) {
         tableRef.setList(showList);
     }, [showList])
 
+    function SelectIcon(props){
+        let className = "select-type";
+        if(props.selected){
+            className = "select-type select-type-selected"
+        }
+        return (
+            <span className={className}>
+                <CheckOutlined className={"icon"}/>
+            </span>
+        )
+    }
+
     function renderStatus() {
         let routerStatusView = renderLoadingStatus("router");
         let inStatusView = renderLoadingStatus("bridge(IN)");
@@ -236,6 +250,7 @@ function UnAscertained(props) {
                         renderList(!showRoute, showIn, showOut)
                     }}
                 >
+                    <SelectIcon selected={showRoute}/>
                     <span className={"type"}>router</span>
                     <span className={"msg"}>{`${routerList.length} 条数据`}</span>
                 </span>)
@@ -258,6 +273,7 @@ function UnAscertained(props) {
                         renderList(showRoute, !showIn, showOut)
                     }}
                 >
+                    <SelectIcon selected={showIn}/>
                     <span className={"type"}>bridge(IN)</span>
                     <span className={"msg"}>{` ${inList.length} 条数据`}</span>
                 </span>
@@ -281,6 +297,7 @@ function UnAscertained(props) {
                         renderList(showRoute, showIn, !showOut)
                     }}
                 >
+                    <SelectIcon selected={showOut}/>
                     <span className={"type"}>bridge(OUT)</span>
                     <span className={"msg"}>{` ${outList.length} 条数据`}</span>
                 </span>

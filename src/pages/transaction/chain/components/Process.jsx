@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import JsonOut from "../../../../mlib/mc/text/JsonOut";
 import {Collapse, Empty} from 'antd';
 import './process.less'
-import {renderChainID} from "../../tradeUtils";
+import {formatTimes, renderChainID} from "../../tradeUtils";
 import CopyButton from "../../../../mlib/mc/button/CopyButton";
 import OuterLink from "../../components/outerLink";
 import PropTypes from "prop-types";
+import {dateFormatter} from "../../../../mlib/mu/time";
 
 const {Panel} = Collapse;
 
@@ -47,7 +48,7 @@ function Process(props) {
     }
 
     function renderHeader() {
-        const {fromChainID, status, txid} = swaptx;
+        const {fromChainID, status, txid, timestamp} = swaptx;
         return (
             <div className={"header"}>
                 <div className={"line"}>
@@ -56,6 +57,14 @@ function Process(props) {
                 <div className={"line"}>
                     <span className={"key"}>状态</span>
                     <span>{renderStatus(status)}</span>
+                </div>
+                <div className={"line"}>
+                    <span className={"key"}>
+                        时间
+                    </span>
+                    <span className={"value"}>
+                        {dateFormatter(timestamp)}
+                    </span>
                 </div>
                 <div className={"line"}>
                     <span className={"key"}>链</span>

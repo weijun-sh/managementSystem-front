@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Collapse, Empty, Pagination, Tooltip, Carousel} from "antd";
-import TradeUtils from "../../tradeUtils";
+import TradeUtils, {formatTimes} from "../../tradeUtils";
 import './logs.less'
 import JsonOut from "../../../../mlib/mc/text/JsonOut";
 
@@ -161,15 +161,6 @@ function ChainLogs(props) {
         return <span>{level}</span>
     }
 
-    function formatTime(time) {
-        if (time) {
-            time = time.replace('T', ' ');
-            time = time.replace(/\.\d+$/, '');
-            return time
-        }
-        return ''
-    }
-
     function renderSwapInOut(isSwapin) {
         return {'true': '充值', 'false': '提现'}[`${isSwapin}`]
     }
@@ -202,7 +193,7 @@ function ChainLogs(props) {
 
                 <div className='header-item'>
                     <label>时间</label>
-                    <label>{formatTime(time)}</label>
+                    <label>{formatTimes(time)}</label>
 
                     <Tips item={item}>
                         <span
@@ -331,8 +322,8 @@ function ChainLogs(props) {
                     <div>
                         <div hidden={times.length === 1}>
                             有 <strong>{times.length}</strong> 条重复数据
-                            <div>最后一条：{formatTime(time)}</div>
-                            <div>&emsp;第一条：{formatTime(item.firstTime)}</div>
+                            <div>最后一条：{formatTimes(time)}</div>
+                            <div>&emsp;第一条：{formatTimes(item.firstTime)}</div>
                         </div>
                         <div style={{marginTop: 10}}>
                             <div>详细信息</div>
@@ -435,11 +426,27 @@ function ChainLogs(props) {
             )
         }
         let first = allList[0];
-        const {err, level, msg} = first;
+        const {err, level, msg, status} = first;
         return (
             <div className={"title-panel"}>
                 <strong>swap 处理过程</strong>
                     <span className={"header-summary"}>
+                        <div className={"line"}>
+                            <span className={"key"}>
+                                状态
+                            </span>
+                            <span  className={"value"}>
+                                {status || '-'}
+                            </span>
+                        </div>
+                        <div className={"line"}>
+                            <span className={"key"}>
+                                时间
+                            </span>
+                            <span className={"value"}>
+                                {formatTimes(first.time)}
+                            </span>
+                        </div>
                         <div hidden={!isError(level)} className={"line"}>
                             <span className={"key"}>
                                 错误
@@ -456,14 +463,7 @@ function ChainLogs(props) {
                                 {msg}
                             </span>
                         </div>
-                        <div className={"line"}>
-                            <span className={"key"}>
-                                时间
-                            </span>
-                            <span className={"value"}>
-                                {formatTime(first.time)}
-                            </span>
-                        </div>
+
                     </span>
             </div>
         )
