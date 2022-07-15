@@ -377,7 +377,7 @@ export const HistoryColumns = function (config = {}) {
             dataIndex: "status",
             key: 'status',
             hidden: hideJson,
-            width: 60,
+            width: 50,
             render: (data, record) => {
                 return (
                     <a
@@ -405,11 +405,13 @@ export const HistoryColumns = function (config = {}) {
 
 export function getUnascertainedColumns(config = {}) {
     config.hideSwapInOut = false;
+    config.hideJson = false;
     return HistoryColumns(config);
 }
 
 export function getHistoryColumns(config = {}) {
     config.hideSwapInOut = false;
+    config.hideJson = false;
     return HistoryColumns(config);
 }
 

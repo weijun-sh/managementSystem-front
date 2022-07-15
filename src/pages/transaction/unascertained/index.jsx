@@ -330,7 +330,7 @@ function UnAscertained(props) {
     return (
         <div className='uncertained-container'>
             <SearchTable
-                scroll={{x: 1240, y: `calc(100vh - 280px)`}}
+                scroll={{x: 1270, y: `calc(100vh - 280px)`}}
                 combineField={"bridge"}
                 pagination={{pageSize: 150}}
                 card2Extra={(
