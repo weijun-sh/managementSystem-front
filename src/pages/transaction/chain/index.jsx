@@ -18,9 +18,11 @@ export default function Chain() {
     const [tableRef, setTableRef] = useState(null);
     const [logs, setLogs] = useState(null);
     const [swaptx, setSwaptx] = useState(null);
+    const [visible, setVisible] = useState(false);
     let [params] = useSearchParams();
     let chainId = params.get('chainid');
     let hash = params.get('hash');
+
     let columns = function () {
         let columns = TradeUtils.getChainColumns().map((item => {
             item.sorter = null;
@@ -96,7 +98,8 @@ export default function Chain() {
             completes = ([...new Set([...completes, txid])])
 
             setSwaptx(null)
-            setLogs(null)
+            setLogs(null);
+            setVisible(false)
             Services.getSwap({
                 params: {
                     chainid,
@@ -154,17 +157,24 @@ export default function Chain() {
                 columns={columns()}
                 getList={getList}
                 pagination={false}
+                loadedSuccess={(list) => {
+                    setVisible(list && list.length)
+                }}
+                loadStart={() => {
+                    setVisible(false)
+                }}
             />
 
             <Logs
                 logs={logs}
-                visible={isLogVisible()}
+                visible={visible}
             />
 
             <Process
                 swaptx={swaptx}
-                visible={isLogVisible()}
+                visible={visible}
             />
+
         </PageContainer>
     )
 };

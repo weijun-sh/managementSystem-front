@@ -166,6 +166,8 @@ class SearchTable extends React.Component {
     }
 
     getList = (values) => {
+        const {loadedSuccess, loadedFail, loadFinal, loadStart} = this.props;
+        loadStart()
         this.props.getList && this.props.getList({
             params: values
         }).then((list) => {
@@ -175,14 +177,20 @@ class SearchTable extends React.Component {
             })
             this.setState({
                 list: list
+            }, () => {
+                loadedSuccess(list)
             })
-        }).catch(() => {
+        }).catch((err) => {
             this.setState({
                 list: []
+            }, () => {
+                loadedFail(err)
             })
         }).finally(() => {
             this.setState({
                 loading: false
+            }, () => {
+                loadFinal()
             })
         })
     }
@@ -426,6 +434,10 @@ SearchTable.defaultProps = {
     card2Extra: null,
     combineField: null,
     rowKey: 'id',
+    loadedSuccess: () => {},
+    loadedFail: () => {},
+    loadFinal: () => {},
+    loadStart: () => {},
 
     //tableSize: 'small'
 }
@@ -440,6 +452,10 @@ SearchTable.propTypes = {
     card2Extra: PropTypes.any,
     combineField: PropTypes.any,
     rowKey: PropTypes.any,
+    loadedSuccess: PropTypes.any,
+    loadedFail: PropTypes.any,
+    loadFinal:PropTypes.any,
+    loadStart:PropTypes.any,
     //tableSize: 'small' | 'middle' | 'large'
 
 }
