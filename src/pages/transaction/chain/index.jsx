@@ -170,7 +170,7 @@ export default function Chain() {
                 className={"chain-detail-container"}
                 hidden={!visible}
             >
-                <h3>交易详情</h3>
+                <h3 className={"detail-header"}>交易详情</h3>
                 <Collapse>
                     <Logs
                         logs={logs}
