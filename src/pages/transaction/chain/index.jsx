@@ -9,6 +9,7 @@ import './index.less'
 import Logs from "./components/Logs";
 import Process from "./components/Process";
 import {useSearchParams} from "react-router-dom";
+import {Collapse} from "antd";
 
 const options = TradeUtils.renderChainIDOptions();
 let completes = [];
@@ -165,15 +166,26 @@ export default function Chain() {
                 }}
             />
 
-            <Logs
-                logs={logs}
-                visible={visible}
-            />
+            <div
+                className={"chain-detail-container"}
+                hidden={!visible}
+            >
+                <h3>交易详情</h3>
+                <Collapse>
+                    <Logs
+                        logs={logs}
+                        visible={visible}
+                    />
+                    <Process
+                        swaptx={swaptx}
+                        visible={visible}
+                    />
+                </Collapse>
+            </div>
 
-            <Process
-                swaptx={swaptx}
-                visible={visible}
-            />
+
+
+
 
         </PageContainer>
     )

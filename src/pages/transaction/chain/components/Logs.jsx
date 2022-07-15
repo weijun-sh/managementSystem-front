@@ -427,14 +427,14 @@ function ChainLogs(props) {
 
     function renderHeader() {
 
-        if (!currentList || !currentList.length) {
+        if (!allList || !allList.length) {
             return (
                 <div className={"title-panel"}>
                     <strong>swap 处理过程</strong>
                 </div>
             )
         }
-        let first = currentList[0];
+        let first = allList[0];
         const {err, level, msg} = first;
         return (
             <div className={"title-panel"}>
