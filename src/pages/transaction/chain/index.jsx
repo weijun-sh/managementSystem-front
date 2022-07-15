@@ -126,22 +126,6 @@ export default function Chain() {
         })
     }
 
-    function isLogVisible() {
-        if (!tableRef) {
-            return false;
-        }
-        if (!tableRef.state.list) {
-            return false
-        }
-        if (tableRef.state.list.length === 0) {
-            return false
-        }
-        if (logs == null) {
-            return false
-        }
-        return true
-    }
-
     return (
         <PageContainer className='chain-container'>
             <SearchTable
@@ -182,11 +166,6 @@ export default function Chain() {
                     />
                 </Collapse>
             </div>
-
-
-
-
-
         </PageContainer>
     )
 };

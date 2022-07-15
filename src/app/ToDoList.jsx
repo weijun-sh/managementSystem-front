@@ -50,13 +50,13 @@ function ToDoList(props) {
                             >
                                 <img
                                     onClick={() => {
-                                        Services.deleteToDoList({
+/*                                        Services.deleteToDoList({
                                             params: {
                                                 id: id
                                             }
                                         }).then(() => {
 
-                                        })
+                                        })*/
                                         window.open(href);
                                     }}
                                     src={image}
@@ -65,7 +65,6 @@ function ToDoList(props) {
                             </div>
 
                             <CloseCircleOutlined
-                                hidden={true}
                                 className={"close"}
                                 onClick={() => {
                                     Services.deleteToDoList({

@@ -243,7 +243,6 @@ function UnAscertained(props) {
         } else if (routerStatus === SuccessStatus) {
             routerStatusView = (
                 <span
-                    style={{opacity: showRoute ? 1 : 0.6}}
                     className={"success-status"}
                     onClick={() => {
                         setShowRouter(!showRoute);
@@ -266,7 +265,6 @@ function UnAscertained(props) {
         } else if (inStatus === SuccessStatus) {
             inStatusView = (
                 <span
-                    style={{opacity: showIn ? 1 : 0.6}}
                     className={"success-status"}
                     onClick={() => {
                         setShowIn(!showIn);
@@ -290,7 +288,6 @@ function UnAscertained(props) {
         } else if (outStatus === SuccessStatus) {
             outStatusView = (
                 <span
-                    style={{opacity: showOut ? 1 : 0.6}}
                     className={"success-status"}
                     onClick={() => {
                         setShowOut(!showOut);

@@ -231,6 +231,7 @@ function Sharing() {
                             label={"内容"}
                             className={"line"}
                             name={"content"}
+                            initialValue={"请关注一下"}
                         >
                             <TextArea
                                 className={"select text-area"}

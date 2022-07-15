@@ -36,8 +36,9 @@ function CopyButton(props) {
             <a className={"text"} onClick={onTextClick}>{text}</a>
             <CopyOutlined
                 className={"icon"}
-                onClick={() => {
-                    Utils.tools.copy(copyText || text)
+                onClick={(e) => {
+                    Utils.tools.copy(copyText || text);
+                    e.stopPropagation();
                 }}
             />
         </span>

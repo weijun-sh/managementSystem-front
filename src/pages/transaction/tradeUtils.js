@@ -8,6 +8,8 @@ import ToChainLink from "./components/toChainLink";
 import CopyButton from "../../mlib/mc/button/CopyButton";
 import {transferSecond} from "../../mlib/mu/time";
 import React from "react";
+import {Modal} from "antd";
+import JsonOut from "../../mlib/mc/text/JsonOut";
 
 /**
  * table column , deal time gap between timestamp and inittime
@@ -203,6 +205,7 @@ function renderBridgeType(item){
  * */
 export const HistoryColumns = function (config = {}) {
     const { hideSwapInOut = true } = config;
+    const { hideJson = true } = config;
     return [
         {
             title: '桥或路由',
@@ -369,6 +372,34 @@ export const HistoryColumns = function (config = {}) {
                 )
             }
         },
+        {
+            title: "详情",
+            dataIndex: "status",
+            key: 'status',
+            hidden: hideJson,
+            width: 60,
+            render: (data, record) => {
+                return (
+                    <a
+                        onClick={() => {
+                            Modal.confirm({
+                                title: '详情',
+                                bodyStyle: {padding: 20},
+                                okText: '确定',
+                                cancelText:"取消",
+                                width: 860,
+                                icon: false,
+                                content:(
+                                    <JsonOut obj={record}/>
+                                )
+                            })
+                        }}
+                    >
+                        详情
+                    </a>
+                )
+            }
+        },
     ]
 }
 
@@ -384,6 +415,7 @@ export function getHistoryColumns(config = {}) {
 
 export function getChainColumns(config = {}) {
     config.hideSwapInOut = false;
+    config.hideJson = false;
     return HistoryColumns(config);
 }
 
