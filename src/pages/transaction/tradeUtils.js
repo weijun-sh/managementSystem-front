@@ -30,6 +30,7 @@ export function renderStatus(status) {
     if (status == null) {
         return status;
     }
+
     return CONST.SwapStatus[status]
 }
 

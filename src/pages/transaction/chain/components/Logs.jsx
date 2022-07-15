@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Collapse, Empty, Pagination, Tooltip, Carousel} from "antd";
 import TradeUtils, {formatTimes} from "../../tradeUtils";
 import './logs.less'
+import _ from 'lodash'
 import JsonOut from "../../../../mlib/mc/text/JsonOut";
 
 const {Panel} = Collapse;
@@ -167,46 +168,49 @@ function ChainLogs(props) {
 
 
     function renderPanelHeader(item) {
-        let {bind, level, msg, pairID, time, status, txid, isSwapin, times,} = item;
-        let {err, txHash} = item;
+        let { level, msg, time, status, times,} = item;
+        let {err} = item;
         return (
-            <div className={`header`}>
+            <div style={{width: 790}}>
+                <div className={`header`}>
                 <span className='header-item'>
                     <span>{renderLevel(level)}</span>
                 </span>
 
-                <div className='header-item'>
-                    <label>状态</label>
-                    <label>{TradeUtils.renderStatus(status)}</label>
-                </div>
-
-
-                <div className='header-item'>
-                    <label>消息</label>
-                    <label>{msg}</label>
-
-                    <div hidden={!isError(level)}>
-                        <label>err</label>
-                        <label style={{color: '#b55353'}}>{err}</label>
+                    <div className='header-item'>
+                        <label>状态</label>
+                        <label>{TradeUtils.renderStatus(status)}</label>
                     </div>
-                </div>
 
-                <div className='header-item'>
-                    <label>时间</label>
-                    <label>{formatTimes(time)}</label>
 
-                    <Tips item={item}>
+                    <div className='header-item'>
+                        <label>消息</label>
+                        <label>{msg}</label>
+
+                        <div hidden={!isError(level)}>
+                            <label>err</label>
+                            <label style={{color: '#b55353'}}>{err}</label>
+                        </div>
+                    </div>
+
+                    <div className='header-item'>
+                        <label>时间</label>
+                        <label>{formatTimes(time)}</label>
+
+                        <Tips item={item}>
                         <span
                             className={"time-number"}
                             style={{opacity: times.length === 1 ? 0.4 : 1}}
                         >
                             {times.length}
                         </span>
-                    </Tips>
+                        </Tips>
+                    </div>
+
+
                 </div>
-
-
             </div>
+
         )
     }
 
@@ -292,21 +296,10 @@ function ChainLogs(props) {
         );
     }
 
-    function renderToolPanelHeader(item) {
-        let {bind, level, msg, pairID, time, status, txid, isSwapin, times,} = item;
-        let {err, txHash} = item;
-
-        return (
-            <div style={{width: 790}}>
-                {renderPanelHeader(item)}
-            </div>
-        )
-    }
 
     function Tips(props) {
         const {item, children} = props
-        let {bind, level, msg, pairID, time, status, txid, isSwapin, times,} = item;
-        let {err, txHash} = item;
+        let { time,  times,} = item;
 
         let dom = document.getElementsByClassName("ant-collapse-item");
 
@@ -348,13 +341,14 @@ function ChainLogs(props) {
 
         return pageList.map((item, index) => {
 
-            let {times, ...obj} = item;
+            let obj = _.cloneDeep(item)
+            delete obj.times;
             return (
                 <Panel
                     key={`${index}`}
-                    header={renderToolPanelHeader(item)}
+                    header={renderPanelHeader(item)}
                 >
-                    <JsonOut obj={obj}/>
+                    <JsonOut key={index} obj={obj}/>
                 </Panel>
             )
         })
