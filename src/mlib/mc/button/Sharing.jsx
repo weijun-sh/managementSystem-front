@@ -114,7 +114,7 @@ function Sharing() {
                         content: params.content,
                         subject: params.subject,
                         image: imageURL,
-                        href: window.location.href,
+                        hash: window.location.hash,
                         cc: params.cc,
                         to: params.to
 

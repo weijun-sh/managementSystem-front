@@ -34,7 +34,7 @@ function ToDoList(props) {
         <div className={"todolist-container"}>
             {
                 list.map((item, index) => {
-                    const {subject, image, content, href, id, cc, to} = item;
+                    const {subject, image, content, id, cc, to, hash} = item;
                     return (
                         <div key={index} className={"item"}>
                             <div className={"left"}>
@@ -65,7 +65,10 @@ function ToDoList(props) {
                                         }).then(() => {
 
                                         })*/
-                                        window.open(href);
+                                        let protocol = window.location.protocol;
+                                        let host = window.location.host;
+
+                                        window.open(`${protocol}//${host}/${hash}`);
                                     }}
                                     src={image}
                                 />
