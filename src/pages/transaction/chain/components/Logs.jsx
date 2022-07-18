@@ -109,6 +109,10 @@ function ChainLogs(props) {
             return new Date(b.time).getTime() - new Date(a.time).getTime();
         });
 
+/*        list = list.filter((item )=> {
+            return item.status == '5' ||
+                item.status == '10'
+        })*/
         return list
     }
 
@@ -168,8 +172,7 @@ function ChainLogs(props) {
 
 
     function renderPanelHeader(item) {
-        let { level, msg, time, status, times,} = item;
-        let {err} = item;
+        let { level, msg, time, status, times,err} = item;
         return (
             <div style={{width: 790}}>
                 <div className={`header`}>
@@ -206,8 +209,6 @@ function ChainLogs(props) {
                         </span>
                         </Tips>
                     </div>
-
-
                 </div>
             </div>
 
@@ -348,7 +349,7 @@ function ChainLogs(props) {
                     key={`${index}`}
                     header={renderPanelHeader(item)}
                 >
-                    <JsonOut key={index} obj={obj}/>
+                    <JsonOut key={JSON.stringify(obj)} obj={obj}/>
                 </Panel>
             )
         })
