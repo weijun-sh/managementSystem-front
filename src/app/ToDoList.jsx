@@ -3,6 +3,7 @@ import './todolist.less'
 import Services from '../services/api';
 import {message} from "antd";
 import {CloseCircleOutlined} from "@ant-design/icons";
+import CopyButton from "../mlib/mc/button/CopyButton";
 
 function ToDoList(props) {
 
@@ -38,16 +39,16 @@ function ToDoList(props) {
                         <div key={index} className={"item"}>
                             <div className={"left"}>
                                 <div className={"title"}>
-                                    处理人<span className={"value"}>{to}</span>
+                                    处理人:<span className={"value"}>{to}</span>
                                 </div>
                                 <div className={"title"}>
-                                    协助<span className={"value"}>{cc}</span>
+                                    协助&emsp;:<span className={"value"}>{cc}</span>
                                 </div>
                                 <div className={"title"}>
-                                    主题<span className={"value"}>{subject}</span>
+                                    主题&emsp;:<span className={"value"}>{subject}</span>
                                 </div>
                                 <div className={"content"}>
-                                    内容
+                                    内容&emsp;:
                                     <span className={"value"}>{content}</span>
                                 </div>
                             </div>
