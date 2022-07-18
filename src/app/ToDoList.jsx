@@ -33,15 +33,22 @@ function ToDoList(props) {
         <div className={"todolist-container"}>
             {
                 list.map((item, index) => {
-                    const {subject, image, content, href, id} = item;
+                    const {subject, image, content, href, id, cc, to} = item;
                     return (
                         <div key={index} className={"item"}>
                             <div className={"left"}>
                                 <div className={"title"}>
-                                    {subject}
+                                    处理人<span className={"value"}>{to}</span>
+                                </div>
+                                <div className={"title"}>
+                                    协助<span className={"value"}>{cc}</span>
+                                </div>
+                                <div className={"title"}>
+                                    主题<span className={"value"}>{subject}</span>
                                 </div>
                                 <div className={"content"}>
-                                    {content}
+                                    内容
+                                    <span className={"value"}>{content}</span>
                                 </div>
                             </div>
 

@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas'
 import {ShareAltOutlined} from '@ant-design/icons'
 import './sharing.less'
 import Services from '../../../services/api';
+import CopyButton from "./CopyButton";
 
 const {TextArea} = Input;
 
@@ -88,12 +89,34 @@ function Sharing() {
               `
 
             if(!isEmail()){
+
+                if(params.cc){
+                    params.cc = params.cc.split(',').map(item => {
+                        let user = receivers.find((it => {
+                            return it.email = item;
+                        }))
+                        return user.name;
+                    })
+                    params.cc = params.cc.join(',')
+                }
+
+                if(params.to){
+                    params.to = params.to.split(',').map(item => {
+                        let user = receivers.find((it => {
+                            return it.email = item;
+                        }))
+                        return user.name;
+                    })
+                    params.to = params.to.join(',')
+                }
                 Services.addToDoList({
                     params: {
                         content: params.content,
                         subject: params.subject,
                         image: imageURL,
-                        href: window.location.href
+                        href: window.location.href,
+                        cc: params.cc,
+                        to: params.to
 
                     }
                 }).then((res) => {
@@ -169,7 +192,8 @@ function Sharing() {
                     <div className={"content"}>
                         <img src={imageURL}/>
                         <div className={"url"}>
-                            页面地址: {window.location.href}
+                            页面地址:
+                                {window.location.href}
                         </div>
                     </div>
                     <Form
@@ -198,22 +222,20 @@ function Sharing() {
                             </Radio.Group>
                         </Form.Item>
                         <Form.Item
-                            label={"收件人"}
+                            label={isEmail() ? "收件人": "处理人"}
                             className={"line"}
                             rules={[{
-                                required: isEmail(),
+                                required: true,
                                 message: '请选择收件人'
                             }]}
                             name={"to"}
-                            style={{display: isEmail() ? 'flex' : 'none'}}
                         >
                             <EmailOptions/>
                         </Form.Item>
                         <Form.Item
                             name={"cc"}
-                            label={"抄送"}
+                            label={isEmail() ? "抄送": "协助"}
                             className={"line"}
-                            hidden={!isEmail()}
                         >
                             <EmailOptions mode={"tags"}/>
                         </Form.Item>
@@ -231,7 +253,6 @@ function Sharing() {
                             label={"内容"}
                             className={"line"}
                             name={"content"}
-                            initialValue={"请关注一下"}
                         >
                             <TextArea
                                 className={"select text-area"}
