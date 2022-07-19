@@ -26,12 +26,9 @@ export function timeStampGap( timestamp, inittime){
 /**
  * process status
  * */
-export function renderStatus(status) {
-    if (status == null) {
-        return status;
-    }
+export function renderTradeStatus(status) {
 
-    return CONST.SwapStatus[status]
+    return CONST.SwapStatus[status] || '-'
 }
 
 /**
@@ -368,7 +365,7 @@ export const HistoryColumns = function (config = {}) {
                 return (
                     <div style={{ fontSize: 12}}>
                         <div>status: {data}</div>
-                        {renderStatus(data)}
+                        {renderTradeStatus(data)}
                     </div>
                 )
             }
@@ -449,7 +446,7 @@ export function formatTimes(time) {
 }
 
 const TradeUtils = {
-    renderStatus,
+    renderTradeStatus,
     getUnascertainedColumns,
     renderChainIDOptions,
     renderSummaryStatus,

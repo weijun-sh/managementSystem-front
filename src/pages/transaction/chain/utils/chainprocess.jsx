@@ -6,10 +6,10 @@ import {isErrorCode, OuterHeader} from "./common";
 
 export function renderProcessStatus(status) {
     if (status === '0') {
-        return <span className={"fail"}>失败</span>
+        return <span className={"fail"}>failed</span>
     }
     if (status === '1') {
-        return <span className={"success"}>成功</span>
+        return <span className={"success"}>success</span>
     }
     return '-'
 }
@@ -24,7 +24,7 @@ export function renderProcessHeader(res) {
                     label: '状态',
                     value: renderProcessStatus('0')
                 },{
-                    label: 'error',
+                    label: '错误',
                     value: res.msg,
                     error: true
                 }, ]}

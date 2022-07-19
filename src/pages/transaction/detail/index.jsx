@@ -2,7 +2,7 @@ import React from 'react';
 import {message, Modal} from 'antd';
 import PageContainer, {} from 'mc/container/PageContainer';
 import CopyButton from "mc/button/CopyButton";
-import {minifyValue, renderChainID, renderStatus} from '../tradeUtils';
+import {minifyValue, renderChainID, renderTradeStatus} from '../tradeUtils';
 import './index.less'
 import {allBridgeChainInfo} from '../constants/staticApi';
 import Utils from "mu";
@@ -22,7 +22,7 @@ function detail(record) {
         coin = record.swapinfo.routerSwapInfo.tokenID
     }
     timestamp = Utils.Time.dateFormatter(timestamp);
-    status = renderStatus(status);
+    status = renderTradeStatus(status);
     value = minifyValue(value, record.fromChainID);
     // swaptx should be a long text
     swapvalue = !!swaptx && swaptx !== '' ? minifyValue(swapvalue, record.toChainID) : '';
@@ -31,7 +31,10 @@ function detail(record) {
 
     function targetHash(id) {
         let chainInfo = allBridgeChainInfo[toChainID];
-        if(!chainInfo) { message.error("链为空"); return;}
+        if (!chainInfo) {
+            message.error("链为空");
+            return;
+        }
         let explorer = chainInfo.explorer;
         let addr = explorer.tx;
         let href = `${addr}${id}`;
@@ -40,7 +43,10 @@ function detail(record) {
 
     function sent(id) {
         let chainInfo = allBridgeChainInfo[fromChainID];
-        if(!chainInfo) { message.error("链为空"); return;}
+        if (!chainInfo) {
+            message.error("链为空");
+            return;
+        }
         let explorer = chainInfo.explorer;
         let addr = explorer.address;
         let href = `${addr}${id}`;
@@ -50,124 +56,121 @@ function detail(record) {
 
     function recieved(id) {
         let chainInfo = allBridgeChainInfo[toChainID];
-        if(!chainInfo) { message.error("链为空"); return;}
+        if (!chainInfo) {
+            message.error("链为空");
+            return;
+        }
         let explorer = chainInfo.explorer;
         let addr = explorer.address;
         let href = `${addr}${id}`;
         window.open(href, '_blank')
     }
 
-    function renderContent(){
-        return  (
-            <div>
-                <PageContainer className='trade-detail-container'>
-                    <div className='line'>
-                        <label>来源链哈希:</label>
-                        <label>
-                            <CopyButton
-                                onTextClick={() => {
-                                    sourceHash(txid, fromChainID)
-                                }}
-                                className="pointer"
-                            >
-                                {txid}
-                            </CopyButton>
-                            <ToChainLink
-                                hash={txid}
-                                chainid={fromChainID}
-                            />
-                        </label>
-                    </div>
-                    <div className='line'>
-                        <label>目标链哈希:</label>
-                        <label>
-                            <CopyButton
-                                onTextClick={() => {
-                                    targetHash(swaptx, 'outer')
-                                }}
-                                className="pointer"
-                            >
-                                {swaptx}
-                            </CopyButton>
-                            <ToChainLink
-                                hash={swaptx}
-                                chainid={toChainID}
-                            />
-                        </label>
-                    </div>
+    function renderContent() {
+        return (
+            <PageContainer className='trade-detail-container'>
+                <div className='line'>
+                    <label>来源链哈希:</label>
+                    <label>
+                        <CopyButton
+                            onTextClick={() => {
+                                sourceHash(txid, fromChainID)
+                            }}
+                            className="pointer"
+                        >
+                            {txid}
+                        </CopyButton>
+                        <ToChainLink
+                            hash={txid}
+                            chainid={fromChainID}
+                        />
+                    </label>
+                </div>
+                <div className='line'>
+                    <label>目标链哈希:</label>
+                    <label>
+                        <CopyButton
+                            onTextClick={() => {
+                                targetHash(swaptx, 'outer')
+                            }}
+                            className="pointer"
+                        >
+                            {swaptx}
+                        </CopyButton>
+                    </label>
+                </div>
 
-                    <div className='line'>
-                        <label>来源链:</label>
-                        <label>
-                            {fromChainIDName}
-                        </label>
-                    </div>
+                <div className='line'>
+                    <label>来源链:</label>
+                    <label>
+                        {fromChainIDName}
+                    </label>
+                </div>
 
-                    <div className='line'>
-                        <label>目标链:</label>
-                        <label>
-                            {toChainIDName}
-                        </label>
-                    </div>
+                <div className='line'>
+                    <label>目标链:</label>
+                    <label>
+                        {toChainIDName}
+                    </label>
+                </div>
 
-                    <div className='line'>
-                        <label>发送:</label>
-                        <label>
-                            <CopyButton
-                                onTextClick={() => {
-                                    sent(from)
-                                }}
-                                className="pointer"
-                            >
-                                {from}
-                            </CopyButton>
-                        </label>
-                    </div>
-                    <div className='line'>
-                        <label>接收:</label>
-                        <label>
-                            <CopyButton
-                                onTextClick={() => {
-                                    recieved(bind)
-                                }}
-                                className="pointer"
-                            >
-                                {bind}
-                            </CopyButton>
-                        </label>
-                    </div>
-                    <div className='line'>
-                        <label>日期:</label>
-                        <label>
-                            {timestamp}
-                        </label>
-                    </div>
-                    <div className='line'>
-                        <label>币种:</label>
-                        <label>
-                            {coin}
-                        </label>
-                    </div>
-                    <div className='line'>
-                        <label>发送数量:</label>
-                        <label>
-                            {value}
-                        </label>
-                    </div>
-                    <div className='line'>
-                        <label>接收数量:</label>
-                        <label>
-                            {swapvalue}
-                        </label>
-                    </div>
-                    <div className='line'>
-                        <label>状态:</label>
-                        <label>
-                            {status}
-                        </label>
-                    </div>
-                </PageContainer>
-            </div>
+                <div className='line'>
+                    <label>发送:</label>
+                    <label>
+                        <CopyButton
+                            onTextClick={() => {
+                                sent(from)
+                            }}
+                            className="pointer"
+                        >
+                            {from}
+                        </CopyButton>
+                    </label>
+                </div>
+                <div className='line'>
+                    <label>接收:</label>
+                    <label>
+                        <CopyButton
+                            onTextClick={() => {
+                                recieved(bind)
+                            }}
+                            className="pointer"
+                        >
+                            {bind}
+                        </CopyButton>
+                    </label>
+                </div>
+                <div className='line'>
+                    <label>日期:</label>
+                    <label>
+                        {timestamp}
+                    </label>
+                </div>
+                <div className='line'>
+                    <label>币种:</label>
+                    <label>
+                        {coin}
+                    </label>
+                </div>
+                <div className='line'>
+                    <label>发送数量:</label>
+                    <label>
+                        {value}
+                    </label>
+                </div>
+                <div className='line'>
+                    <label>接收数量:</label>
+                    <label>
+                        {swapvalue}
+                    </label>
+                </div>
+                <div className='line'>
+                    <label>状态:</label>
+                    <label>
+                        {status}
+                    </label>
+                </div>
+            </PageContainer>
         )
     }
 

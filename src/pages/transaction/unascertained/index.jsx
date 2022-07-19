@@ -227,7 +227,7 @@ function UnAscertained(props) {
         )
     }
 
-    function renderStatus() {
+    function renderShowStatus() {
         let routerStatusView = renderLoadingStatus("router");
         let inStatusView = renderLoadingStatus("bridge(IN)");
         let outStatusView = renderLoadingStatus("bridge(OUT)");
@@ -321,7 +321,7 @@ function UnAscertained(props) {
                     type="circle"
                     percent={progress}
                 />
-                {renderStatus()}
+                {renderShowStatus()}
             </div>
         )
     }

@@ -249,7 +249,7 @@ export function renderLogHeader(res, allList,) {
             <OuterHeader
                 title={"swap 处理过程"}
                 list={[{
-                    label: 'error',
+                    label: '错误',
                     value: res.msg,
                     error: true
                 }]}
@@ -264,7 +264,7 @@ export function renderLogHeader(res, allList,) {
             title={"swap 处理过程"}
             list={[{
                 label: '状态',
-                value: TradeUtils.renderStatus(status),
+                value: TradeUtils.renderTradeStatus(status),
             }, {
                 label: '消息',
                 value: msg,
@@ -293,7 +293,7 @@ export function logListHeader(item) {
 
                 <div className='header-item'>
                     <label>状态</label>
-                    <label>{TradeUtils.renderStatus(status)}</label>
+                    <label>{TradeUtils.renderTradeStatus(status)}</label>
                 </div>
 
                 <div className='header-item'>
@@ -326,11 +326,12 @@ export function logListHeader(item) {
 }
 
 export function LogCate(props) {
-    const {changeType, errorList, warnList, allList} = props;
+    const {changeType, errorList, warnList, allList, showType} = props;
     return (
         <>
             <span
                 className={"type-all"}
+                style={{opacity: showType === 'all'? 1: 0.7}}
                 onClick={() => {
                     changeType('all')
                 }}
@@ -340,6 +341,7 @@ export function LogCate(props) {
                 </span>
             <span
                 className={"type-error"}
+                style={{opacity: showType === 'error'? 1: 0.7}}
                 onClick={() => {
                     changeType('error')
                 }}
@@ -349,6 +351,7 @@ export function LogCate(props) {
                 </span>
             <span
                 className="type-warn"
+                style={{opacity: showType === 'warn'? 1: 0.7}}
                 onClick={() => {
                     changeType('warn')
                 }}
@@ -370,7 +373,8 @@ export function LogPagination(props) {
         errorList,
         warnList,
         allList,
-        hidden
+        hidden,
+        showType
     } = props;
     if (hidden) {
         return null
@@ -382,6 +386,7 @@ export function LogPagination(props) {
                 errorList={errorList}
                 warnList={warnList}
                 allList={allList}
+                showType={showType}
             />
             &emsp;&emsp;
             <Pagination

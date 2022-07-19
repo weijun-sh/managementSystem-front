@@ -78,6 +78,7 @@ function ChainLogs(props) {
                 </Collapse>
 
                 <LogPagination
+                    showType={showType}
                     hidden={isErrorCode(code) }
                     pageSize={pageSize}
                     currentList={currentList}
