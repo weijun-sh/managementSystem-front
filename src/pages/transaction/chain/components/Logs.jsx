@@ -22,8 +22,6 @@ function ChainLogs(props) {
     const [showType, setShowType] = useState(TYPE_LOG_ALL);
     const [pageSize, setPageSize] = useState(10);
 
-    window.success("res", res);
-
 
     useEffect(() => {
         setCurrentPage(1)

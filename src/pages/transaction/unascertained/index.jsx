@@ -166,7 +166,6 @@ function UnAscertained(props) {
         let orgList = res.result.data;
 
         let list = TradeUtils.deepMapList(orgList);
-        window.success("receive list", list)
         let newList = []
         if (type === 'Router') {
 

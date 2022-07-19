@@ -404,7 +404,9 @@ class SearchTable extends React.Component {
                         size={"small"}
                         expandable={expandable}
                         scroll={scroll}
-                        rowKey={rowKey || 'rowKey'}
+                        rowKey={(record)=> {
+                            return rowKey || record.rowKey
+                        }}
                         loading={loading}
                         dataSource={list}
                         columns={columnsData}
@@ -433,7 +435,7 @@ SearchTable.defaultProps = {
     scroll: null,
     card2Extra: null,
     combineField: null,
-    rowKey: 'id',
+    rowKey: null,
     loadedSuccess: () => {},
     loadedFail: () => {},
     loadFinal: () => {},
