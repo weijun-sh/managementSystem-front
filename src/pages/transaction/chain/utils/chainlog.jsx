@@ -1,14 +1,20 @@
-import {Collapse, Empty, Pagination, Tooltip} from "antd";
-import React from "react";
-import TradeUtils, {formatTimes, renderChainID} from "../../tradeUtils";
-import _ from "lodash";
 import JsonOut from "../../../../mlib/mc/text/JsonOut";
-import {dateFormatter} from "../../../../mlib/mu/time";
-import OuterLink from "../../components/outerLink";
-import './index.less'
-
+import _ from "lodash";
+import React from "react";
+import {
+    ErrorCodeHeaderView, isErrorCode,
+} from "./common";
+import {Collapse, Empty, Pagination, Tooltip} from "antd";
+import TradeUtils, {formatTimes} from "../../tradeUtils";
 const {Panel} = Collapse;
-
+const TypeText = {
+    all: '所有',
+    error: '错误',
+    warn: '警告',
+}
+export const TYPE_LOG_ALL = 'all';
+export const TYPE_LOG_ERROR = 'error';
+export const TYPE_LOG_WARN = 'warn';
 export function EmptyContent(props) {
     return (
         <div className={"empty-content"}>
@@ -20,115 +26,88 @@ export function EmptyContent(props) {
     )
 }
 
-/** Log Components and methods */
+export function renderLogPanel(res, currentList, pageList, showType) {
 
-export const TYPE_LOG_ALL = 'all';
-export const TYPE_LOG_ERROR = 'error';
-export const TYPE_LOG_WARN = 'warn';
+    if(isErrorCode(res.code)){
+        return (
+            <JsonOut key={JSON.stringify(res)} obj={res}/>
+        )
+    }
 
-const TypeText = {
-    all: '所有',
-    error: '错误',
-    warn: '警告',
+    if (!currentList.length) {
+        return <EmptyContent msg={`没有${TypeText[showType]}日志`}/>
+    }
+
+    return pageList.map((item, index) => {
+
+        let obj = _.cloneDeep(item)
+        delete obj.times;
+        return (
+            <Panel
+                key={`${index}`}
+                header={renderLogPanelHeader(item)}
+            >
+                <JsonOut key={JSON.stringify(obj)} obj={obj}/>
+            </Panel>
+        )
+    })
 }
 
-export function LogEmpty() {
-    return (
-        <Collapse
-            className="trade-logs-container"
-        >
-            <Panel
-                key={1}
-                header={(
-                    <div className={"title-panel"}>
-                        <strong>swap 处理过程</strong>
-                    </div>
-                )}
+export function renderLogLevel(level) {
+    let styles = {
+        background: 'gray',
+        color: 'white',
+        borderRadius: 2,
+        padding: '0px 2px',
+        textAlign: 'center',
+        width: 40
+    }
+    if (LogIsErrorLevel(level)) {
+        return (
+            <div
+                className={"item-header"}
+                style={{
+                    ...styles,
+                    background: '#b55353'
+                }}
             >
-                <EmptyContent
-                    msg={"没有日志 (只保存14天内的日志)"}
-                />
+                error
+            </div>
+        )
+    }
+    if (LogIsWarnLevel(level)) {
+        return (
+            <div
+                style={{
+                    ...styles,
+                    background: '#d48806'
+                }}
+                className={"item-header"}
+            >
+                warn
+            </div>
+        )
+    }
 
-            </Panel>
-
-        </Collapse>
-    )
+    if (level === 'info') {
+        return (
+            <div
+                style={{
+                    ...styles,
+                    background: '#aaa',
+                }}
+                className={"item-header"}
+            >
+                info
+            </div>
+        )
+    }
+    return level
 }
 
-export function LogErrorView(props) {
-    const {msg,} = props.data;
-    const {title} = props;
-    return (
-        <Collapse
-            className="trade-logs-container"
-        >
-            <Panel
-                key={1}
-                header={(
-                    <div className={"log-process-outer-header"}>
-                        <strong>{title}</strong>
-                        <span className={"header-summary"}>
-                        </span>
-                    </div>
-                )}
-            >
-                <JsonOut
-                    key={JSON.stringify(props.data)}
-                    obj={props.data}
-                />
-            </Panel>
-        </Collapse>
-    )
-}
 
-export function ProcessErrorView(props) {
-    const {msg,toChainID} = props.data;
-    const {title} = props;
-    return (
-        <Collapse
-            className="trade-logs-container"
-        >
-            <Panel
-                key={1}
-                header={(
-                    <div className={"log-process-outer-header"}>
-                        <strong>{title}</strong>
-                        <span className={"header-summary"}>
-                            <div className={"line"}>
-                                <span className={"key"}>
-                                    消息
-                                </span>
-                                <span className={"value"}>
-                                    {msg}
-                                </span>
-                            </div>
-                                                        <div className={"line"}>
-                                <span className={"key"}>
-                                    toChainID
-                                </span>
-                                <span className={"value"}>
-                                    {toChainID}
-                                </span>
-                            </div>
-                            <div className={"line"}>
-                                <span className={"key"}>
-                                    toChainID
-                                </span>
-                                <span className={"value"}>
-                                    {toChainID}
-                                </span>
-                            </div>
-                        </span>
-                    </div>
-                )}
-            >
-                <JsonOut
-                    key={JSON.stringify(props.data)}
-                    obj={props.data}
-                />
-            </Panel>
-        </Collapse>
-    )
+export function LogIsWarnLevel(status) {
+    return status === 'warn' || status === 'warning'
 }
 
 //print out origin data, json
@@ -140,16 +119,16 @@ export function printLogJson(obj) {
         }
         list.push(
             <div key={key} className={"item"}>
-                    <span
-                        className={"key"}
-                    >
-                        {key}:
-                    </span>
+                <span
+                    className={"key"}
+                >
+                    {key}:
+                </span>
                 <span
                     className={"value"}
                 >
-                        {obj[key]}
-                    </span>
+                    {obj[key]}
+                </span>
             </div>
         )
     }
@@ -164,9 +143,6 @@ export function LogIsErrorLevel(status) {
     return status === 'error' || status === 'fatal'
 }
 
-export function isLogErrorStatus(status) {
-    return status === '1'
-}
 
 /*
 * current page to show
@@ -231,16 +207,16 @@ function Tips(props) {
             {children}
         </Tooltip>
     )
-
 }
 
-export function renderLogHeader(allList,) {
+export function renderLogHeader(res, allList,) {
 
-    if (!allList || !allList.length) {
+    if (isErrorCode(res.code)) {
         return (
-            <div className={"log-process-outer-header"}>
-                <strong>swap 处理过程</strong>
-            </div>
+            <ErrorCodeHeaderView
+                title={"swap 处理过程"}
+                msg={res.msg}
+            />
         )
     }
     let first = allList[0];
@@ -323,7 +299,20 @@ export function LogCate(props) {
 }
 
 export function LogPagination(props) {
-    const {changeType, pageSize, currentList, currentPage, onPageChange, errorList, warnList, allList} = props;
+    const {
+        changeType,
+        pageSize,
+        currentList,
+        currentPage,
+        onPageChange,
+        errorList,
+        warnList,
+        allList,
+        hidden
+    } = props;
+    if (hidden) {
+        return null
+    }
     return (
         <div className={"page-wrap"}>
             <LogCate
@@ -391,86 +380,12 @@ export function renderLogPanelHeader(item) {
     )
 }
 
-export function LogIsWarnLevel(status) {
-    return status === 'warn' || status === 'warning'
-}
-
-export function renderLogLevel(level) {
-    let styles = {
-        background: 'gray',
-        color: 'white',
-        borderRadius: 2,
-        padding: '0px 2px',
-        textAlign: 'center',
-        width: 40
-    }
-    if (LogIsErrorLevel(level)) {
-        return (
-            <div
-                className={"item-header"}
-                style={{
-                    ...styles,
-                    background: '#b55353'
-                }}
-            >
-                error
-            </div>
-        )
-    }
-    if (LogIsWarnLevel(level)) {
-        return (
-            <div
-                style={{
-                    ...styles,
-                    background: '#d48806'
-                }}
-                className={"item-header"}
-            >
-                warn
-            </div>
-        )
-    }
-
-    if (level === 'info') {
-        return (
-            <div
-                style={{
-                    ...styles,
-                    background: '#aaa',
-                }}
-                className={"item-header"}
-            >
-                info
-            </div>
-        )
-    }
-    return level
-}
-
-export function renderLogPanel(currentList, pageList, showType) {
-
-    if (!currentList.length) {
-        return <EmptyContent msg={`没有${TypeText[showType]}日志`}/>
-    }
-
-    return pageList.map((item, index) => {
-
-        let obj = _.cloneDeep(item)
-        delete obj.times;
-        return (
-            <Panel
-                key={`${index}`}
-                header={renderLogPanelHeader(item)}
-            >
-                <JsonOut key={JSON.stringify(obj)} obj={obj}/>
-            </Panel>
-        )
-    })
-}
-
 /*from backend data change to useful
 * */
 export function formatLogList(logs) {
+    if (!logs) {
+        return []
+    }
     let result = {};
     logs.map((item) => {
         const {time, ...other} = item;
@@ -503,84 +418,4 @@ export function formatLogList(logs) {
     });
 
     return list
-}
-
-/** Process Components and methods */
-
-export function isProcessStatusError(status) {
-    return status === '0'
-}
-
-export function EmptyProcess() {
-    return (
-        <Collapse
-            className={"process-container"}
-            defaultActiveKey={[]}
-        >
-            <Panel key={"1"}
-                   header={(
-                       <div className={"header"}>
-                           <div className={"line"}>
-                               <strong>swap 交易信息</strong>
-                           </div>
-                       </div>
-                   )}
-            >
-                <Empty description={"无交易信息"}/>
-            </Panel>
-        </Collapse>
-    );
-}
-
-
-export function renderProcessStatus(status) {
-    if (status === '0') {
-        return <span className={"fail"}>失败</span>
-    }
-    if (status === '1') {
-        return <span className={"success"}>成功</span>
-    }
-    return '-'
-}
-
-export function renderProcessHeader(data) {
-    const {toChainID, status, timestamp, swaptx} = data;
-    return (
-        <div className={"log-process-outer-header"}>
-            <strong>swap 交易信息</strong>
-            <span className={"header-summary"}>
-                <div className={"line"}>
-                <span className={"key"}>状态</span>
-                <span>{renderProcessStatus(status)}</span>
-            </div>
-            <div className={"line"}>
-                <span className={"key"}>
-                    时间
-                </span>
-                <span className={"value"}>
-                    {dateFormatter(timestamp)}
-                </span>
-            </div>
-            <div className={"line"}>
-                <span className={"key"}>主链</span>
-                <span className={"value"}>
-                    <span>
-                        {renderChainID(toChainID)}
-                    </span>
-                </span>
-            </div>
-            <div className={"line"}>
-                <span className={"key"}>swaptx</span>
-                <span className={"value"}>
-                    <OuterLink
-                        ellipsis={true}
-                        hash={swaptx}
-                        chainid={toChainID}
-                    />
-                </span>
-            </div>
-            </span>
-
-        </div>
-    )
 }

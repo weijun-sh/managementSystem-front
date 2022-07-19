@@ -157,11 +157,11 @@ export default function Chain() {
                 <h3 className={"detail-header"}>交易详情</h3>
                 <Collapse>
                     <Logs
-                        logs={logs}
+                        res={logs}
                         visible={visible}
                     />
                     <Process
-                        swaptx={swaptx}
+                        res={swaptx}
                         visible={visible}
                     />
                 </Collapse>

@@ -3,49 +3,45 @@ import {Collapse} from "antd";
 import './logs.less'
 import {
     formatLogCurrentList,
-    formatLogList, isLogErrorStatus,
-    LogEmpty, LogErrorView,
+    formatLogList,
     LogPagination,
     renderLogHeader,
     renderLogPanel,
     TYPE_LOG_ALL
-} from "../utils";
+} from "../utils/chainlog";
+import {isErrorCode} from "../utils/common";
 
 const {Panel} = Collapse;
 
 
 function ChainLogs(props) {
-    const {logs, visible} = props;
+    const {res, visible} = props;
     const [currentPage, setCurrentPage] = useState(1);
     const [activeKeys, setActiveKeys] = useState([]);
     const [showType, setShowType] = useState(TYPE_LOG_ALL);
     const [pageSize, setPageSize] = useState(10);
 
+    window.success("res", res);
+
+
     useEffect(() => {
         setCurrentPage(1)
-    }, [logs, visible])
+    }, [res, visible]);
+
+    if(!res){
+        return null;
+    }
 
     /** error data to show */
     if (!visible) {
         return null;
     }
 
-    if (isLogErrorStatus(logs.status)) {
-        return (
-            <LogErrorView
-                title={`swap 处理过程`}
-                data={logs}
-            />
-        )
-    }
-
-    if (!logs.logs || logs.logs.length === 0) {
-        return <LogEmpty/>
-    }
-
+    const {code, data, msg} = res;
+    const {logs, logFile} = data;
 
     /** right data to show */
-    let formatedLogs = formatLogList(logs.logs);
+    let formatedLogs = formatLogList(logs);
 
     let {
         pageList,
@@ -62,14 +58,13 @@ function ChainLogs(props) {
         setCurrentPage(1)
     }
 
-
     return (
         <Collapse
             className="trade-logs-container"
         >
             <Panel
                 key={1}
-                header={renderLogHeader(allList)}
+                header={renderLogHeader(res,allList)}
             >
                 <Collapse
                     activeKey={activeKeys}
@@ -78,9 +73,11 @@ function ChainLogs(props) {
                     }}
                     defaultActiveKey={[]}
                 >
-                    {renderLogPanel(currentList, pageList, showType)}
+                    {renderLogPanel(res, currentList, pageList, showType)}
                 </Collapse>
+
                 <LogPagination
+                    hidden={isErrorCode(code) }
                     pageSize={pageSize}
                     currentList={currentList}
                     currentPage={currentPage}

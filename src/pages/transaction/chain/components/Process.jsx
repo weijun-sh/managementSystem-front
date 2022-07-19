@@ -4,30 +4,24 @@ import {Collapse} from 'antd';
 import './process.less'
 import PropTypes from "prop-types";
 import {
-    EmptyProcess,
-    isProcessStatusError,
-    LogProcessErrorView, ProcessErrorView,
     renderProcessHeader,
-} from "../utils";
+} from "../utils/chainprocess";
 
 const {Panel} = Collapse;
 
 function Process(props) {
 
-    const {swaptx, visible} = props;
+    const {res, visible} = props;
     if (!visible) {
         return null;
     }
-    if (!swaptx) {
-        return <EmptyProcess/>
+    if (!res) {
+        return null
     }
 
-    //1 success only, other place 1 is fail
-/*    let outJson = swaptx
-    if (isProcessStatusError(swaptx.status)) {
-        outJson = swaptx;
-    }*/
+    const {code, msg, data} = res;
 
+    const {swaptx} = data;
 
     return (
         <Collapse
@@ -36,11 +30,11 @@ function Process(props) {
         >
             <Panel
                 key={"1"}
-                header={renderProcessHeader(swaptx)}
+                header={renderProcessHeader(res, swaptx)}
             >
                 <div className={"content"}>
                     <JsonOut
-                        obj={swaptx}
+                        obj={res}
                     />
                 </div>
             </Panel>
