@@ -19,24 +19,13 @@
 .page-content{
   margin: 10px 16px 0;
   overflow: inherit;
-  padding-bottom: 70px;
-  z-index: 1;
   min-height: 600px;
-}
-
-@media screen and (max-height: 500px){
-  .page-footer{
-    display: none;
-  }
-  .page-content{
-    padding-bottom: 10px;
-  }
+  padding-bottom: 0px;
 }
 
 .page-footer{
   text-align: center;
-  position: fixed;
-  bottom: 0;
   width: 100vw;
-  left: 80px;
+  z-index: -1;
+  margin-top: 20px;
 }

@@ -390,8 +390,13 @@ export const HistoryColumns = function (config = {}) {
                                 cancelText:"取消",
                                 width: 860,
                                 icon: false,
+                                closable: true,
+                                cancelButtonProps: {hidden: true},
                                 content:(
-                                    <JsonOut obj={record}/>
+                                    <JsonOut
+                                        obj={record}
+                                        style={{border: '1px solid #eee'}}
+                                    />
                                 )
                             })
                         }}

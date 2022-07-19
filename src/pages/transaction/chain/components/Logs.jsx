@@ -4,8 +4,8 @@ import './logs.less'
 import {
     formatLogCurrentList,
     formatLogList, isLogErrorStatus,
-    LogEmpty,
-    LogPagination, LogProcessErrorView,
+    LogEmpty, LogErrorView,
+    LogPagination,
     renderLogHeader,
     renderLogPanel,
     TYPE_LOG_ALL
@@ -32,7 +32,7 @@ function ChainLogs(props) {
 
     if (isLogErrorStatus(logs.status)) {
         return (
-            <LogProcessErrorView
+            <LogErrorView
                 title={`swap 处理过程`}
                 data={logs}
             />

@@ -55,7 +55,7 @@ export function LogEmpty() {
     )
 }
 
-export function LogProcessErrorView(props) {
+export function LogErrorView(props) {
     const {msg,} = props.data;
     const {title} = props;
     return (
@@ -65,9 +65,60 @@ export function LogProcessErrorView(props) {
             <Panel
                 key={1}
                 header={(
-                    <div className={"title-panel"}>
-                        <strong>{title}</strong> &emsp;&emsp;
-                        <span style={{color: '#e53c66'}}>{msg}</span>
+                    <div className={"log-process-outer-header"}>
+                        <strong>{title}</strong>
+                        <span className={"header-summary"}>
+                        </span>
+                    </div>
+                )}
+            >
+                <JsonOut
+                    key={JSON.stringify(props.data)}
+                    obj={props.data}
+                />
+            </Panel>
+        </Collapse>
+    )
+}
+
+export function ProcessErrorView(props) {
+    const {msg,toChainID} = props.data;
+    const {title} = props;
+    return (
+        <Collapse
+            className="trade-logs-container"
+        >
+            <Panel
+                key={1}
+                header={(
+                    <div className={"log-process-outer-header"}>
+                        <strong>{title}</strong>
+                        <span className={"header-summary"}>
+                            <div className={"line"}>
+                                <span className={"key"}>
+                                    消息
+                                </span>
+                                <span className={"value"}>
+                                    {msg}
+                                </span>
+                            </div>
+                                                        <div className={"line"}>
+                                <span className={"key"}>
+                                    toChainID
+                                </span>
+                                <span className={"value"}>
+                                    {toChainID}
+                                </span>
+                            </div>
+                            <div className={"line"}>
+                                <span className={"key"}>
+                                    toChainID
+                                </span>
+                                <span className={"value"}>
+                                    {toChainID}
+                                </span>
+                            </div>
+                        </span>
                     </div>
                 )}
             >
@@ -187,7 +238,7 @@ export function renderLogHeader(allList,) {
 
     if (!allList || !allList.length) {
         return (
-            <div className={"title-panel"}>
+            <div className={"log-process-outer-header"}>
                 <strong>swap 处理过程</strong>
             </div>
         )
@@ -195,7 +246,7 @@ export function renderLogHeader(allList,) {
     let first = allList[0];
     const {err, level, msg, status} = first;
     return (
-        <div className={"title-panel"}>
+        <div className={"log-process-outer-header"}>
             <strong>swap 处理过程</strong>
             <span className={"header-summary"}>
                 <div className={"line"}>
@@ -206,12 +257,13 @@ export function renderLogHeader(allList,) {
                         {status || '-'}
                     </span>
                 </div>
+
                 <div className={"line"}>
                     <span className={"key"}>
-                        时间
+                        消息
                     </span>
                     <span className={"value"}>
-                        {formatTimes(first.time)}
+                        {msg}
                     </span>
                 </div>
                 <div hidden={!LogIsErrorLevel(level)} className={"line"}>
@@ -224,10 +276,10 @@ export function renderLogHeader(allList,) {
                 </div>
                 <div className={"line"}>
                     <span className={"key"}>
-                        消息
+                        时间
                     </span>
                     <span className={"value"}>
-                        {msg}
+                        {formatTimes(first.time)}
                     </span>
                 </div>
             </span>
@@ -494,11 +546,10 @@ export function renderProcessStatus(status) {
 export function renderProcessHeader(data) {
     const {toChainID, status, timestamp, swaptx} = data;
     return (
-        <div className={"header"}>
-            <div className={"line"}>
-                <strong>swap 交易信息</strong>
-            </div>
-            <div className={"line"}>
+        <div className={"log-process-outer-header"}>
+            <strong>swap 交易信息</strong>
+            <span className={"header-summary"}>
+                <div className={"line"}>
                 <span className={"key"}>状态</span>
                 <span>{renderProcessStatus(status)}</span>
             </div>
@@ -511,7 +562,7 @@ export function renderProcessHeader(data) {
                 </span>
             </div>
             <div className={"line"}>
-                <span className={"key"}>链</span>
+                <span className={"key"}>主链</span>
                 <span className={"value"}>
                     <span>
                         {renderChainID(toChainID)}
@@ -528,6 +579,8 @@ export function renderProcessHeader(data) {
                     />
                 </span>
             </div>
+            </span>
+
         </div>
     )
 }

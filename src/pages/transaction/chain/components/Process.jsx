@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import {
     EmptyProcess,
     isProcessStatusError,
-    LogProcessErrorView,
+    LogProcessErrorView, ProcessErrorView,
     renderProcessHeader,
 } from "../utils";
 
@@ -23,14 +23,10 @@ function Process(props) {
     }
 
     //1 success only, other place 1 is fail
+/*    let outJson = swaptx
     if (isProcessStatusError(swaptx.status)) {
-        return (
-            <LogProcessErrorView
-                title={`swap 交易信息`}
-                data={swaptx}
-            />
-        )
-    }
+        outJson = swaptx;
+    }*/
 
 
     return (
@@ -44,7 +40,7 @@ function Process(props) {
             >
                 <div className={"content"}>
                     <JsonOut
-                        obj={swaptx.transaction}
+                        obj={swaptx}
                     />
                 </div>
             </Panel>

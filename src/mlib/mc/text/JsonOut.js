@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 function JsonOut(props) {
 
-    const {obj, className} = props;
+    const {obj, className, style} = props;
     const [inner, setInner] = useState("")
 
     useEffect(() => {
@@ -44,7 +44,7 @@ function JsonOut(props) {
     }
 
     return (
-        <div  className={`json-out-container`}>
+        <div style={{...style}}  className={`json-out-container`}>
             <pre dangerouslySetInnerHTML={{__html: inner}} >
             </pre>
         </div>

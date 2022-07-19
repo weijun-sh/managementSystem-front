@@ -4,7 +4,7 @@ import './index.less'
 function PageContainer(props){
     const {children,className} = props;
     return (
-        <div className={` ${className}`}>
+        <div className={`page-container ${className}`}>
             {children}
         </div>
     ) 

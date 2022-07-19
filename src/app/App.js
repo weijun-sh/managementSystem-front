@@ -21,7 +21,7 @@ const App = function () {
         setTheme(theme)
     }
 
-    function renderHeader() {
+    function HeaderComponent() {
         const menu = (
             <Menu
                 items={[
@@ -83,7 +83,7 @@ const App = function () {
         )
     }
 
-    function renderMain() {
+    function MainComponent() {
         return (
             <PageLayout
                 hasSider
@@ -101,12 +101,14 @@ const App = function () {
 
                     <Sharing/>
                     <BackTop style={{bottom: 20}}/>
+
+                    <FooterComponent/>
                 </PageContent>
             </PageLayout>
         )
     }
 
-    function renderFooter() {
+    function FooterComponent() {
         return (
             <PageFooter>
                 Copyright © 2022 Multichain 管理系统 All rights reserved.
@@ -119,10 +121,11 @@ const App = function () {
             <Provider {...stores}>
                 <Router>
                     <PageLayout>
-                        {renderHeader()}
-                        {renderMain()}
+                        <HeaderComponent/>
 
-                        {renderFooter()}
+                        <MainComponent/>
+
+
                     </PageLayout>
                 </Router>
             </Provider>
