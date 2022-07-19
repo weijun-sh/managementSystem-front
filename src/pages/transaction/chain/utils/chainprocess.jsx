@@ -2,7 +2,7 @@ import {dateFormatter} from "../../../../mlib/mu/time";
 import {renderChainID} from "../../tradeUtils";
 import OuterLink from "../../components/outerLink";
 import React from "react";
-import {ErrorCodeHeaderView, isErrorCode} from "./common";
+import {isErrorCode, OuterHeader} from "./common";
 
 export function renderProcessStatus(status) {
     if (status === '0') {
@@ -15,52 +15,45 @@ export function renderProcessStatus(status) {
 }
 
 export function renderProcessHeader(res) {
-    const {toChainID, status, timestamp, swaptx} = res.data;
+    const {toChainID, timestamp, swaptx} = res.data;
     if(isErrorCode(res.code)){
         return (
-            <ErrorCodeHeaderView
+            <OuterHeader
                 title={"swap 交易信息"}
-                msg={res.msg}
+                list={[{
+                    label: '状态',
+                    value: renderProcessStatus('0')
+                },{
+                    label: 'error',
+                    value: res.msg,
+                    error: true
+                }, ]}
             />
         )
     }
     return (
-        <div className={"log-process-outer-header"}>
-            <strong>swap 交易信息</strong>
-            <span className={"header-summary"}>
-                <div className={"line"}>
-                    <span className={"key"}>状态</span>
-                    <span>{renderProcessStatus(status)}</span>
-                </div>
-                <div className={"line"}>
-                    <span className={"key"}>
-                        时间
-                    </span>
-                    <span className={"value"}>
-                        {dateFormatter(timestamp)}
-                    </span>
-                </div>
-                <div className={"line"}>
-                    <span className={"key"}>主链</span>
-                    <span className={"value"}>
-                        <span>
-                            {renderChainID(toChainID)}
-                        </span>
-                    </span>
-                </div>
-                <div className={"line"}>
-                    <span className={"key"}>swaptx</span>
-                    <span className={"value"}>
-                        <OuterLink
-                            ellipsis={true}
-                            hash={swaptx}
-                            chainid={toChainID}
-                        />
-                    </span>
-                </div>
-            </span>
-
-        </div>
+        <OuterHeader
+            title={"swap 交易信息"}
+            list={[{
+                label: '状态',
+                value: renderProcessStatus('1')
+            },{
+                label: '主链',
+                value: renderChainID(toChainID),
+            }, {
+                label: 'swaptx',
+                value: (
+                    <OuterLink
+                        ellipsis={true}
+                        hash={swaptx}
+                        chainid={toChainID}
+                    />
+                )
+            }, {
+                label: "时间",
+                value: dateFormatter(timestamp)
+            }]}
+        />
     )
 }
 

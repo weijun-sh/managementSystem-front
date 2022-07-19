@@ -2,12 +2,14 @@ import JsonOut from "../../../../mlib/mc/text/JsonOut";
 import _ from "lodash";
 import React from "react";
 import {
-    ErrorCodeHeaderView, isErrorCode,
+    EmptyContent,
+    isErrorCode, OuterHeader,
 } from "./common";
-import {Collapse, Empty, Pagination, Tooltip} from "antd";
+import './chainlog.less'
+import {Collapse, Pagination, Tooltip} from "antd";
 import TradeUtils, {formatTimes} from "../../tradeUtils";
 const {Panel} = Collapse;
-const TypeText = {
+const ShowTypeText = {
     all: '所有',
     error: '错误',
     warn: '警告',
@@ -15,16 +17,47 @@ const TypeText = {
 export const TYPE_LOG_ALL = 'all';
 export const TYPE_LOG_ERROR = 'error';
 export const TYPE_LOG_WARN = 'warn';
-export function EmptyContent(props) {
-    return (
-        <div className={"empty-content"}>
-            <h3 className={"header"}>
-                <strong>{props.title}</strong>
-            </h3>
-            <Empty description={props.msg}/>
-        </div>
-    )
+
+/*from backend data change to useful
+* */
+export function formatLogList(logs) {
+    if (!logs) {
+        return []
+    }
+    let result = {};
+    logs.map((item) => {
+        const {time, ...other} = item;
+        let jr = JSON.stringify(other);
+        if (!result[jr]) {
+            result[jr] = []
+        }
+        result[jr].push(time)
+    });
+
+    let list = [];
+    for (let key in result) {
+        let other = JSON.parse(key);
+        let times = result[key];
+
+        let timeSort = times.sort((a, b) => {
+            return new Date(b.time).getTime() - new Date(a.time).getTime();
+        })
+
+        list.push({
+            ...other,
+            times: timeSort,
+            time: timeSort[timeSort.length - 1],
+            firstTime: timeSort[0]
+        })
+    }
+
+    list = list.sort((a, b) => {
+        return new Date(b.time).getTime() - new Date(a.time).getTime();
+    });
+
+    return list
 }
+
 
 export function renderLogPanel(res, currentList, pageList, showType) {
 
@@ -35,7 +68,7 @@ export function renderLogPanel(res, currentList, pageList, showType) {
     }
 
     if (!currentList.length) {
-        return <EmptyContent msg={`没有${TypeText[showType]}日志`}/>
+        return <EmptyContent msg={`没有${ShowTypeText[showType]}日志`}/>
     }
 
     return pageList.map((item) => {
@@ -45,7 +78,7 @@ export function renderLogPanel(res, currentList, pageList, showType) {
         return (
             <Panel
                 key={JSON.stringify(obj)}
-                header={renderLogPanelHeader(item)}
+                header={logListHeader(item)}
             >
                 <JsonOut key={JSON.stringify(obj)} obj={obj}/>
             </Panel>
@@ -213,53 +246,82 @@ export function renderLogHeader(res, allList,) {
 
     if (isErrorCode(res.code)) {
         return (
-            <ErrorCodeHeaderView
+            <OuterHeader
                 title={"swap 处理过程"}
-                msg={res.msg}
+                list={[{
+                    label: 'error',
+                    value: res.msg,
+                    error: true
+                }]}
             />
         )
     }
     let first = allList[0];
     const {err, level, msg, status} = first;
+
     return (
-        <div className={"log-process-outer-header"}>
-            <strong>swap 处理过程</strong>
-            <span className={"header-summary"}>
-                <div className={"line"}>
-                    <span className={"key"}>
-                        状态
-                    </span>
-                    <span className={"value"}>
-                        {status || '-'}
-                    </span>
+        <OuterHeader
+            title={"swap 处理过程"}
+            list={[{
+                label: '状态',
+                value: TradeUtils.renderStatus(status),
+            }, {
+                label: '消息',
+                value: msg,
+            }, {
+                label: '错误',
+                value: err,
+                error: true,
+                hidden: !LogIsErrorLevel(level)
+            }, {
+                label: '时间',
+                value: formatTimes(first.time),
+            }, ]}
+        />
+    )
+}
+
+
+export function logListHeader(item) {
+    let {level, msg, time, status, times, err} = item;
+    return (
+        <div style={{width: 790}}>
+            <div className={`log-list-header`}>
+                <span className='header-item'>
+                    <span>{renderLogLevel(level)}</span>
+                </span>
+
+                <div className='header-item'>
+                    <label>状态</label>
+                    <label>{TradeUtils.renderStatus(status)}</label>
                 </div>
 
-                <div className={"line"}>
-                    <span className={"key"}>
-                        消息
-                    </span>
-                    <span className={"value"}>
-                        {msg}
-                    </span>
+                <div className='header-item'>
+                    <label>消息</label>
+                    <label>{msg}</label>
+
+                    <div hidden={!LogIsErrorLevel(level)}>
+                        <label>err</label>
+                        <label style={{color: '#b55353'}}>{err}</label>
+                    </div>
                 </div>
-                <div hidden={!LogIsErrorLevel(level)} className={"line"}>
-                    <span className={"key"}>
-                        错误
-                    </span>
-                    <span style={{color: '#b55353'}} className={"value"}>
-                        {err}
-                    </span>
+
+                <div className='header-item'>
+                    <label>时间</label>
+                    <label>{formatTimes(time)}</label>
+
+                    <Tips item={item}>
+                        <span
+                            className={"time-number"}
+                            style={{opacity: times.length === 1 ? 0.4 : 1}}
+                        >
+                            {times.length}
+                        </span>
+                    </Tips>
                 </div>
-                <div className={"line"}>
-                    <span className={"key"}>
-                        时间
-                    </span>
-                    <span className={"value"}>
-                        {formatTimes(first.time)}
-                    </span>
-                </div>
-            </span>
+            </div>
         </div>
+
     )
 }
 
@@ -334,88 +396,4 @@ export function LogPagination(props) {
             />
         </div>
     )
-}
-
-export function renderLogPanelHeader(item) {
-    let {level, msg, time, status, times, err} = item;
-    return (
-        <div style={{width: 790}}>
-            <div className={`header`}>
-                <span className='header-item'>
-                    <span>{renderLogLevel(level)}</span>
-                </span>
-
-                <div className='header-item'>
-                    <label>状态</label>
-                    <label>{TradeUtils.renderStatus(status)}</label>
-                </div>
-
-
-                <div className='header-item'>
-                    <label>消息</label>
-                    <label>{msg}</label>
-
-                    <div hidden={!LogIsErrorLevel(level)}>
-                        <label>err</label>
-                        <label style={{color: '#b55353'}}>{err}</label>
-                    </div>
-                </div>
-
-                <div className='header-item'>
-                    <label>时间</label>
-                    <label>{formatTimes(time)}</label>
-
-                    <Tips item={item}>
-                        <span
-                            className={"time-number"}
-                            style={{opacity: times.length === 1 ? 0.4 : 1}}
-                        >
-                            {times.length}
-                        </span>
-                    </Tips>
-                </div>
-            </div>
-        </div>
-
-    )
-}
-
-/*from backend data change to useful
-* */
-export function formatLogList(logs) {
-    if (!logs) {
-        return []
-    }
-    let result = {};
-    logs.map((item) => {
-        const {time, ...other} = item;
-        let jr = JSON.stringify(other);
-        if (!result[jr]) {
-            result[jr] = []
-        }
-        result[jr].push(time)
-    });
-
-    let list = [];
-    for (let key in result) {
-        let other = JSON.parse(key);
-        let times = result[key];
-
-        let timeSort = times.sort((a, b) => {
-            return new Date(b.time).getTime() - new Date(a.time).getTime();
-        })
-
-        list.push({
-            ...other,
-            times: timeSort,
-            time: timeSort[timeSort.length - 1],
-            firstTime: timeSort[0]
-        })
-    }
-
-    list = list.sort((a, b) => {
-        return new Date(b.time).getTime() - new Date(a.time).getTime();
-    });
-
-    return list
 }

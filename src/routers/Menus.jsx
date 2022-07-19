@@ -44,7 +44,10 @@ function Menus(props) {
                     className={"logo-image"}
                     src={require('../assets/favicon.ico')}
                 />
-                <span className={"menu-brand"}>MultiChain</span>
+                <div className={"menu-brand"}>
+                    <div>MultiChain</div>
+                    <div>监控运维系统</div>
+                </div>
             </div>
 
             <Menu

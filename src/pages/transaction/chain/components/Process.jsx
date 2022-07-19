@@ -40,7 +40,8 @@ function Process(props) {
 }
 
 Process.propTypes = {
-    swaptx: PropTypes.any
+    res: PropTypes.any,
+    visible: PropTypes.any,
 }
 
 export default Process;

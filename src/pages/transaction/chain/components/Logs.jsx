@@ -10,6 +10,7 @@ import {
     TYPE_LOG_ALL
 } from "../utils/chainlog";
 import {isErrorCode} from "../utils/common";
+import PropTypes from "prop-types";
 
 const {Panel} = Collapse;
 
@@ -94,6 +95,11 @@ function ChainLogs(props) {
             </Panel>
         </Collapse>
     )
+}
+
+ChainLogs.propTypes = {
+    visible: PropTypes.any,
+    res: PropTypes.any,
 }
 
 export default ChainLogs;
