@@ -19,10 +19,6 @@ function Process(props) {
         return null
     }
 
-    const {code, msg, data} = res;
-
-    const {swaptx} = data;
-
     return (
         <Collapse
             className={"process-container"}
@@ -30,7 +26,7 @@ function Process(props) {
         >
             <Panel
                 key={"1"}
-                header={renderProcessHeader(res, swaptx)}
+                header={renderProcessHeader(res)}
             >
                 <div className={"content"}>
                     <JsonOut

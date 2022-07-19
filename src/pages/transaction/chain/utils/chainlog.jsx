@@ -38,13 +38,13 @@ export function renderLogPanel(res, currentList, pageList, showType) {
         return <EmptyContent msg={`没有${TypeText[showType]}日志`}/>
     }
 
-    return pageList.map((item, index) => {
+    return pageList.map((item) => {
 
         let obj = _.cloneDeep(item)
         delete obj.times;
         return (
             <Panel
-                key={`${index}`}
+                key={JSON.stringify(obj)}
                 header={renderLogPanelHeader(item)}
             >
                 <JsonOut key={JSON.stringify(obj)} obj={obj}/>

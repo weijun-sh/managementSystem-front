@@ -10,7 +10,7 @@ export function ErrorCodeHeaderView(props){
             <span className={"header-summary"}>
                     <div className={"line"}>
                         <span className={"key"}>
-                            消息
+                            err
                         </span>
                         <span className={"error-value value"}>
                             {msg}

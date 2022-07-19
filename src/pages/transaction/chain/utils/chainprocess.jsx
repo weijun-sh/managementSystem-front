@@ -3,8 +3,19 @@ import {renderChainID} from "../../tradeUtils";
 import OuterLink from "../../components/outerLink";
 import React from "react";
 import {ErrorCodeHeaderView, isErrorCode} from "./common";
-export function renderProcessHeader(res, data) {
-    const {toChainID, status, timestamp, swaptx} = data;
+
+export function renderProcessStatus(status) {
+    if (status === '0') {
+        return <span className={"fail"}>失败</span>
+    }
+    if (status === '1') {
+        return <span className={"success"}>成功</span>
+    }
+    return '-'
+}
+
+export function renderProcessHeader(res) {
+    const {toChainID, status, timestamp, swaptx} = res.data;
     if(isErrorCode(res.code)){
         return (
             <ErrorCodeHeaderView
@@ -53,13 +64,4 @@ export function renderProcessHeader(res, data) {
     )
 }
 
-export function renderProcessStatus(status) {
-    if (status === '0') {
-        return <span className={"fail"}>失败</span>
-    }
-    if (status === '1') {
-        return <span className={"success"}>成功</span>
-    }
-    return '-'
-}
 
