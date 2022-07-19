@@ -38,8 +38,9 @@ function Process(props) {
             className={"process-container"}
             defaultActiveKey={[]}
         >
-            <Panel key={"1"}
-                   header={renderProcessHeader(swaptx)}
+            <Panel
+                key={"1"}
+                header={renderProcessHeader(swaptx)}
             >
                 <div className={"content"}>
                     <JsonOut

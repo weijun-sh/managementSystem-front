@@ -131,7 +131,7 @@ export default function Chain() {
             <SearchTable
                 rowKey={"txid"}
                 columnIndex={false}
-                scroll={{x: 1100}}
+                scroll={{x: 1160}}
                 getRef={(node) => {
                     if(tableRef){return}
                     setTableRef(node);

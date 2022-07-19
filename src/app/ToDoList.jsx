@@ -41,9 +41,9 @@ function ToDoList(props) {
                                 <div className={"title"}>
                                     处理人:<span className={"value"}>{to}</span>
                                 </div>
-                                <div className={"title"}>
+{/*                                <div className={"title"}>
                                     协助&emsp;:<span className={"value"}>{cc}</span>
-                                </div>
+                                </div>*/}
                                 <div className={"title"}>
                                     主题&emsp;:<span className={"value"}>{subject}</span>
                                 </div>

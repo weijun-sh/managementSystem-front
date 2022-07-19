@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas'
 import {ShareAltOutlined} from '@ant-design/icons'
 import './sharing.less'
 import Services from '../../../services/api';
+import _ from 'lodash'
 import CopyButton from "./CopyButton";
 
 const {TextArea} = Input;
@@ -32,6 +33,13 @@ function Sharing() {
     }, [])
 
     const EmailOptions = forwardRef(function (props, ref) {
+        let options = receivers.map((item, index) => {
+            return (
+                <Select.Option value={item.email} key={index}>
+                    {item.name}
+                </Select.Option>
+            )
+        })
         return (
             <Select
                 ref={ref}
@@ -39,15 +47,7 @@ function Sharing() {
                 className={"select"}
                 onChange={props.onChange}
             >
-                {
-                    receivers.map((item, index) => {
-                        return (
-                            <Select.Option value={item.email} key={index}>
-                                {item.name}
-                            </Select.Option>
-                        )
-                    })
-                }
+                {options}
             </Select>
         )
     })
@@ -66,11 +66,11 @@ function Sharing() {
         setLoading(true)
         formRef.current.validateFields().then((params) => {
 
-            if (Array.isArray(params.cc) && params.cc.length) {
+/*            if (Array.isArray(params.cc) && params.cc.length) {
                 params.cc = params.cc.join(',')
             } else {
                 params.cc = null
-            }
+            }*/
 
             if (!params.content) {
                 params.content = '';
@@ -88,26 +88,26 @@ function Sharing() {
                 </div>
               `
 
-            if(!isEmail()){
+            if (!isEmail()) {
 
-                if(params.cc){
+/*                if (params.cc) {
+
                     params.cc = params.cc.split(',').map(item => {
-                        let user = receivers.find((it => {
-                            return it.email = item;
-                        }))
+                        let user = _.find(receivers, o => {
+                            return o.email = item;
+                        })
                         return user.name;
                     })
                     params.cc = params.cc.join(',')
-                }
+                }*/
 
-                if(params.to){
-                    params.to = params.to.split(',').map(item => {
-                        let user = receivers.find((it => {
-                            return it.email = item;
-                        }))
-                        return user.name;
-                    })
-                    params.to = params.to.join(',')
+                let toName = ''
+                if (params.to) {
+                    receivers.map(item => {
+                        if(item.email === params.to){
+                            toName = item.name;
+                        }
+                    });
                 }
                 Services.addToDoList({
                     params: {
@@ -115,8 +115,8 @@ function Sharing() {
                         subject: params.subject,
                         image: imageURL,
                         hash: window.location.hash,
-                        cc: params.cc,
-                        to: params.to
+                        //cc: params.cc,
+                        to: toName
 
                     }
                 }).then((res) => {
@@ -193,7 +193,7 @@ function Sharing() {
                         <img src={imageURL}/>
                         <div className={"url"}>
                             页面地址:
-                                {window.location.href}
+                            {window.location.href}
                         </div>
                     </div>
                     <Form
@@ -222,7 +222,7 @@ function Sharing() {
                             </Radio.Group>
                         </Form.Item>
                         <Form.Item
-                            label={isEmail() ? "收件人": "处理人"}
+                            label={isEmail() ? "收件人" : "处理人"}
                             className={"line"}
                             rules={[{
                                 required: true,
@@ -232,13 +232,13 @@ function Sharing() {
                         >
                             <EmailOptions/>
                         </Form.Item>
-                        <Form.Item
+{/*                        <Form.Item
                             name={"cc"}
-                            label={isEmail() ? "抄送": "协助"}
+                            label={isEmail() ? "抄送" : "协助"}
                             className={"line"}
                         >
                             <EmailOptions mode={"tags"}/>
-                        </Form.Item>
+                        </Form.Item>*/}
                         <Form.Item
                             label={"标题"}
                             className={"line"}
@@ -258,8 +258,6 @@ function Sharing() {
                                 className={"select text-area"}
                             />
                         </Form.Item>
-
-
                     </Form>
                 </div>
             </Modal>

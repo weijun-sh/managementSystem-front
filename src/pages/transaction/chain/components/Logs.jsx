@@ -79,25 +79,22 @@ function ChainLogs(props) {
                     defaultActiveKey={[]}
                 >
                     {renderLogPanel(currentList, pageList, showType)}
-
-                    <LogPagination
-                        pageSize={pageSize}
-                        currentList={currentList}
-                        currentPage={currentPage}
-                        errorList={errorList}
-                        warnList={warnList}
-                        allList={allList}
-                        changeType={changeType}
-                        onPageChange={(page, pageSize) => {
-                            setActiveKeys([])
-                            setCurrentPage(page);
-                            setPageSize(pageSize)
-                        }}
-                    />
                 </Collapse>
-
+                <LogPagination
+                    pageSize={pageSize}
+                    currentList={currentList}
+                    currentPage={currentPage}
+                    errorList={errorList}
+                    warnList={warnList}
+                    allList={allList}
+                    changeType={changeType}
+                    onPageChange={(page, pageSize) => {
+                        setActiveKeys([])
+                        setCurrentPage(page);
+                        setPageSize(pageSize)
+                    }}
+                />
             </Panel>
-
         </Collapse>
     )
 }

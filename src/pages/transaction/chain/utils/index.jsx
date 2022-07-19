@@ -491,8 +491,8 @@ export function renderProcessStatus(status) {
     return '-'
 }
 
-export function renderProcessHeader(swaptx) {
-    const {fromChainID, status, txid, timestamp} = swaptx;
+export function renderProcessHeader(data) {
+    const {toChainID, status, timestamp, swaptx} = data;
     return (
         <div className={"header"}>
             <div className={"line"}>
@@ -514,17 +514,17 @@ export function renderProcessHeader(swaptx) {
                 <span className={"key"}>链</span>
                 <span className={"value"}>
                     <span>
-                        {renderChainID(fromChainID)}
+                        {renderChainID(toChainID)}
                     </span>
                 </span>
             </div>
             <div className={"line"}>
-                <span className={"key"}>txid</span>
+                <span className={"key"}>swaptx</span>
                 <span className={"value"}>
                     <OuterLink
                         ellipsis={true}
-                        hash={txid}
-                        chainid={fromChainID}
+                        hash={swaptx}
+                        chainid={toChainID}
                     />
                 </span>
             </div>

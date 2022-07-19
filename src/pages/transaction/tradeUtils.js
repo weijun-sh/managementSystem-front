@@ -378,7 +378,7 @@ export const HistoryColumns = function (config = {}) {
             dataIndex: "status",
             key: 'status',
             hidden: hideJson,
-            width: 50,
+            width: 60,
             render: (data, record) => {
                 return (
                     <a

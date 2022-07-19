@@ -21,8 +21,17 @@
   overflow: inherit;
   padding-bottom: 70px;
   z-index: 1;
+  min-height: 600px;
 }
 
+@media screen and (max-height: 500px){
+  .page-footer{
+    display: none;
+  }
+  .page-content{
+    padding-bottom: 10px;
+  }
+}
 
 .page-footer{
   text-align: center;
