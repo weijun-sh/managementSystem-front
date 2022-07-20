@@ -146,18 +146,18 @@ class SearchTable extends React.Component {
         return columns;
     }
 
-    fetchData = () => {
+    fetchData = (fetchInfo = {}) => {
 
         this.setState({loading: true});
         if (this.filterSearch().length === 0) {
-            this.getList();
+            this.getList({...fetchInfo.params}, fetchInfo);
             return;
         }
         if (!this.formRef) {
             return;
         }
         this.formRef.validateFields().then((values) => {
-            this.getList(values)
+            this.getList({ ...values, ...fetchInfo.params}, fetchInfo)
         }).catch((err) => {
             this.setState({loading: false});
         }).finally(() => {
@@ -165,11 +165,12 @@ class SearchTable extends React.Component {
         })
     }
 
-    getList = (values) => {
+    getList = (values, fetchInfo) => {
         const {loadedSuccess, loadedFail, loadFinal, loadStart} = this.props;
         loadStart()
         this.props.getList && this.props.getList({
-            params: values
+            params: values,
+            fetchInfo: fetchInfo
         }).then((list) => {
             list = list.map((item, index) => {
                 item.rowKey = index + 1;
@@ -366,7 +367,7 @@ class SearchTable extends React.Component {
 
     render() {
         const {list, loading, pagination} = this.state;
-        let {scroll, expandable, tableSize, rowKey} = this.props;
+        let {scroll, expandable, tableSize, rowKey, formSubmits} = this.props;
         scroll = {x: 820, ...scroll};
         let columnsData = this.filterColumns() || [];
         if(window.innerHeight < 500){
@@ -385,6 +386,7 @@ class SearchTable extends React.Component {
                         {this.renderFormItem()}
 
                         <Button
+                            hidden={!!formSubmits}
                             type='primary'
                             onClick={() => {
                                 this.fetchData()
@@ -393,6 +395,26 @@ class SearchTable extends React.Component {
                         >
                             查询
                         </Button>
+
+                        {
+                            formSubmits && formSubmits.map((item, index) => {
+                                const {style, label, type, ...other} = item;
+                                return (
+                                    <Button
+                                        key={index}
+                                        type={ type || 'primary'}
+                                        onClick={() => {
+                                            item.onClick()
+                                        }}
+                                        disabled={loading}
+                                        style={{marginRight: 10, ...style}}
+                                        {...other}
+                                    >
+                                        {label}
+                                    </Button>
+                                )
+                            })
+                        }
                     </Form>
                 </Card>
                 <Card
@@ -458,6 +480,7 @@ SearchTable.propTypes = {
     loadedFail: PropTypes.any,
     loadFinal:PropTypes.any,
     loadStart:PropTypes.any,
+    formSubmits:PropTypes.any,
     //tableSize: 'small' | 'middle' | 'large'
 
 }

@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {useState} from 'react';
 
 import SearchTable from 'mc/table/SearchTable';
 import PageContainer from "mc/container/PageContainer";
@@ -94,25 +94,30 @@ export default function Chain() {
 
     function getList(info) {
         return new Promise((resolve, reject) => {
-            const {chainid, txid} = info.params;
+            const {chainid, txid, bridge} = info.params;
 
-            completes = ([...new Set([...completes, txid])])
+            //completes = ([...new Set([...completes, txid])])
+
 
             setSwaptx(null)
             setLogs(null);
             setVisible(false)
+
+            let params = {
+                chainid,
+                txid,
+                bridge: bridge
+            }
+            window.success("params", params)
+            window.success("info", info)
             Services.getSwap({
-                params: {
-                    chainid,
-                    txid,
-                }
+                params: params
             }).then((response) => {
                 let data = response.result.data;
 
                 let list = deepMapList(data);
                 let logs = data.log || [];
                 let swaptx = data.swaptx;
-
 
                 setSwaptx(swaptx);
                 setLogs(logs);
@@ -133,12 +138,37 @@ export default function Chain() {
                 columnIndex={false}
                 scroll={{x: 1160}}
                 getRef={(node) => {
-                    if(tableRef){return}
+                    if (tableRef) {
+                        return
+                    }
                     setTableRef(node);
                     if (chainId && hash) {
-                        node.fetchData()
+                        node.fetchData({
+                            params: {
+                                bridge: null
+                            }
+                        })
                     }
                 }}
+                formSubmits={[{
+                    label: '查询',
+                    onClick: () => {
+                        tableRef.fetchData({
+                            params: {
+                                bridge: null
+                            }
+                        })
+                    }
+                }, {
+                    label: '全文搜索',
+                    onClick: () => {
+                        tableRef.fetchData({
+                            params: {
+                                bridge: 'all'
+                            }
+                        })
+                    }
+                }]}
                 columns={columns()}
                 getList={getList}
                 pagination={false}
