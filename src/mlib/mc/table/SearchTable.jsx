@@ -234,18 +234,8 @@ class SearchTable extends React.Component {
                             style={style}
                             className={className}
                         >
-{/*                            <Complete
-                                defaultOpen={false}
-                                autoFocus={false}
-                                options={null}
-                                completeKey={"13579"}
-                                {...other}
-                            />*/}
-                            <AutoComplete
-                                defaultOpen={false}
-                                autoFocus={false}
-                                options={completes}
-
+                            <Complete
+                                completeKey={componentProps.completeKey}
                                 {...other}
                             />
                         </Form.Item>

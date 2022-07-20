@@ -53,7 +53,7 @@ export default function Chain() {
                 ],
                 componentProps: {
                     allowClear: true,
-                    completes: completes
+                    completeKey: "chainhash"
                 }
             }
         }
@@ -95,9 +95,6 @@ export default function Chain() {
     function getList(info) {
         return new Promise((resolve, reject) => {
             const {chainid, txid, bridge} = info.params;
-
-            //completes = ([...new Set([...completes, txid])])
-
 
             setSwaptx(null)
             setLogs(null);
