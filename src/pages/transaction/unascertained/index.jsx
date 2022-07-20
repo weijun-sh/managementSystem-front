@@ -211,7 +211,7 @@ function UnAscertained(props) {
     }
 
     useEffect(() => {
-        tableRef.setList(showList);
+        tableRef && tableRef.setList(showList);
     }, [showList])
 
     function SelectIcon(props){

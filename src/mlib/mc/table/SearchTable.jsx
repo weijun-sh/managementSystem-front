@@ -148,7 +148,7 @@ class SearchTable extends React.Component {
 
     fetchData = (fetchInfo = {}) => {
 
-        this.setState({loading: true});
+        this.setState({loading: true, list: []});
         if (this.filterSearch().length === 0) {
             this.getList({...fetchInfo.params}, fetchInfo);
             return;

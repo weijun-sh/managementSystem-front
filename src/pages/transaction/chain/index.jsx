@@ -53,7 +53,8 @@ export default function Chain() {
                 ],
                 componentProps: {
                     allowClear: true,
-                    completeKey: "chainhash"
+                    completeKey: "chainhash",
+
                 }
             }
         }
@@ -105,8 +106,6 @@ export default function Chain() {
                 txid,
                 bridge: bridge
             }
-            window.success("params", params)
-            window.success("info", info)
             Services.getSwap({
                 params: params
             }).then((response) => {
@@ -164,7 +163,9 @@ export default function Chain() {
                                 bridge: 'all'
                             }
                         })
-                    }
+                    },
+                    style: {opacity: 0.5},
+                    //type: 'dashed'
                 }]}
                 columns={columns()}
                 getList={getList}
