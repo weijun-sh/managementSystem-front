@@ -4,7 +4,7 @@ import WrapedCheckBox from '../checkbox/WrapedCheckBox';
 import PropTypes from "prop-types";
 import FetchSelect from "mc/select/FetchSelect";
 import Complete from "../input/Complete";
-
+import './searchTable.less'
 function showTotal(total) {
     return `总共 ${total} 条数据`
 }
@@ -413,6 +413,12 @@ class SearchTable extends React.Component {
                     extra={this.renderCard2Extra()}
                 >
                     <Table
+                        rowClassName={(record, index, indent) => {
+                            if(index % 2){
+                                return "row-red"
+                            }
+                            return "row-blue"
+                        }}
                         size={"small"}
                         expandable={expandable}
                         scroll={scroll}

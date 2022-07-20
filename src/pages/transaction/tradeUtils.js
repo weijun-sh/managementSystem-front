@@ -23,6 +23,26 @@ export function timeStampGap( timestamp, inittime){
     return diff;
 }
 
+export function InitTimeLimited(inittime, limited ){
+    let current = new Date().getTime();
+    let pass = inittime ;
+    let gap = ((current - pass) / 1000).toFixed(0);
+
+    let time = Utils.Time.transferSecond(gap);
+    let red = false;
+    let daysReg = /(\d+)days/.exec(time)
+    if(Array.isArray(daysReg)){
+        let days = parseInt(daysReg[1]);
+        if(days > parseInt(limited)){
+            red = true
+        }
+    }
+    return {
+        red,
+        time,
+    }
+}
+
 /**
  * process status
  * */
@@ -308,8 +328,8 @@ export const HistoryColumns = function (config = {}) {
         },
         {
             title: '处理时间',
-            dataIndex: 'inittime',
-            key: 'inittime',
+            dataIndex: 'yyy',
+            key: 'yyy',
             width: 120,
             sorter: (a, b) => {
               let diffA = parseInt(a.timestamp) - parseInt(a.inittime/ 1000);
@@ -325,32 +345,26 @@ export const HistoryColumns = function (config = {}) {
                 )
             }
         },
+        //timestamp -- 当前处理时间
+        //inittime -- 初始化交易的时间
+        //时间 -- 从最开始到现在的时间
+        //处理时间 -- 处理交易所用的时间
         {
             title: "时间",
-            dataIndex: 'timestamp',
-            key: 'timestamp',
-            sorter: (a, b) => b.timestamp - a.timestamp,
+            dataIndex: 'xxx',
+            key: 'xxx',
+            defaultSortOrder: 'descend',
+            sorter: (a, b) =>  b.inittime - a.inittime,
             render: (data, record) => {
-                let current = new Date().getTime();
-                let pass = record.timestamp * 1000;
-                let gap = ((current - pass) / 1000).toFixed(0);
-
-                let time = Utils.Time.transferSecond(gap);
-                let red = false;
-                let daysReg = /(\d+)days/.exec(time)
-                if(Array.isArray(daysReg)){
-                    let days = parseInt(daysReg[1]);
-                    if(days > 1){
-                        red = true
-                    }
-                }
+                //now - inittime
+                const { red, time} = InitTimeLimited(record.inittime, 1)
                 return (
                     <div className={"trade-time-column"} >
                         <span className={red? "red-time":"time"}>
                             {time}
                         </span>
                         <span className={"ago"}>
-                            {pass > 0 ? ' ago' : ''}
+                            {record.inittime > 0 && ' ago'}
                         </span>
                     </div>
                 )

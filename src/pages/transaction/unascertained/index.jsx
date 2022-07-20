@@ -3,84 +3,64 @@ import SearchTable from 'mc/table/SearchTable';
 import Services from '../../../services/api';
 import TradeUtils from '../tradeUtils'
 import './index.less'
-import {Button, message, Progress, Spin} from "antd";
-import {LoadingOutlined, CheckOutlined} from "@ant-design/icons";
-
-let tableRef = null;
-let progress = 0;
-let routerCancels = null;
-let inCancels = null;
-let outCancels = null;
-
-const LoadingStatus = "loading";
-const SuccessStatus = "success";
-const ErrorStatus = "error";
-
-
-//update list not at time, change to global var
-let outList = [];
-let inList = [];
-let routerList = [];
-
-function setOutList(list){
-    outList = list
-}
-
-function setRouterList(list){
-    routerList = list
-}
-function setInList(list){
-    inList = list
-}
-
-
+import {message} from "antd";
+import {
+    UN_Loading_Status,
+    UN_Success_Status,
+    UN_Error_Status,
+    UnErrorTab,
+    UnLoadedView,
+    UnLoadingStatus,
+    setOutList,
+    setInList,
+    setRouterList,
+    inList,
+    outList,
+    routerList,
+    tableRef,
+    progress,
+    setTableRef,
+    setProgress,
+    setRouterCancel,
+    setOutCancel,
+    setInCancel,
+    unEnterPage,
+    unLeftPage,
+    UnTableExtra,
+    tableSetLoading,
+    tableSetList,
+    unCombList,
+    unUpdateProgress,
+    UnProgressView, setLimitedDate, filterRangeList
+} from "./utils";
 
 function UnAscertained(props) {
     const [status, setStatus] = useState(0)
     let cols = TradeUtils.getUnascertainedColumns();
     const columns = [...cols];
-    const [inStatus, setInStatus] = useState(LoadingStatus);
-    const [outStatus, setOutStatus] = useState(LoadingStatus);
-    const [routerStatus, setRouterStatus] = useState(LoadingStatus);
-
+    const [inStatus, setInStatus] = useState(UN_Loading_Status);
+    const [outStatus, setOutStatus] = useState(UN_Loading_Status);
+    const [routerStatus, setRouterStatus] = useState(UN_Loading_Status);
     const [showRoute, setShowRouter] = useState(true);
     const [showIn, setShowIn] = useState(true);
     const [showOut, setShowOut] = useState(true);
-    const [showList, setShowList] = useState([]);
-
+    //const [showList, setShowList] = useState([]);
 
     useEffect(() => {
         if (tableRef) {
-            tableRef.setList([])
+            unEnterPage();
             loadMore();
-            progress = 0;
-            setOutList([]);
-            setInList([]);
-            setRouterList([])
             setShowRouter(true)
             setShowIn(true)
             setShowOut(true)
-            setRouterStatus(LoadingStatus);
-            setInStatus(LoadingStatus)
-            setOutStatus(LoadingStatus)
+            setRouterStatus(UN_Loading_Status);
+            setInStatus(UN_Loading_Status)
+            setOutStatus(UN_Loading_Status)
         }
         return function () {
-            tableRef = null
-            routerCancels && routerCancels();
-            routerCancels && inCancels()
-            routerCancels && outCancels()
+            unLeftPage()
         }
     }, []);
-
-    function renderLoadingStatus(type) {
-        return (
-            <span className={"loading-status"}>
-                <span className="type">{`${type}`}</span>&nbsp;&nbsp;
-                {/*<Spin size={"small"}/>*/}
-                <LoadingOutlined />
-            </span>
-        )
-    }
 
     function initStatus() {
         setInStatus(null);
@@ -89,61 +69,63 @@ function UnAscertained(props) {
     }
 
     function loadMore() {
-        message.success("正在加载中", 0.3);
+
+        message.success("正在加载中", 0.3).then(() => {
+        });
         initStatus()
-        progress = 0;
+        setProgress(0);
         setStatus(0);
-        tableRef.setList([]);
-        tableRef.setLoading(true)
+        tableSetList([]);
+        tableSetLoading(true)
 
+        //request router bridge(in/out) at same time
+        routerRequest();
+        inRequest();
+        outRequest();
+    }
 
+    function routerRequest() {
         Services.getSwapHistory({
             params: {
                 bridge: 'all',
                 status: null,
             },
-            sendOption: {
-                getCancel: (c) => {
-                    routerCancels = c
-                }
-            }
+            sendOption: {getCancel: setRouterCancel}
         }).then((res) => {
             concatList(res, "Router");
         }).catch((error) => {
-            tableRef && tableRef.setLoading(false);
-            setRouterStatus(ErrorStatus)
+            tableSetLoading(false);
+            setRouterStatus(UN_Error_Status);
         })
+    }
+
+    function inRequest() {
         Services.getSwapinHistory({
             params: {
                 bridge: 'all',
                 status: null,
             },
-            sendOption: {
-                getCancel: (c) => {
-                    inCancels = c
-                }
-            }
+            sendOption: {getCancel: setInCancel}
         }).then((res) => {
             concatList(res, "IN");
         }).catch((error) => {
-            tableRef && tableRef.setLoading(false);
-            setInStatus(ErrorStatus)
+            tableSetLoading(false)
+            setInStatus(UN_Error_Status)
         })
+    }
+
+    function outRequest() {
         Services.getSwapoutHistory({
             params: {
                 bridge: 'all',
                 status: null,
             },
-            sendOption: {
-                getCancel: (c) => {
-                    outCancels = c
-                }
-            }
+            sendOption: {getCancel: setOutCancel}
         }).then((res) => {
             concatList(res, "OUT");
         }).catch((error) => {
-            tableRef && tableRef.setLoading(false);
-            setOutStatus(ErrorStatus)
+            tableSetLoading(false)
+            setOutStatus(UN_Error_Status)
         })
     }
 
@@ -151,181 +133,116 @@ function UnAscertained(props) {
         if (!tableRef) {
             return;
         }
-        tableRef.setLoading(false)
+        tableSetLoading(false)
 
-        if (progress === 0) {
-            progress = 33;
-            setStatus(33)
-        } else if (progress === 33) {
-            progress = 66;
-            setStatus(66)
-        } else if (progress === 66) {
-            progress = 100;
-            setStatus(100)
-        }
+        unUpdateProgress();
         let orgList = res.result.data;
 
         let list = TradeUtils.deepMapList(orgList);
         let newList = []
         if (type === 'Router') {
-
             setRouterList(list);
-            setRouterStatus(SuccessStatus);
+            setRouterStatus(UN_Success_Status);
             setShowRouter(true);
-
             newList = [...list, ...inList, ...outList];
         }
         if (type === 'IN') {
             setInList(list);
-            setInStatus(SuccessStatus);
+            setInStatus(UN_Success_Status);
             setShowIn(true);
-
             newList = [...routerList, ...list, ...outList];
         }
         if (type === 'OUT') {
-
             setOutList(list)
-            setOutStatus(SuccessStatus)
+            setOutStatus(UN_Success_Status)
             setShowOut(true);
-
             newList = [...routerList, ...inList, ...list];
         }
-        tableRef.setList(newList);
+        newList = filterRangeList(newList)
+        tableSetList(newList);
     }
 
-    function renderList(showRoute, showIn, showOut) {
+/*    useEffect(() => {
+        tableSetList(showList);
+    }, [showList])*/
 
-        window.groupSuccess("visible ==>", 'routerList', routerList, 'inList', inList, 'outList', outList)
+    function ShowStatusGroupView() {
+        let routerStatusView = <UnLoadingStatus title={"router"}/>;
+        let inStatusView = <UnLoadingStatus title={"bridge(IN)"}/>;
+        let outStatusView = <UnLoadingStatus title={"bridge(OUT)"}/>;
 
-        let list = []
-        if (showRoute) {
-            list = [...list, ...routerList];
-        }
-        if (showIn) {
-            list = [...list, ...inList];
-        }
-        if (showOut) {
-            list = [...list, ...outList];
-        }
-        setShowList(list)
-    }
-
-    useEffect(() => {
-        tableRef && tableRef.setList(showList);
-    }, [showList])
-
-    function SelectIcon(props){
-        let className = "select-type";
-        if(props.selected){
-            className = "select-type select-type-selected"
-        }
-        return (
-            <span className={className}>
-                <CheckOutlined className={"icon"}/>
-            </span>
-        )
-    }
-
-    function renderShowStatus() {
-        let routerStatusView = renderLoadingStatus("router");
-        let inStatusView = renderLoadingStatus("bridge(IN)");
-        let outStatusView = renderLoadingStatus("bridge(OUT)");
-
-
-        if (routerStatus === ErrorStatus) {
+        if (routerStatus === UN_Error_Status) {
+            routerStatusView = <UnErrorTab title={"router"}/>;
+        } else if (routerStatus === UN_Success_Status) {
             routerStatusView = (
-                <span className={"error-status"}>
-                    <span className={"type"}>router</span>
-                    <span className={"msg"}>{'加载失败'}</span>
-                </span>
-            )
-        } else if (routerStatus === SuccessStatus) {
-            routerStatusView = (
-                <span
-                    className={"success-status"}
+                <UnLoadedView
+                    title={"router"}
+                    selected={showRoute}
+                    length={routerList.length}
                     onClick={() => {
                         setShowRouter(!showRoute);
-                        renderList(!showRoute, showIn, showOut)
+                        let list = unCombList(!showRoute, showIn, showOut);
+                        tableSetList(list);
+                        //setShowList(list)
                     }}
-                >
-                    <SelectIcon selected={showRoute}/>
-                    <span className={"type"}>router</span>
-                    <span className={"msg"}>{`${routerList.length} 条数据`}</span>
-                </span>)
+                />
+            )
         }
 
-        if (inStatus === ErrorStatus) {
+        if (inStatus === UN_Error_Status) {
+            inStatusView = <UnErrorTab title={"bridge(IN)"}/>;
+        } else if (inStatus === UN_Success_Status) {
             inStatusView = (
-                <span className={"error-status"}>
-                    <span className={"type"}>bridge(IN)</span>
-                    <span className={"msg"}>{'加载失败'}</span>
-                </span>
-            )
-        } else if (inStatus === SuccessStatus) {
-            inStatusView = (
-                <span
-                    className={"success-status"}
+                <UnLoadedView
+                    title={"bridge(IN)"}
+                    selected={showIn}
+                    length={inList.length}
                     onClick={() => {
                         setShowIn(!showIn);
-                        renderList(showRoute, !showIn, showOut)
+                        let list = unCombList(showRoute, !showIn, showOut);
+                        tableSetList(list);
+                        //setShowList(list)
                     }}
-                >
-                    <SelectIcon selected={showIn}/>
-                    <span className={"type"}>bridge(IN)</span>
-                    <span className={"msg"}>{` ${inList.length} 条数据`}</span>
-                </span>
+                />
             )
         }
 
-        if (outStatus === ErrorStatus) {
+        if (outStatus === UN_Error_Status) {
+            outStatusView = <UnErrorTab title={"bridge(OUT)"}/>
+        } else if (outStatus === UN_Success_Status) {
             outStatusView = (
-                <span className={"error-status"}>
-                    <span className={"type"}>bridge(OUT)</span>
-                    <span className={"msg"}>{'加载失败'}</span>
-                </span>
-            )
-        } else if (outStatus === SuccessStatus) {
-            outStatusView = (
-                <span
-                    className={"success-status"}
+                <UnLoadedView
+                    title={"bridge(OUT)"}
+                    selected={showOut}
+                    length={outList.length}
                     onClick={() => {
                         setShowOut(!showOut);
-                        renderList(showRoute, showIn, !showOut)
+                        let list = unCombList(showRoute, showIn, !showOut)
+                        tableSetList(list);
+                        //setShowList(list)
                     }}
-                >
-                    <SelectIcon selected={showOut}/>
-                    <span className={"type"}>bridge(OUT)</span>
-                    <span className={"msg"}>{` ${outList.length} 条数据`}</span>
-                </span>
+                />
             )
         }
-
         return (
-            <span style={{fontSize: 12, marginLeft: 10, color: 'gray'}}>
+            <span
+                className={"show-status-wrap"}
+            >
                 {routerStatusView}
                 {inStatusView}
                 {outStatusView}
             </span>
         )
     }
-
-    function getTitle() {
+    //every render ,update view. loading error, success
+    let card2Title = (function (){
         return (
             <div>
-                查询结果
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <Progress
-                    width={34}
-                    size={"small"}
-                    type="circle"
-                    percent={progress}
-                />
-                {renderShowStatus()}
+                <UnProgressView/>
+                <ShowStatusGroupView/>
             </div>
         )
-    }
-
-    let card2Title = getTitle();
+    })();
     return (
         <div className='uncertained-container'>
             <SearchTable
@@ -333,22 +250,21 @@ function UnAscertained(props) {
                 combineField={"bridge"}
                 pagination={{pageSize: 150}}
                 card2Extra={(
-                    <Button
-                        type={"primary"}
-                        onClick={loadMore}
-                        size={"middle"}
-                        disabled={!(inStatus && outStatus && routerStatus)}
-                    >
-                        查询
-                    </Button>
+                    <UnTableExtra
+                        btnDisabled={!(inStatus && outStatus && routerStatus)}
+                        selectDisabled={progress !== 100}
+                        onSelect={(value) => {
+                            setLimitedDate(value);
+                            let list = unCombList(showRoute, showIn, showOut);
+                            tableSetList(list)
+                        }}
+                        onClick={() => {
+                            loadMore()
+                        }}
+                    />
                 )}
                 card2Title={card2Title}
-                getRef={(node) => {
-                    if (tableRef) {
-                        return
-                    }
-                    tableRef = node;
-                }}
+                getRef={setTableRef}
                 columns={columns}
             />
         </div>
