@@ -72,8 +72,7 @@ function Complete(props) {
     return (
         <AutoComplete
             onFocus={() => {
-                window.success("onFocus");
-                setOptions(getOptionsFromLocal);
+                setOptions(getOptionsFromLocal());
             }}
             onBlur={() => {
                 setOptions([])
