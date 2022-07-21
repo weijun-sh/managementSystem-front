@@ -12,8 +12,6 @@ import {useSearchParams} from "react-router-dom";
 import {Collapse, message} from "antd";
 
 const options = TradeUtils.renderChainIDOptions();
-let completes = [];
-
 
 export default function Chain() {
     const [tableRef, setTableRef] = useState(null);
@@ -25,6 +23,7 @@ export default function Chain() {
     let hash = params.get('hash');
 
     let columns = function () {
+        //only one record , need not sorter
         let columns = TradeUtils.getChainColumns().map((item => {
             item.sorter = null;
             return item;
@@ -60,14 +59,14 @@ export default function Chain() {
         }
 
         const chainInput = {
-            title: '链',
+            title: '主链',
             dataIndex: 'chainid',
             key: 'chainid',
             hidden: true,
             search: {
                 className: 'xxx',
                 style: {minWidth: 230, textAlign: 'left'},
-                label: "链",
+                label: "主链",
                 name: "chainid",
                 type: 'select',
                 options: options,
@@ -97,6 +96,8 @@ export default function Chain() {
         return new Promise((resolve, reject) => {
             const {chainid, txid, bridge} = info.params;
 
+            window.location.hash = `#/transition/chain?hash=${txid}&chainid=${chainid}`
+
             setSwaptx(null)
             setLogs(null);
             setVisible(false)
@@ -121,7 +122,7 @@ export default function Chain() {
             }).catch((error) => {
                 if(bridge == null && error && error.error && error.error.message === 'tx not found'){
                     setTimeout(() => {
-                        message.warn("可以尝试 全文搜索", 3)
+                        message.warn("可以尝试 [全文搜索]", 3)
                     }, 1000)
                 }
                 reject(error);
@@ -158,7 +159,8 @@ export default function Chain() {
                             params: {
                                 bridge: null
                             }
-                        })
+                        });
+
                     }
                 }, {
                     label: '全文搜索',

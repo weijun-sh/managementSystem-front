@@ -54,7 +54,6 @@ export const ChainID = {
     1313161554: "AURORA Mainnet",
     1666600000: "HARMONY Mainnet",
     "BLOCK": "BLOCK Mainnet",
-    "BOBA": "BOBA Mainnet",
     "BTC": "BTC Mainnet",
     "CMP": "CMP Mainnet",
     "COLX": "COLX Mainnet",

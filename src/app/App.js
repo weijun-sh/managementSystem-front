@@ -111,7 +111,7 @@ const App = function () {
     function FooterComponent() {
         return (
             <PageFooter>
-                Copyright © 2022 Multichain 管理系统 All rights reserved.
+                Copyright © 2022 Multichain 监控运维系统 All rights reserved.
             </PageFooter>
         )
     }
