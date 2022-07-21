@@ -27,6 +27,10 @@ function menuConfig() {
                     key: '/transition/chain',
                     label: '交易查询',
                     icon: ''
+                },{
+                    key: '/transition/review',
+                    label: '交易复查',
+                    icon: ''
                 },
             ]
         }

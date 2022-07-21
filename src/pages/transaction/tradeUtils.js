@@ -440,6 +440,12 @@ export function getHistoryColumns(config = {}) {
     return HistoryColumns(config);
 }
 
+export function getReviewColumns(config = {}) {
+    config.hideSwapInOut = false;
+    config.hideJson = false;
+    return HistoryColumns(config);
+}
+
 export function getChainColumns(config = {}) {
     config.hideSwapInOut = false;
     config.hideJson = false;
@@ -474,7 +480,8 @@ const TradeUtils = {
     renderSummaryStatus,
     deepMapList,
     getHistoryColumns,
-    getChainColumns
+    getChainColumns,
+    getReviewColumns
 }
 
 

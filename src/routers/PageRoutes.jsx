@@ -14,6 +14,7 @@ function PageRoutes() {
             <Route element={<Pages.TradeHistory/>} path='/transition/history'/>
             <Route element={<Pages.TradeSummary/>} path='/transition/summary' exact/>
             <Route element={<Pages.TradeUnascertained/>} path='/transition/unascertained' exact/>
+            <Route element={<Pages.Review/>} path='/transition/review' exact/>
 
             <Route path="/404" element={<NotFound/>}/>
             <Route path="*" element={<Navigate replace to="/404"/>}/>

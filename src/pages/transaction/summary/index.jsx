@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useNavigate, useSearchParams} from 'react-router-dom';
 import SearchTable from 'mc/table/SearchTable';
 import Tabset, {TabsetPane} from 'mc/tabs/Tabset';
@@ -10,6 +10,8 @@ import {
     db0First
 } from '../tradeUtils'
 import './index.less'
+import {storageGet, storageRemove, storageSet} from "../../../mlib/mu/storage";
+import {changeHash} from "../../../mlib/mu/browsers";
 
 const RouterKey = 'router';
 const BridgeKey = 'bridge';
@@ -22,6 +24,47 @@ export default function Summary() {
     tab ||= RouterKey;
     const nav = useNavigate();
 
+    function getCurrentRef(){
+        if(tab === RouterKey){
+            return routerRef
+        }
+        return bridgeRef
+    }
+
+    function listStore(){
+
+        let save = {
+            list: getCurrentRef().state.list,
+            tab: tab,
+            time: new Date().getTime()
+        }
+
+        storageSet("summarydata", save);
+    }
+
+    function listRestore(node){
+        let getData = storageGet('summarydata');
+
+        if(getData){
+
+            getData = JSON.parse(getData);
+
+            let now = new Date().getTime();
+            let diff = (now - getData.time) > 1000 * 8;
+            if(diff){
+                storageRemove('summarydata')
+                return false
+            }
+
+            if(getData.tab === tab){
+                node.setList(getData.list);
+                storageRemove('summarydata')
+                return true
+            }
+        }
+        return false
+    }
+
     function renderSummaryNum(number, record, status, type) {
 
         if (!number) {
@@ -32,6 +75,7 @@ export default function Summary() {
         let className = 'summary-number-yellow';
 
         function toHis(){
+            listStore()
             nav(href)
         }
 
@@ -216,6 +260,10 @@ export default function Summary() {
      * change tab and fetch data using tableRef
      * */
     function changeTab(key) {
+        changeHash({
+            tab: key,
+        })
+
         if (key === RouterKey) {
             routerRef && routerRef.fetchData();
             return;
@@ -236,7 +284,12 @@ export default function Summary() {
                             if (routerRef) {
                                 return
                             }
+
                             setRouterRef(node);
+                            if(listRestore(node)){
+                                return;
+                            }
+
                             node.fetchData();
                         }}
                         columns={routerColumns()}
@@ -253,6 +306,9 @@ export default function Summary() {
                                 return
                             }
                             setBridgeRef(node);
+                            if(listRestore(node)){
+                                return;
+                            }
                             node.fetchData();
                         }}
                         columns={bridgeColumns()}

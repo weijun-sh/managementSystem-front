@@ -336,7 +336,7 @@ class SearchTable extends React.Component {
             return;
         }
         this.formRef = node
-        this.props.getRef(this);
+        this.props.getRef && this.props.getRef(this);
     }
 
     setList = (list) => {
@@ -448,7 +448,7 @@ class SearchTable extends React.Component {
 SearchTable.defaultProps = {
     columnIndex: true,
     card2Title: null,
-    columns: null,
+    columns: [],
     pagination: null,
     getList: null,
     scroll: null,
@@ -456,6 +456,8 @@ SearchTable.defaultProps = {
     combineField: null,
     rowKey: null,
     className: null,
+    getRef: () => {},
+
     loadedSuccess: () => {},
     loadedFail: () => {},
     loadFinal: () => {},
@@ -480,6 +482,7 @@ SearchTable.propTypes = {
     loadStart:PropTypes.any,
     formSubmits:PropTypes.any,
     className:PropTypes.any,
+    getRef:PropTypes.any,
     //tableSize: 'small' | 'middle' | 'large'
 
 }

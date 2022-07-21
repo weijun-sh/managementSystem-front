@@ -5,6 +5,7 @@ import * as Http from './http';
 import * as tools from './tools';
 import * as arrays from './arrays';
 import * as logs from './logs';
+import * as browsers from './browsers';
 
 export default {
     Time,
@@ -13,5 +14,6 @@ export default {
     Http,
     tools,
     arrays,
-    logs
+    logs,
+    browsers
 }

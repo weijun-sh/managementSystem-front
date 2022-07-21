@@ -22,6 +22,7 @@ import Chain from '@/pages/transaction/chain';
 import History from '@/pages/transaction/history';
 import Summary from '@/pages/transaction/summary';
 import Unascertained from '@/pages/transaction/unascertained';
+import Review from '@/pages/transaction/review';
 
 
 const Pages = {
@@ -29,6 +30,7 @@ const Pages = {
     TradeHistory: History,
     TradeSummary: Summary,
     TradeUnascertained: Unascertained,
+    Review: Review,
 }
 
 export default Pages;
