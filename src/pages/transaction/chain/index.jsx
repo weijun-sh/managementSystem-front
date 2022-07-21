@@ -9,7 +9,7 @@ import './index.less'
 import Logs from "./components/Logs";
 import Process from "./components/Process";
 import {useSearchParams} from "react-router-dom";
-import {Collapse} from "antd";
+import {Collapse, message} from "antd";
 
 const options = TradeUtils.renderChainIDOptions();
 let completes = [];
@@ -119,6 +119,11 @@ export default function Chain() {
                 setLogs(logs);
                 resolve(list);
             }).catch((error) => {
+                if(bridge == null && error && error.error && error.error.message === 'tx not found'){
+                    setTimeout(() => {
+                        message.warn("可以尝试 全文搜索", 3)
+                    }, 1000)
+                }
                 reject(error);
                 setLogs(null)
             }).finally(() => {
@@ -132,7 +137,7 @@ export default function Chain() {
             <SearchTable
                 rowKey={"txid"}
                 columnIndex={false}
-                scroll={{x: 1160}}
+                scroll={{x: 1200}}
                 getRef={(node) => {
                     if (tableRef) {
                         return

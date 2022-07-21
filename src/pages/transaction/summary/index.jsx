@@ -246,6 +246,7 @@ export default function Summary() {
                 </TabsetPane>
                 <TabsetPane tab={<div className='tab-title'>Bridge</div>} key={BridgeKey}>
                     <SearchTable
+                        className={"bridge-table"}
                         scroll={{x: 1260, y: `calc(100vh - 380px)`}}
                         getRef={(node) => {
                             if (bridgeRef) {

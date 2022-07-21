@@ -23,20 +23,15 @@ export function timeStampGap( timestamp, inittime){
     return diff;
 }
 
-export function InitTimeLimited(inittime, limited ){
+export function InitTimeLimited(inittime, range ){
     let current = new Date().getTime();
     let pass = inittime ;
     let gap = ((current - pass) / 1000).toFixed(0);
 
     let time = Utils.Time.transferSecond(gap);
-    let red = false;
-    let daysReg = /(\d+)days/.exec(time)
-    if(Array.isArray(daysReg)){
-        let days = parseInt(daysReg[1]);
-        if(days > parseInt(limited)){
-            red = true
-        }
-    }
+
+    let red = gap > range;
+
     return {
         red,
         time,
@@ -44,9 +39,15 @@ export function InitTimeLimited(inittime, limited ){
 }
 
 /**
- * process status
+ * process status 10 is success,
  * */
 export function renderTradeStatus(status) {
+    if(status === null){
+        return '-'
+    }
+    if(status == 10){
+        return <span style={{color: '#2ca52c'}}>success</span>
+    }
 
     return CONST.SwapStatus[status] || '-'
 }
@@ -189,7 +190,9 @@ export function renderRouterColumn(data) {
     }
     return (
         <div className={"router-column"}>
-            {data.replace(/_#0/, '')}
+            <span className={"router-column-name"}>
+                {data.replace(/_#0/, '')}
+            </span>
             {cor}
         </div>
     )
@@ -357,7 +360,12 @@ export const HistoryColumns = function (config = {}) {
             sorter: (a, b) =>  b.inittime - a.inittime,
             render: (data, record) => {
                 //now - inittime
-                const { red, time} = InitTimeLimited(record.inittime, 1)
+                //out of one hour, color is red
+                let range = 60 * 60 * 1;
+                let { red, time} = InitTimeLimited(record.inittime, range);
+                if(record.status == 10){
+                    red = false
+                }
                 return (
                     <div className={"trade-time-column"} >
                         <span className={red? "red-time":"time"}>

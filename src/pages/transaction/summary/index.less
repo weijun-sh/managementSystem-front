@@ -3,33 +3,38 @@
     .summary-number-yellow {
         cursor: pointer;
         text-align: center;
-        color: #fff;
-        background-color: #ccc;
         width: 50px;
         display: block;
         margin: 0 auto;
+        border-radius: 3px;
+        box-shadow: 0 1px 3px 0 #9cb8cb22, 1px 2px 2px 0 #9cd1f577;
+        border: 1.8px solid #9cd1f5;
+        color: #90c0e1;
+        font-size: 12px;
+        font-weight: 700;
         &:hover {
-            background-color: #999;
+            background-color: #1890ff;
             color: #fff;
         }
     }
 
     .summary-number-red {
-        width: 50px;
         cursor: pointer;
-        display: block;
         text-align: center;
-        color: #fff;
-        background-color: #e53c66;
+        width: 50px;
+        display: block;
         margin: 0 auto;
+        border-radius: 3px;
+        box-shadow: 0 1px 3px 0 #cccc, 1px 2px 2px 0 #cccc;
+        border: 1.8px solid #f19cb1;
+        color: #e55378;
+        font-size: 12px;
+        font-weight: 600;
         &:hover {
             color: #fff;
-            background-color: #eb144a
+            background-color: #eb144a;
         }
     }
-
-
-
 
     .in-title {
         font-size: 12px;
@@ -41,7 +46,7 @@
 }
 
 
-.summary-container{
+.bridge-table{
     .ant-table-thead>tr>th {
 
         &:nth-child(1),
@@ -80,7 +85,7 @@
         ,&:nth-child(9) // confirm(0) block
         {
             padding: 6px 6px !important;
-            background: rgba(0, 128, 0, 0.03);
+            background: rgba(0, 128, 0, 0.01);
             color: #000;
         }
 
@@ -92,7 +97,7 @@
         &:nth-child(15),
         &:nth-child(16) {
             padding: 6px 6px !important;
-            background: rgba(255, 0, 0, 0.03);
+            background: rgba(255, 0, 0, 0.01);
             color: #000;
         }
     }

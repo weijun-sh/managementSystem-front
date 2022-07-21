@@ -34,7 +34,7 @@ function http(options) {
 
             if (toastError) {
                 let msg = res.msg || res.error.message
-                message.error(msg, 1,).then(() => {
+                message.error(msg, 3,).then(() => {
                 })
             }
             reject && reject(res)

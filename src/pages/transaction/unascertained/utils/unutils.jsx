@@ -83,7 +83,7 @@ export function UnSelectDate(props) {
     const {onSelect, disabled} = props;
     return (
         <span>
-            &emsp;时间:&emsp;
+            时间 :&emsp;
             <Select
                 disabled={false/*disabled*/}
                 style={{width: 80}}
@@ -102,6 +102,7 @@ export function UnSelectDate(props) {
             <Select.Option value={"6"}>6 天</Select.Option>
             <Select.Option value={"7"}>7 天</Select.Option>
         </Select>
+            &emsp;
         </span>
 
     )
@@ -135,6 +136,7 @@ export function UnLoadedView(props){
         <span
             className={"success-status"}
             onClick={onClick}
+            color={selected}
         >
             <SelectIcon selected={selected}/>
             <span className={"type"}>{title}</span>
@@ -165,6 +167,14 @@ export function UnTableExtra(props){
     const {onClick,onSelect, btnDisabled, selectDisabled } = props;
     return (
         <div>
+            <UnSelectDate
+                disabled={selectDisabled}
+                onSelect={(value) => {
+
+                    onSelect(value)
+                }}
+            />
+
             <Button
                 type={"primary"}
                 onClick={onClick}
@@ -174,13 +184,7 @@ export function UnTableExtra(props){
                 查询
             </Button>
 
-            <UnSelectDate
-                disabled={selectDisabled}
-                onSelect={(value) => {
 
-                    onSelect(value)
-                }}
-            />
         </div>
     )
 }
@@ -188,8 +192,8 @@ export function UnTableExtra(props){
 export function filterRangeList(list){
     if(limitedDate){
         list = list.filter((item) => {
-            let range = `${parseInt(limitedDate) - 1}`;
-            window.success("range", range)
+            let days = `${parseInt(limitedDate)}`;
+            let range = 60 * 60 * 24 * days;
             const {red, time} = InitTimeLimited(item.inittime, range);
             return !red;
         })

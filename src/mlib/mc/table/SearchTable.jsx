@@ -97,6 +97,7 @@ class SearchTable extends React.Component {
                     dataIndex: 'rowKey',
                     key: 'rowKey',
                     width: 44,
+                    align: 'center',
                     render: (data, record, index) => {
                         const {pagination} = this.state;
                         if (!pagination) {
@@ -357,14 +358,14 @@ class SearchTable extends React.Component {
 
     render() {
         const {list, loading, pagination} = this.state;
-        let {scroll, expandable, tableSize, rowKey, formSubmits} = this.props;
+        let {scroll, expandable, tableSize, rowKey, formSubmits, className} = this.props;
         scroll = {x: 820, ...scroll};
         let columnsData = this.filterColumns() || [];
         if(window.innerHeight < 500){
             //scroll.y = undefined
         }
         return (
-            <div style={{marginBottom: 10}}>
+            <div className={className} style={{marginBottom: 10}}>
                 <Card hidden={!this.filterSearch().length}>
                     <Form
                         autoComplete={"on"}
@@ -454,6 +455,7 @@ SearchTable.defaultProps = {
     card2Extra: null,
     combineField: null,
     rowKey: null,
+    className: null,
     loadedSuccess: () => {},
     loadedFail: () => {},
     loadFinal: () => {},
@@ -477,6 +479,7 @@ SearchTable.propTypes = {
     loadFinal:PropTypes.any,
     loadStart:PropTypes.any,
     formSubmits:PropTypes.any,
+    className:PropTypes.any,
     //tableSize: 'small' | 'middle' | 'large'
 
 }
