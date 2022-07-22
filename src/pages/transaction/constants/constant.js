@@ -44,7 +44,7 @@ export const ChainID = {
     1088: "METIS Mainnet",
     1284: "MOONBEAM Mainnet",
     1285: "MOONRIVER Mainnet",
-    2001: "MIKO",
+    2001: "MIKO Mainnet",
     4689: "IOTEX Mainnet",
     42161: "ARB Mainnet",
     42220: "CELO Mainnet",
@@ -65,12 +65,12 @@ export const ChainID = {
     "RSK": "RSK Mainnet",
     "TERRA": "TERRA Mainnet",
     "XRP": "XRP Mainnet",
-    "2020": "RONIN Mainnet"
-}
+    "2020": "RONIN Mainnet",
 
-export const SWAPIN_TYPE = 'swapin';
-export const SWAPOUT_TYPE = 'swapout';
-export const Router_TYPE = 'Router';
+    9001 : "EVMOS Mainnet",
+    61: "ETC Mainnet",
+    24 : "Kardiachain Mainnet"
+}
 
 export const SummaryStatus = {
     8: "Sign(8)",
